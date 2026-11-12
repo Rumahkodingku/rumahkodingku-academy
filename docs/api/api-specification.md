@@ -38,7 +38,8 @@ Never expose stack traces, SQL, secrets, or internal file paths.
 
 ## Health and documentation
 
-- `GET /api/v1/health` returns Terminus health output.
+- `GET /api/v1/health` and `GET /api/v1/health/ready` return Terminus readiness output (MySQL and Redis).
+- `GET /api/v1/health/live` returns a lightweight liveness response.
 - `GET /swagger` serves Swagger UI.
 - `GET /reference` serves Scalar API Reference.
 - `GET /swagger-json` serves the OpenAPI document.

@@ -48,7 +48,7 @@ API conventions:
 
 - Base path `/api/v1`.
 - Success envelope `{ "data": {}, "meta": {} }`.
-- Error envelope `{ "error": { "code": "", "message": "", "details": [], "requestId": "" } }`.
+- Error envelope RFC 9457 Problem Details (`application/problem+json`) with `type`, `title`, `status`, `detail`, `instance`, `code`, `requestId`, and optional `errors`.
 - Stable application error codes.
 - ISO 8601 UTC timestamps.
 - IDR integer money.

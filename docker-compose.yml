@@ -30,10 +30,15 @@ services:
       - "3000:3000"
       - "9090:9090"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=${NODE_ENV:-development}
       - CORS_ORIGIN=http://localhost:3001
       - DATABASE_URL=mysql://academy_user:academy_password@mysql:3306/rumahkodingku_academy
       - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-}
+      - CSRF_SECRET=${CSRF_SECRET:-}
+      - JWT_ISSUER=${JWT_ISSUER:-http://localhost:3000}
+      - JWT_AUDIENCE=${JWT_AUDIENCE:-web}
+      - UPLOAD_ROOT=/app/apps/api/uploads
       - LOG_LEVEL=info
       - METRICS_PORT=9090
       - METRICS_PATH=/metrics

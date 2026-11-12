@@ -23,7 +23,7 @@ This roadmap follows the approved product and technical decisions:
 - Ordered multi-course roadmaps with mandatory sequential progression.
 - Course forum, lesson-level Q&A, YouTube or rich-text lesson content.
 - One coupon per order; pre-moderated reviews; unique wishlists.
-- API `/api/v1` with `{ data, meta }` and `{ error: { code, message, details, requestId } }`.
+- API `/api/v1` with `{ data, meta }` success envelope and RFC 9457 Problem Details errors (`application/problem+json`).
 
 ## 2. Execution principles
 
