@@ -11,6 +11,22 @@ jobs:
     name: Format, Lint, Type Check, Build & Test
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_DATABASE: rumahkodingku_academy
+          MYSQL_USER: academy_user
+          MYSQL_PASSWORD: academy_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,6 +42,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Verify database migrations
+        env:
+          DATABASE_URL: mysql://academy_user:academy_password@127.0.0.1:3306/rumahkodingku_academy
+        run: pnpm --filter @rumahkodingku-academy/db db:migrate
 
       - name: Generate API types
         run: pnpm --filter web generate:api

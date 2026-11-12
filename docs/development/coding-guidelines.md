@@ -27,7 +27,7 @@ Use `@nestjs/mail` with Handlebars templates, `@nestjs/storage` with local/S3 di
 
 Production synchronize disabled; reviewed migrations only; explicit relation loading; avoid N+1; define constraints/indexes intentionally; transactions for payment fulfillment, enrollment, certificate issuance, coupon redemption, and project version creation; no cascade deletion of financial, submission, or audit history.
 
-Use `course_sections`, not `course_modules`. Money is IDR integer, never floating point.
+Use `course_sections`, not `course_modules`. Money is IDR integer, never floating point. Primary keys are application-generated UUID v7. Timestamps are UTC. Multi-record workflows use a transaction-scoped `EntityManager` or `QueryRunner`.
 
 ## Next.js
 

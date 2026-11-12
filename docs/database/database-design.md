@@ -94,3 +94,15 @@ Production `synchronize` MUST be false. Use reviewed migrations. Avoid eager rel
 ## File metadata
 
 Store relative storage key, sanitized display filename, detected MIME, extension, byte size, checksum (optional), uploader, owning resource, and timestamps. Never accept arbitrary absolute paths from clients.
+
+## Implementation conventions
+
+- Primary keys are UUID v7, generated in the application layer by `packages/db/src/utils/uuid.ts`; do not use auto-increment or MySQL-generated UUIDs.
+- All timestamps are UTC `DATETIME` columns. Application code converts to the display timezone at the edge.
+- Money columns are integer IDR. FLOAT, DOUBLE, and DECIMAL are forbidden for IDR amounts.
+- TypeORM `synchronize` remains `false`. Use explicit, reviewed migrations.
+- Multi-record workflows use a transaction-scoped `EntityManager` or `QueryRunner`. Do not mix transaction and global repository writes.
+- Financial, certificate, submission, and audit history must not cascade-delete. Use `RESTRICT` or `SET NULL` deliberately.
+- One active certificate per enrollment is enforced by the nullable unique `certificates.active_enrollment_id` column, maintained by the certificate workflow.
+- `quizzes` enforces exactly one of `lesson_id` or `section_id` through `CK_quizzes_lesson_or_section`. TypeORM 1.1.2 does not emit this check reliably, so the migration carries it explicitly.
+- Migration generation must be followed by a manual review for check constraints, index duplication, foreign-key actions, and money/timestamp types.
