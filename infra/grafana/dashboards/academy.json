@@ -1,0 +1,26 @@
+{
+  "uid": "rumahkodingku-academy",
+  "title": "Rumah Kodingku Academy",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "API Up",
+      "targets": [
+        {
+          "expr": "up{job=\"rumahkodingku-api\"}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ]
+}

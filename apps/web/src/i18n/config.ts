@@ -6,15 +6,15 @@ i18n
   .use(HttpBackend)
   .use(LanguageDetector)
   .init({
-    fallbackLng: "en",
-    supportedLngs: ["en", "fr"],
+    fallbackLng: "id",
+    supportedLngs: ["id", "en"],
     defaultNS: "common",
     ns: ["common"],
     interpolation: {
       escapeValue: false,
     },
     backend: {
-      loadPath: "/locales//.json",
+      loadPath: "/locales/{{lng}}/{{ns}}.json",
     },
     detection: {
       order: ["navigator", "htmlTag"],

@@ -50,3 +50,9 @@ tmp
 temp
 # Better Fullstack recovery snapshots
 .bts/recovery
+
+# Next
+.next
+
+# Fumadocs generated source
+apps/docs/.source

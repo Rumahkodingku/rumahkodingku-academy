@@ -5,7 +5,7 @@ import { DataSource } from "typeorm";
 export const AppDataSource = new DataSource({
   type: "mysql",
   url: env.DATABASE_URL,
-  synchronize: true,
+  synchronize: env.NODE_ENV !== "production",
   logging: false,
   entities: ["src/entities/**/*.ts"],
   migrations: ["src/migrations/**/*.ts"],

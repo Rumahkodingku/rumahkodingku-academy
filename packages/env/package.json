@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@rumahkodingku-academy/config": "workspace:*",
-    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "typescript": "^6.0.3"
   }
 }

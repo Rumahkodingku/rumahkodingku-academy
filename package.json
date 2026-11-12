@@ -14,11 +14,15 @@
     "dev:docs": "turbo -F docs dev",
     "build:docs": "turbo -F docs build",
     "check:docs": "turbo -F docs check-types",
-    "dev:server": "turbo -F server dev",
+    "dev:api": "turbo -F api dev",
     "db:push": "turbo -F @rumahkodingku-academy/db db:push",
     "db:studio": "turbo -F @rumahkodingku-academy/db db:studio",
-    "test": "pnpm --filter web test && pnpm --filter server test",
-    "check": "oxlint && oxfmt --write",
+    "test": "pnpm --filter web test && pnpm --filter api test",
+    "lint": "oxlint --ignore-pattern '.agents/skills/**' --ignore-pattern 'apps/docs/.source/**'",
+    "format": "oxfmt --write apps packages",
+    "format:check": "oxfmt --check apps packages",
+    "check": "pnpm lint && pnpm format",
+    "commitlint": "commitlint --edit",
     "prepare": "husky"
   },
   "dependencies": {
@@ -27,8 +31,10 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
     "@rumahkodingku-academy/config": "workspace:*",
-    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
     "oxfmt": "^0.78.0",
@@ -37,10 +43,18 @@
     "typescript": "^6.0.3"
   },
   "lint-staged": {
-    "*": [
-      "oxlint",
+    "apps/**/*.{js,jsx,ts,tsx,mjs,cjs,json}": [
+      "oxlint --ignore-pattern 'apps/docs/.source/**'"
+    ],
+    "packages/**/*.{js,jsx,ts,tsx,mjs,cjs,json}": [
+      "oxlint --ignore-pattern 'apps/docs/.source/**'"
+    ],
+    "*.{js,jsx,ts,tsx,mjs,cjs,json,css,md}": [
       "oxfmt --write"
     ]
+  },
+  "engines": {
+    "node": ">=24"
   },
   "packageManager": "pnpm@10.34.5"
 }

@@ -1,121 +1,46 @@
 # rumahkodingku-academy
 
-This file provides context about the project for AI assistants.
+pnpm workspaces + Turborepo. Apps: `apps/web` (Next.js), `apps/api` (NestJS, Node.js 24 LTS), `apps/docs` (Fumadocs). API base path is `/api/v1`.
 
-## Project Overview
+## Commands
 
-- **Ecosystem**: Typescript
+- Install: `pnpm install`
+- Dev all: `pnpm dev`. URLs: web `http://localhost:3001`, API `http://localhost:3000/api/v1`, docs `http://localhost:4000`.
+- Single app: `pnpm dev:web`, `pnpm dev:api`, `pnpm dev:docs`.
+- Typecheck all: `pnpm check-types`.
+- Lint: `pnpm lint` (oxlint; excludes vendored `.agents/skills`).
+- Format: `pnpm format`; check only: `pnpm format:check`.
+- Build all: `pnpm build`; docs build: `pnpm build:docs` (runs `fumadocs-mdx`).
+- Commit check: `pnpm commitlint --edit <file>`; Husky runs it on `commit-msg`.
+- Unit tests: `pnpm test` = `pnpm --filter web test && pnpm --filter api test`; both use `vitest run --passWithNoTests`. Focused: `pnpm --filter web test -- <file>` or `pnpm --filter api test -- <file>`.
+- E2E: `pnpm exec playwright test` (root config; `testDir` `apps/web/e2e`, baseURL `http://localhost:3001`, auto-starts `pnpm dev`).
+- DB: `pnpm db:push` / `pnpm db:studio` are declared but `packages/db` has no scripts, so they currently no-op.
 
-## Tech Stack
+## Package boundaries
 
-- **Runtime**: bun
-- **Package Manager**: pnpm
+- `apps/web`: Next.js 16, React 19, Tailwind 4, React Compiler, typed routes. Env via `packages/env/web` (`NEXT_PUBLIC_SERVER_URL`, default `http://localhost:3000`). API client base is `${NEXT_PUBLIC_SERVER_URL}/api/v1`.
+- `apps/api`: NestJS on Node.js 24. Entry `src/index.ts`, listens on 3000, global prefix `/api/v1`, CORS from `CORS_ORIGIN`. Dev uses `tsx watch`; build `tsdown` -> `dist/index.mjs`; start `node dist/index.mjs`. Direct node commands need cwd `apps/api` so `.env` loads; prefer `pnpm --filter api start`.
+- `apps/docs`: Fumadocs + Next. Dev on 4000; build/check-types run `fumadocs-mdx` first.
+- `packages/db`: TypeORM DataSource, `synchronize` is enabled only when `NODE_ENV !== "production"`. Exports `AppDataSource`, `initializeDatabase`, `db`. No package scripts yet; production must use migrations.
+- `packages/env`: t3 env. Server requires `DATABASE_URL`, `CORS_ORIGIN`; web requires `NEXT_PUBLIC_SERVER_URL`.
+- `packages/config`: shared tsconfig base; `types: ["node"]`.
 
-### Frontend
+## Conventions and quirks
 
-- Framework: next
-- CSS: tailwind
-- State: zustand
-
-### Backend
-
-- Framework: nestjs
-- Validation: zod
-
-### Database
-
-- Database: mysql
-- ORM: typeorm
-
-### Additional Features
-
-- Testing: vitest-playwright
-- Realtime: socket-io
-- Caching: redis
-- CMS: strapi
-- Logging: winston
-- Observability: grafana
-
-## Project Structure
-
-```
-rumahkodingku-academy/
-├── apps/
-│   ├── web/         # Frontend application
-│   └── server/      # Backend API
-├── packages/
-│   └── db/          # Database schema
-```
-
-## Common Commands
-
-- `pnpm install` - Install dependencies
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm test` - Run tests
-- `pnpm db:push` - Push database schema
-- `pnpm db:studio` - Open database UI
-
-## Better Fullstack project context
-
-`bts.jsonc` is the authority for the current Stack Graph. Its `stackParts` array owns role selection and `ownerPartId` bindings. Top-level option fields are a compatibility projection and must not become a second mutation path.
-
-### Stack Parts, ownership, and evidence
-
-- `aiTooling:universal:skills`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend.backendUtilities:typescript:backend-utils`. It belongs to `backend:typescript:nestjs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend.caching:typescript:redis`. It belongs to `backend:typescript:nestjs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend.cms:typescript:strapi`. It belongs to `backend:typescript:nestjs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend.deploy:typescript:docker`. It belongs to `backend:typescript:nestjs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend.featureFlags:typescript:posthog`. It belongs to `backend:typescript:nestjs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend.logging:typescript:winston`. It belongs to `backend:typescript:nestjs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend.observability:typescript:grafana`. It belongs to `backend:typescript:nestjs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend.orm:typescript:typeorm`. It belongs to `backend:typescript:nestjs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend.realtime:typescript:socket-io`. It belongs to `backend:typescript:nestjs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend.runtime:typescript:bun`. It belongs to `backend:typescript:nestjs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend.testing:typescript:vitest-playwright`. It belongs to `backend:typescript:nestjs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend.validation:typescript:zod`. It belongs to `backend:typescript:nestjs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `backend:typescript:nestjs`. Its generated target is `apps/server`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `codeQuality:universal:oxlint`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `continuousIntegration:universal:github-actions`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `database:universal:mysql`. Its generated target is `packages/db`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `documentation:universal:fumadocs`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `frontend.analytics:typescript:posthog`. It belongs to `frontend:typescript:next`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `frontend.css:typescript:tailwind`. It belongs to `frontend:typescript:next`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `frontend.dataFetching:typescript:tanstack-query`. It belongs to `frontend:typescript:next`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `frontend.deploy:typescript:docker`. It belongs to `frontend:typescript:next`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `frontend.fileUpload:typescript:uppy`. It belongs to `frontend:typescript:next`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `frontend.forms:typescript:react-hook-form`. It belongs to `frontend:typescript:next`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `frontend.httpClient:typescript:axios`. It belongs to `frontend:typescript:next`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `frontend.i18n:typescript:i18next`. It belongs to `frontend:typescript:next`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `frontend.libraries:typescript:tanstack-table`. It belongs to `frontend:typescript:next`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `frontend.stateManagement:typescript:zustand`. It belongs to `frontend:typescript:next`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `frontend.testing:typescript:storybook`. It belongs to `frontend:typescript:next`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `frontend:typescript:next`. Its generated target is `apps/web`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `gitHooks:universal:husky`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-- `workspaceRunner:universal:turborepo`. Evidence is `listed` with `unverified` freshness. Verification maintainer: @Marve10s.
-
-### Installed-version authority
-
-Use `bts.jsonc` for the generator and schema version. Use local package manifests and lockfiles for installed dependency versions. Do not assume that documentation for a newer Better Fullstack release matches this project.
-
-### Compatibility and lifecycle safety
-
-Run `create-better-fullstack context --json` for bounded roles, capabilities, evidence, compatibility issues, and safe next actions. Run `create-better-fullstack doctor --json` before repairing graph drift. Existing-project writes must start with a plan and use the exact review token. Use `create-better-fullstack recipes check --json` before editing recipe-owned paths or managed regions, and use recipe history plus project recovery commands to undo a reviewed operation.
-
-User code outside an explicit Better Fullstack managed region is not generator-owned. Missing or changed managed-region hashes stop recipe planning for manual review.
-
-<!-- <better-fullstack:recipes sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855> -->
-
-<!-- </better-fullstack:recipes> -->
-
-## Maintenance
-
-Keep AGENTS.md updated when:
-
-- Adding/removing dependencies
-- Changing project structure
-- Adding new features or services
-- Modifying build/dev workflows
-
-AI assistants should suggest updates to this file when they notice relevant changes.
+- API success envelope: `{ data, meta }`. Errors use RFC 9457 Problem Details (`application/problem+json`) with `type`, `title`, `status`, `detail`, `instance`, `code`, `requestId`, and optional `errors`. Filter lives in `apps/api/src/problem-details/problem-details.filter.ts`.
+- API docs: Swagger at `/swagger`, Scalar at `/reference`; OpenAPI JSON at `/swagger-json`.
+- CSRF: `GET /api/v1/csrf/token` returns a token; cookie-auth mutations must send `x-csrf-token`.
+- Security/mail/storage/realtime baseline: `@nestjs/authentication`, `@nestjs/authorization`, `@nestjs/mail`, `@nestjs/storage`, `@nestjs/websockets`; auth providers/stores are not implemented yet.
+- Learning structure is `Course → Section → Lesson`; use `course_sections`, not `course_modules`.
+- Money is IDR integer; never float. Full refunds only in the MVP. One coupon per order.
+- Final project is configurable per course; when enabled, GitHub URL + deployment URL are required, files optional. Review decisions are `REVISION_REQUIRED` or `APPROVED`; there is no `REJECTED`.
+- Roadmaps are always sequential. Certificate reissue creates a new record; one active certificate per enrollment.
+- Redis is cache/rate-limit only, never source of truth for orders/payments/enrollments/refresh sessions. Socket.io delivers in-app notifications with polling fallback. PostHog is product analytics/flags only; admin reports come from MySQL. Strapi is marketing-only; LMS data stays in MySQL/NestJS.
+- Default UI language is Indonesian (`id`); i18n is ready for English (`en`).
+- TypeORM entity/migration globs are relative to process cwd; run DB work from `packages/db` or adjust globs when adding entities.
+- `pnpm test` currently runs seven API unit tests; Playwright is not part of `pnpm test`.
+- Husky pre-commit runs lint-staged: `oxlint` + `oxfmt --write` on staged files.
+- CI (`.github/workflows/ci.yml`): Node 24, frozen lockfile, format check, lint, check-types, build, test on push/PR to `main`/`master`.
+- `docker-compose.yml` maps web 3001, API 3000, MySQL 3308, Redis 6380, Strapi 1337, Prometheus 9091, Grafana 3100, Databasus 4005, Garage 3904-3907, Mailpit 8026/1026; Cloudflared is profile `tunnel`. Verify env values before use.
+- Local infra commands: `docker compose config`, `docker compose up -d`, `docker compose --profile tunnel up -d`, `docker compose down`.
+- `bts.jsonc` is generator metadata and may lag after manual migrations. Treat package manifests, lockfile, and `docs/PLAN.md` as authoritative for the current code.

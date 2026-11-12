@@ -1,54 +1,76 @@
 # Docker Compose for rumahkodingku-academy
-# Full-stack container orchestration
+# Local infrastructure and application orchestration.
+# Coolify deployment will map the same services to its managed resources.
 
 name: rumahkodingku-academy
 
 services:
   web:
     build:
-      context: ./apps/web
-      dockerfile: Dockerfile
-    container_name: rumahkodingku-academy-web
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - VITE_API_URL=http://server:3001
-    restart: unless-stopped
-    depends_on:
-      - server
-    networks:
-      - rumahkodingku-academy-network
-
-  server:
-    build:
       context: .
-      dockerfile: apps/server/Dockerfile
-    env_file:
-      - apps/server/.env
-    container_name: rumahkodingku-academy-server
+      dockerfile: apps/web/Dockerfile
+    container_name: rumahkodingku-academy-web
     ports:
       - "3001:3000"
     environment:
       - NODE_ENV=production
-      - PORT=3000
-      - DATABASE_URL=mysql://root:password@db:3306/rumahkodingku-academy
+      - NEXT_PUBLIC_SERVER_URL=http://localhost:3000
     restart: unless-stopped
     depends_on:
-      - db
+      - api
     networks:
       - rumahkodingku-academy-network
 
-  db:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: rumahkodingku-academy-api
+    ports:
+      - "3000:3000"
+      - "9090:9090"
+    environment:
+      - NODE_ENV=production
+      - CORS_ORIGIN=http://localhost:3001
+      - DATABASE_URL=mysql://academy_user:academy_password@mysql:3306/rumahkodingku_academy
+      - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=info
+      - METRICS_PORT=9090
+      - METRICS_PATH=/metrics
+      - METRICS_PREFIX=rumahkodingku_academy_
+      - POSTHOG_API_KEY=
+      - POSTHOG_HOST=https://us.i.posthog.com
+      - EMAIL_SMTP_HOST=mailpit
+      - EMAIL_SMTP_PORT=1025
+      - EMAIL_SMTP_USER=
+      - EMAIL_SMTP_PASSWORD=
+      - GARAGE_ENDPOINT=http://garage:3900
+      - GARAGE_ACCESS_KEY=
+      - GARAGE_SECRET_KEY=
+      - GARAGE_BUCKET=academy-uploads
+      - STRAPI_URL=http://strapi:1337
+    volumes:
+      - api_uploads:/app/apps/api/uploads
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - rumahkodingku-academy-network
+
+  mysql:
     image: mysql:8
     container_name: rumahkodingku-academy-mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: rumahkodingku-academy
     ports:
-      - "3306:3306"
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: rumahkodingku_academy
     volumes:
-      - rumahkodingku-academy_mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
+      - ./infra/mysql/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -58,9 +80,174 @@ services:
     networks:
       - rumahkodingku-academy-network
 
+  redis:
+    image: redis:7-alpine
+    container_name: rumahkodingku-academy-redis
+    ports:
+      - "6380:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - rumahkodingku-academy-network
+
+  strapi:
+    image: vshadbolt/strapi:latest
+    container_name: rumahkodingku-academy-strapi
+    ports:
+      - "1337:1337"
+    environment:
+      NODE_ENV: development
+      HOST: 0.0.0.0
+      PORT: 1337
+      DATABASE_CLIENT: mysql
+      DATABASE_HOST: mysql
+      DATABASE_PORT: 3306
+      DATABASE_NAME: strapi
+      DATABASE_USERNAME: strapi_user
+      DATABASE_PASSWORD: ${STRAPI_DB_PASSWORD:-strapi_password}
+      APP_KEYS: ${STRAPI_APP_KEYS:-change-me-app-key-1,change-me-app-key-2}
+      API_TOKEN_SALT: ${STRAPI_API_TOKEN_SALT:-change-me-api-token-salt}
+      ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET:-change-me-admin-jwt-secret}
+      TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT:-change-me-transfer-token-salt}
+      JWT_SECRET: ${STRAPI_JWT_SECRET:-change-me-jwt-secret}
+    volumes:
+      - strapi_app:/srv/app
+      - strapi_data:/app/.tmp
+      - strapi_uploads:/app/public/uploads
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - rumahkodingku-academy-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: rumahkodingku-academy-prometheus
+    ports:
+      - "9091:9090"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=15d"
+    volumes:
+      - ./infra/prometheus:/etc/prometheus:ro
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+    depends_on:
+      - api
+    networks:
+      - rumahkodingku-academy-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: rumahkodingku-academy-grafana
+    ports:
+      - "3100:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    networks:
+      - rumahkodingku-academy-network
+
+  databasus:
+    image: databasus/databasus:latest
+    container_name: rumahkodingku-academy-databasus
+    ports:
+      - "4005:4005"
+    volumes:
+      - databasus_data:/app/data
+      - ./backups:/backups
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - rumahkodingku-academy-network
+
+  garage:
+    image: dxflrs/garage:v2.5.0
+    container_name: rumahkodingku-academy-garage
+    ports:
+      - "3904:3900"
+      - "3905:3901"
+      - "3906:3902"
+      - "3907:3903"
+    environment:
+      GARAGE_CONFIG_FILE: /etc/garage.toml
+      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+      GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN:-change-me-admin-token}
+      GARAGE_METRICS_TOKEN: ${GARAGE_METRICS_TOKEN:-change-me-metrics-token}
+      GARAGE_DEFAULT_ACCESS_KEY: ${GARAGE_DEFAULT_ACCESS_KEY:-GK000000000000000000000000}
+      GARAGE_DEFAULT_SECRET_KEY: ${GARAGE_DEFAULT_SECRET_KEY:-change-me-default-secret-key-at-least-32-chars}
+      GARAGE_DEFAULT_BUCKET: ${GARAGE_DEFAULT_BUCKET:-academy-uploads}
+    volumes:
+      - garage_data:/var/lib/garage/data
+      - garage_meta:/var/lib/garage/meta
+      - ./infra/garage/garage.toml:/etc/garage.toml:ro
+    command: ["/garage", "server", "--single-node", "--default-bucket"]
+    restart: unless-stopped
+    networks:
+      - rumahkodingku-academy-network
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: rumahkodingku-academy-mailpit
+    ports:
+      - "8026:8025"
+      - "1026:1025"
+    restart: unless-stopped
+    networks:
+      - rumahkodingku-academy-network
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: rumahkodingku-academy-cloudflared
+    profiles: ["tunnel"]
+    command: ["tunnel", "--no-autoupdate", "run"]
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    volumes:
+      - cloudflared_config:/home/nonroot/.cloudflared
+    restart: unless-stopped
+    depends_on:
+      - web
+      - api
+      - strapi
+      - grafana
+    networks:
+      - rumahkodingku-academy-network
+
 networks:
   rumahkodingku-academy-network:
     driver: bridge
 
 volumes:
-  rumahkodingku-academy_mysql_data:
+  mysql_data:
+  api_uploads:
+  redis_data:
+  strapi_app:
+  strapi_data:
+  strapi_uploads:
+  prometheus_data:
+  grafana_data:
+  databasus_data:
+  backups:
+  garage_data:
+  garage_meta:
+  cloudflared_config:

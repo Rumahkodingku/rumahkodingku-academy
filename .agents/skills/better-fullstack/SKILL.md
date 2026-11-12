@@ -28,7 +28,7 @@ pnpm run build
 
 ## Add a route or resource
 
-This project runs a **nestjs** server in `apps/server/`. Add a new route by registering a handler on the app instance in `apps/server/src/` (see the existing route wiring) and export any shared logic from `packages/api` if present.
+This project runs a **NestJS** API in `apps/api/` on Node.js 24 LTS. Add a new route by registering a handler in `apps/api/src/` and export shared logic from the relevant workspace package under `packages/`.
 
 ## Run migrations
 
@@ -42,7 +42,7 @@ Unit tests use **Vitest**. Add `*.test.ts` files next to the code under test and
 pnpm run test
 ```
 
-End-to-end tests use **Playwright** in `apps/web` - add specs under its `e2e`/`tests` directory and run the app's `test:e2e` script.
+End-to-end tests use **Playwright** with the root config. Add specs under `apps/web/e2e` and run `pnpm exec playwright test`.
 
 ## Fallbacks
 
