@@ -35,6 +35,10 @@ App Router conventions; server components for data-oriented views; client compon
 
 Default UI language is Indonesian. Use the i18n layer for user-facing copy; keep keys stable and English-ready.
 
+## UI and design tokens
+
+Use semantic tokens from `apps/web/src/index.css`; do not hard-code colors in components. Use the shared primitives in `apps/web/src/components/ui/` and Base UI behavior instead of custom keyboard/focus implementations. Use `Button` for actions and `ButtonLink` for navigation; Base UI `Button` must not render links. Every interactive control needs a visible focus state and a target of at least 44×44 CSS px where practical. Use `Container` and `Section` for page rhythm. Marketing content reads go through `apps/web/src/strapi/server.ts`; never import that module into a client component. Critical asynchronous events use `outbox_events`; notification delivery uses `notification_outbox`.
+
 ## Redis, Socket.io, PostHog, Strapi
 
 - Redis: cache and rate limiting only. Never make it the source of truth for orders, payments, enrollments, or refresh sessions.

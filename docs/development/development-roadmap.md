@@ -111,7 +111,7 @@ Deliverables: API/data foundation, design tokens, reusable components, responsiv
 
 Exit gate: migrations run cleanly; UI primitives have keyboard/focus states; parent brand colors are sourced from official assets, not guessed; Strapi cannot serve LMS data.
 
-Status: backend data foundation implemented with UUID v7 entities, initial MySQL migration, CI migration verification, and a server-only Strapi boundary. Design tokens, UI primitives, and the full app shell are deferred to Phase 4/5; that part of the Phase 2 exit gate is not yet met.
+Status: Phase 2 implemented. Data foundation has 45 tables, UUID v7 entities, an initial schema migration, an additive outbox migration, and a CI migration verification step. Design foundations include semantic tokens, Geist typography, the official logo lockup, accessible Base UI primitives, responsive public shell, loading/empty/error/not-found patterns, Storybook 10 stories, and a marketing-only Strapi content contract with a server-only fetch boundary. Local exit-gate verification passes: fresh MySQL migration, primitive keyboard/focus tests, Playwright public-shell test, and a production build. The GitHub Actions run remains pending until this branch is pushed. Feature pages, the real Strapi app, and auth routes stay in later phases.
 
 ## 6. Phase 3 — Authentication and account security
 
