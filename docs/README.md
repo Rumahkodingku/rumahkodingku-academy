@@ -9,6 +9,7 @@ This package is the shared source of truth for product, design, engineering, QA,
 - `PLAN.md`: product vision, scope, users, outcomes, phases, and confirmed product decisions.
 - `product/`: user journeys, functional requirements, business rules.
 - `architecture/`: system boundaries, monorepo, technology decisions.
+- `architecture/nextjs-architecture.md`: Next.js App Router rendering, routing, data, auth, caching, i18n, testing, and migration baseline.
 - `database/`: relational model and ERD.
 - `api/`: REST contract baseline.
 - `design/`: design brief, visual direction, tokens, UX rules.

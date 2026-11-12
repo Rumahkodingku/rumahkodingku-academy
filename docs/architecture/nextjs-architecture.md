@@ -254,7 +254,7 @@ Do not rely on synchronous route props from older Next.js versions.
 
 ### 6.6 Error and Not-Found Boundaries
 
-- Each route group SHOULD have an `error.tsx` with a retry action.
+- Each route group SHOULD have an `error.tsx` with a retry action. `error.tsx` is a Client Component and receives a `reset` function.
 - `not-found.tsx` MUST render a useful recovery path, not a bare message.
 - Errors from the API are normalized before they reach the boundary; do not expose raw stack traces or SQL.
 - Expected business rejections (validation, forbidden, conflict) SHOULD be rendered inline or as Problem Details messages, not thrown as unhandled errors.
@@ -478,6 +478,7 @@ Rules:
 - `sitemap.ts` generates public URLs for both locales.
 - `robots.ts` disallows `/learn`, `/me`, `/admin`, and auth flows.
 - `opengraph-image.tsx` MAY generate default social images.
+- `global-not-found.tsx` requires `experimental.globalNotFound: true` in `next.config.ts`; enable it only when the app needs a full-document 404 outside the locale layout.
 - Static files that are not routes live in `public/` and MUST not contain secrets.
 
 ## 8. Feature Module Structure
