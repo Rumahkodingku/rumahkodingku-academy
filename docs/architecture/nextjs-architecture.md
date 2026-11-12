@@ -1175,15 +1175,237 @@ Every optimistic mutation needs a rollback path and a final server-confirmed sta
 
 ## 16. Internationalization and Locale Routing
 
-<!-- SECTION_16 -->
+### 16.1 Supported Locales
+
+- `id` — Indonesian, default.
+- `en` — English, ready but not required for every new string on day one.
+- No other locale ships until a product decision approves it.
+- `public/locales/fr` and any unsupported translation file MUST be removed.
+
+### 16.2 URL Strategy
+
+Locale routing is as-needed:
+
+- Indonesian: `/`, `/courses`, `/learn`.
+- English: `/en`, `/en/courses`, `/en/learn`.
+- The locale is a route segment: `src/app/[locale]/...`.
+- `proxy.ts` rewrites unprefixed requests to the default locale.
+- Requests that already start with a supported locale pass through.
+- The proxy MUST prevent double prefixes such as `/en/en/courses`.
+- Static assets, `_next`, `/api`, and files with extensions are excluded from locale rewriting.
+
+### 16.3 Root Layout and Locale
+
+- `src/app/[locale]/layout.tsx` is the root layout.
+- It sets `<html lang={locale}>` and `dir="ltr"`.
+- It loads the locale dictionary and wraps the app in the theme, query, analytics, and toast providers.
+- `generateStaticParams` returns the supported locales.
+- Unknown locale segments return the not-found state; they do not silently fall back to `id` without a redirect decision.
+
+### 16.4 i18next Setup
+
+Keep i18next and react-i18next.
+
+- Server: create or load a per-request i18n instance with the locale dictionary; never share mutable request state globally.
+- Client: initialize once in a client provider with the active locale and namespaces.
+- Use namespaces by feature (`common`, `auth`, `catalog`, `learning`, `admin`).
+- Translation keys are stable and descriptive.
+- Missing keys are development errors; production falls back to the default locale and logs safely.
+- Do not translate API error codes with ad-hoc string matching in components; map known codes to messages in one place.
+
+### 16.5 Formatting
+
+Use `Intl` for:
+
+- Dates and times (ISO input, localized output).
+- Numbers.
+- Currency. Money is IDR integer; format for display only.
+- Relative time.
+- Lists.
+
+Do not hardcode `Rp`, separators, month names, or date order outside the formatter.
+
+### 16.6 Content Rules
+
+- All user-facing copy goes through translation keys.
+- Do not concatenate translated sentence fragments; use complete messages with interpolation.
+- Indonesian copy is the source of truth for product tone.
+- English copy is reviewed for meaning, not word-for-word translation.
+- `alt`, `aria-label`, metadata, empty states, and validation messages are all translated.
+- Strapi content is localized by its own locale fields; do not machine-translate without review.
+
+### 16.7 SEO and hreflang
+
+- Public pages emit `hreflang` alternates for `id` and `en`.
+- Canonical URLs include the correct locale prefix.
+- `sitemap.ts` includes both locales and excludes private routes.
+- `robots.ts` disallows learner/account/admin/auth routes.
+- Metadata title/description come from the locale dictionary or Strapi SEO fields.
+
+### 16.8 Locale Switching
+
+- Switching locale preserves the current path when an equivalent route exists.
+- If the path is not available in the target locale, redirect to the target locale home or the closest public page.
+- Persist the explicit preference in `NEXT_LOCALE` only as a hint; the URL remains authoritative.
+- Do not reload the entire app for a locale switch when a client transition is sufficient.
 
 ## 17. UI System and Styling
 
-<!-- SECTION_17 -->
+### 17.1 Design System Authority
+
+The visual baseline is `docs/design/design-system.md`.
+
+- Academy accent: `#2563EB`.
+- Light and dark themes.
+- Semantic tokens before primitive values.
+- WCAG 2.2 AA target.
+- Components use semantic tokens, not hardcoded colors or spacing.
+
+### 17.2 Styling Stack
+
+- Tailwind CSS 4 for utility composition.
+- Base UI for accessible primitives.
+- CVA for component variants.
+- `cn` / `tailwind-merge` for class composition.
+- `tw-animate-css` for approved motion utilities.
+- Lucide icons as the single icon family unless an approved asset requires otherwise.
+
+Do not add a second UI kit or CSS-in-JS runtime without an ADR.
+
+### 17.3 Component Layers
+
+| Layer              | Location                       | Responsibility                                                            |
+| ------------------ | ------------------------------ | ------------------------------------------------------------------------- |
+| Primitives         | `components/ui`                | Button, input, dialog, table, badge, skeleton, toast; no domain knowledge |
+| Layout             | `components/layout`            | Header, footer, shells, navigation                                        |
+| Shared composition | `components/shared`            | Empty state, error state, page header, data table wrapper                 |
+| Feature UI         | `features/<domain>/components` | Domain-specific cards, forms, tables, player controls                     |
+| Pages              | `app/[locale]/**`              | Composition and routing only                                              |
+
+### 17.4 Component Rules
+
+- A component has one responsibility.
+- Props are explicit; avoid boolean explosions. Use variants or composition.
+- Server Components do not receive event handlers.
+- Client Components are leaf-level unless a provider/interaction boundary needs more.
+- Do not put API calls inside primitive components.
+- Do not put feature copy inside `components/ui`.
+- Do not use `dangerouslySetInnerHTML` outside a sanitized content renderer.
+- Provide loading, disabled, error, and empty variants where the component owns a data surface.
+
+### 17.5 Theme
+
+- Respect OS preference on first visit.
+- Persist an explicit user choice.
+- Prevent theme flash during initial render.
+- Use semantic tokens in both themes.
+- Test dialogs, popovers, tables, code blocks, charts, and third-party embeds in dark mode.
+- Do not implement dark mode as a global color inversion.
+
+### 17.6 Responsive Layout
+
+- Design mobile-first.
+- Learner video/lesson player must remain usable at small widths.
+- Admin tables transform or scroll deliberately; do not hide critical columns without an inspection path.
+- Touch targets aim for 44×44 CSS pixels where practical.
+- Avoid fixed heights that clip translated text.
+
+### 17.7 Motion
+
+- Micro feedback: 100–160 ms.
+- Standard transitions: 160–240 ms.
+- Larger panels: 200–300 ms.
+- Respect `prefers-reduced-motion`.
+- Motion must not delay an essential action or carry information unavailable in static form.
+
+### 17.8 Storybook
+
+Storybook is the visual contract for UI states.
+
+- Stories cover default, loading, empty, error, disabled, and mobile states for shared components.
+- Domain stories live near the feature, not in a generic `stories/` dump.
+- Storybook dependencies MUST use one consistent major version before UI expansion.
+- Stories MUST NOT depend on live production APIs.
+- A component with no Storybook coverage may still ship, but its states must be covered by tests or E2E.
+
+### 17.9 Governance
+
+- Token changes are reviewed with contrast and theme impact.
+- New component variants require a real use case.
+- Deprecated components are removed or documented.
+- Accessibility issues block release for critical flows.
+- Visual QA happens in a real browser, not only in code review.
 
 ## 18. Loading, Error, Empty, and Unauthorized States
 
-<!-- SECTION_18 -->
+Every data-driven surface MUST define these states. A blank screen is not an acceptable fallback.
+
+### 18.1 Loading
+
+- Route-level: `loading.tsx` or a route-owned Suspense fallback.
+- Section-level: skeleton that matches the final layout.
+- Mutation-level: disabled submit, spinner, and a status message.
+- Navigation-level: Next.js link prefetch/pending state where available.
+- Do not show an infinite spinner. After a timeout, show a recoverable error.
+
+### 18.2 Empty
+
+- Explain what is empty and why.
+- Provide the primary next action.
+- Distinguish “no data yet” from “no results for this filter”.
+- Do not use an empty illustration as the only message.
+- Keep the page header and navigation usable.
+
+### 18.3 Error
+
+- Show a safe message and a retry action.
+- Keep the request ID available in a details/support affordance.
+- Do not expose stack traces, SQL, or internal paths.
+- A validation error belongs inline, not in a generic error page.
+- A dependency failure (API down) is distinct from a business rejection.
+
+### 18.4 Unauthorized and Forbidden
+
+- Unauthenticated: redirect to login with a safe `next` path.
+- Authenticated but forbidden: render a permission-denied page.
+- Do not disclose whether a private resource exists.
+- Provide a path back to the user’s dashboard or support.
+
+### 18.5 Partial Data
+
+- If one section fails, keep the rest of the page usable.
+- Mark the failed section and offer retry.
+- Do not replace the entire page with an error because one widget failed.
+
+### 18.6 Offline and Timeout
+
+- Mutations show a recoverable timeout message.
+- Payment/order flows must provide a “check status” action instead of encouraging a duplicate purchase.
+- Uploads show progress and allow cancellation/retry.
+- Realtime notifications fall back to polling when the socket is unavailable.
+
+### 18.7 Persistent Outcomes
+
+Payment, enrollment, project review, quiz result, and certificate outcomes MUST remain visible in page state or history.
+
+- Do not rely only on a toast.
+- Do not navigate away before the server confirms the final state.
+- Use a result page or a persistent status card for money/access outcomes.
+
+### 18.8 State Checklist
+
+For every page and major component:
+
+- Loading.
+- Empty.
+- Error with recovery.
+- Unauthorized/forbidden.
+- Partial data.
+- Offline/timeout for mutations.
+- Success confirmation.
+- Mobile and keyboard behavior.
+- Dark theme.
+- Localized copy.
 
 ## 19. Security
 
