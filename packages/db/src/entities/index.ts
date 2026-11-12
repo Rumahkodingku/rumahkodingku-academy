@@ -44,6 +44,7 @@ import { CourseReview, ReviewStatus } from "./course-review.entity";
 import { Wishlist } from "./wishlist.entity";
 import { Notification } from "./notification.entity";
 import { NotificationOutbox, OutboxStatus } from "./notification-outbox.entity";
+import { OutboxEvent, OutboxEventStatus } from "./outbox-event.entity";
 import { Announcement, AnnouncementAudience, AnnouncementStatus } from "./announcement.entity";
 import { PlatformSetting } from "./platform-setting.entity";
 import { AuditLog } from "./audit-log.entity";
@@ -94,6 +95,7 @@ export { CourseReview, ReviewStatus };
 export { Wishlist };
 export { Notification };
 export { NotificationOutbox, OutboxStatus };
+export { OutboxEvent, OutboxEventStatus };
 export { Announcement, AnnouncementAudience, AnnouncementStatus };
 export { PlatformSetting };
 export { AuditLog };
@@ -138,6 +140,7 @@ export const entities: Function[] = [
   Wishlist,
   Notification,
   NotificationOutbox,
+  OutboxEvent,
   Announcement,
   PlatformSetting,
   AuditLog,

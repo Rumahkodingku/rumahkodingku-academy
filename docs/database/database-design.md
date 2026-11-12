@@ -66,7 +66,8 @@ Roadmaps are always sequential. No optional-prerequisite column is required in t
 - `course_reviews`: enrollment, user, course, rating 1–5, body, status (`PENDING`/`PUBLISHED`/`REJECTED`), moderated_by, timestamps. One review per enrollment.
 - `wishlists`: unique user+course, timestamps.
 - `notifications`: user, type, title, body, resource reference, read timestamp, timestamps.
-- `notification_outbox`: event type, recipient, payload, status, attempts, next attempt, sent timestamp.
+- `notification_outbox`: notification event type, recipient, payload, status, attempts, next attempt, sent timestamp. Used only for notification delivery.
+- `outbox_events`: generic transactional outbox for critical asynchronous events. Event type, event version, aggregate type/ID, payload, status (`PENDING`/`PROCESSING`/`PUBLISHED`/`FAILED`/`DEAD`), attempts, available timestamp, published timestamp, last error. Committed in the same transaction as the business state change.
 - `announcements`: title, body, audience, status, starts/expires, author, timestamps.
 - `platform_settings`: key, value, description, updated_by, timestamps.
 - `audit_logs`: actor, action, resource type/ID, before/after metadata, request ID, timestamp.
@@ -81,7 +82,7 @@ Unique: normalized `users.email`, course slug, category slug, order number, prov
 
 Active certificate uniqueness: enforce one `ISSUED` certificate per enrollment. MySQL has no partial unique index, so use a generated nullable `active_enrollment_id` unique column or an equivalent transaction-safe constraint. Never rely on client checks.
 
-Indexes: orders by user/status/date; payments by order/status/reference; refunds by order/status; lessons by section/position; submissions by project/user/status/date; notifications by user/read/date; outbox by status/next attempt; reviews by course/status/date; audit by actor/action/date.
+Indexes: orders by user/status/date; payments by order/status/reference; refunds by order/status; lessons by section/position; submissions by project/user/status/date; notifications by user/read/date; `outbox_events` by status/available timestamp and aggregate; `notification_outbox` by status/next attempt; reviews by course/status/date; audit by actor/action/date.
 
 ## Data and deletion rules
 
@@ -105,4 +106,5 @@ Store relative storage key, sanitized display filename, detected MIME, extension
 - Financial, certificate, submission, and audit history must not cascade-delete. Use `RESTRICT` or `SET NULL` deliberately.
 - One active certificate per enrollment is enforced by the nullable unique `certificates.active_enrollment_id` column, maintained by the certificate workflow.
 - `quizzes` enforces exactly one of `lesson_id` or `section_id` through `CK_quizzes_lesson_or_section`. TypeORM 1.1.2 does not emit this check reliably, so the migration carries it explicitly.
+- `outbox_events` is the generic transactional outbox for critical events. `notification_outbox` remains notification-specific. The dispatcher and retry worker are Phase 8 work; Phase 2 provides only the durable table.
 - Migration generation must be followed by a manual review for check constraints, index duplication, foreign-key actions, and money/timestamp types.
