@@ -11,12 +11,13 @@ import { ZodValidationPipe } from "nestjs-zod";
 
 import { AppModule } from "./app.module";
 import { REQUEST_ID_HEADER, requestIdMiddleware } from "./common/http/request-id.middleware";
+import { WinstonLoggerService } from "./common/logging/winston-logger.service";
 import { csrfProtection } from "./modules/csrf/csrf";
 import { startMetricsServer, stopMetricsServer } from "./infrastructure/metrics/metrics";
 import { ProblemDetailsFilter } from "./common/http/problem-details.filter";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { logger: new WinstonLoggerService() });
 
   app.setGlobalPrefix("api/v1");
   app.useGlobalFilters(new ProblemDetailsFilter());

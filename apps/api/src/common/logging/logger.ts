@@ -1,11 +1,24 @@
+import { env } from "@rumahkodingku-academy/env/server";
 import winston from "winston";
 
+import { SENSITIVE_KEYS } from "./redact";
+
 // Log levels: error, warn, info, http, verbose, debug, silly
-const logLevel = process.env.LOG_LEVEL || "info";
-const isDevelopment = process.env.NODE_ENV !== "production";
+const logLevel = env.LOG_LEVEL;
+const isDevelopment = env.NODE_ENV !== "production";
+
+const redactFormat = winston.format((info) => {
+  for (const key of Object.keys(info)) {
+    if (SENSITIVE_KEYS.has(key.toLowerCase())) {
+      info[key] = "[REDACTED]";
+    }
+  }
+  return info;
+});
 
 // Custom format for development with colors
 const devFormat = winston.format.combine(
+  redactFormat(),
   winston.format.colorize(),
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   winston.format.printf(({ timestamp, level, message, ...meta }) => {
@@ -16,6 +29,7 @@ const devFormat = winston.format.combine(
 
 // JSON format for production
 const prodFormat = winston.format.combine(
+  redactFormat(),
   winston.format.timestamp(),
   winston.format.errors({ stack: true }),
   winston.format.json(),
@@ -25,7 +39,7 @@ const prodFormat = winston.format.combine(
 const logger = winston.createLogger({
   level: logLevel,
   format: isDevelopment ? devFormat : prodFormat,
-  defaultMeta: { env: process.env.NODE_ENV || "development" },
+  defaultMeta: { env: env.NODE_ENV },
   transports: [
     new winston.transports.Console({
       stderrLevels: ["error"],
