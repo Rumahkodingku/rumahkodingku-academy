@@ -21,6 +21,7 @@
     "mysql2": "^3.24.6",
     "reflect-metadata": "catalog:",
     "typeorm": "^1.1.2",
+    "uuid": "^14.0.3",
     "zod": "catalog:"
   },
   "devDependencies": {

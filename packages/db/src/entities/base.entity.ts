@@ -1,6 +1,5 @@
 import { BeforeInsert, Column, PrimaryColumn } from "typeorm";
-
-import { uuidv7 } from "../utils/uuid";
+import { v7 as uuidv7 } from "uuid";
 
 export abstract class BaseEntity {
   @PrimaryColumn({ type: "char", length: 36 })

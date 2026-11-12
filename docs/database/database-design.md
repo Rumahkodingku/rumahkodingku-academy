@@ -97,7 +97,7 @@ Store relative storage key, sanitized display filename, detected MIME, extension
 
 ## Implementation conventions
 
-- Primary keys are UUID v7, generated in the application layer by `packages/db/src/utils/uuid.ts`; do not use auto-increment or MySQL-generated UUIDs.
+- Primary keys are UUID v7, generated in the application layer with the `uuid` npm package (`v7()`); do not use auto-increment or MySQL-generated UUIDs.
 - All timestamps are UTC `DATETIME` columns. Application code converts to the display timezone at the edge.
 - Money columns are integer IDR. FLOAT, DOUBLE, and DECIMAL are forbidden for IDR amounts.
 - TypeORM `synchronize` remains `false`. Use explicit, reviewed migrations.

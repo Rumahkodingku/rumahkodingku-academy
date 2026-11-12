@@ -527,6 +527,9 @@ importers:
       typeorm:
         specifier: ^1.1.2
         version: 1.1.2(ioredis@6.0.0)(mysql2@3.24.6(@types/node@26.6.6))
+      uuid:
+        specifier: ^14.0.3
+        version: 14.0.3
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -8097,6 +8100,10 @@ packages:
 
   utila@0.4.0:
     resolution: {integrity: sha512-Z0DbgELS9/L/75wZbro8xAnT50pBVFQZ+hUEueGDU5FN51YSCYM+jdxsfCiHjwNP/4LCDD0i/graKpeBnOXKRA==}
+
+  uuid@14.0.3:
+    resolution: {integrity: sha512-Sc5u1VVln93y1Xnz4R+CunOZc7R9LUcTmhj7Rc7Eg3HVcf7rVn2FOoa812fe0W8p3jD7xeoGSYbfqCGGH2B6xw==}
+    hasBin: true
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
@@ -16224,6 +16231,8 @@ snapshots:
       which-typed-array: 1.1.24
 
   utila@0.4.0: {}
+
+  uuid@14.0.3: {}
 
   uuid@9.0.1: {}
 
