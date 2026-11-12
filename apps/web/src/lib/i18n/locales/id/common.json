@@ -1,5 +1,37 @@
 {
   "welcome": "Selamat datang di {{projectName}}",
-  "description": "Mulai dengan mengedit halaman ini",
-  "language": "Bahasa"
+  "description": "Platform belajar teknologi dengan kursus, proyek, dan sertifikat.",
+  "language": {
+    "label": "Bahasa",
+    "id": "Indonesia",
+    "en": "English"
+  },
+  "nav": {
+    "label": "Navigasi utama",
+    "home": "Beranda",
+    "program": "Program",
+    "howItWorks": "Cara belajar",
+    "skipToContent": "Lewati ke konten"
+  },
+  "brand": {
+    "tagline": "Learn · Build · Grow"
+  },
+  "menu": {
+    "title": "Menu",
+    "description": "Pilih halaman yang ingin dibuka."
+  },
+  "actions": {
+    "openMenu": "Buka menu"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Terang",
+    "dark": "Gelap",
+    "system": "Sistem"
+  },
+  "footer": {
+    "description": "Belajar, bangun, dan tumbuhkan kemampuan teknologi Anda melalui kursus terstruktur dan proyek nyata.",
+    "navLabel": "Navigasi footer",
+    "rights": "© {{year}} RumahKodingku Academy."
+  }
 }

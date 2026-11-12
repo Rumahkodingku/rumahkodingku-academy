@@ -1,10 +1,29 @@
-import Header from "@/components/header";
+import { notFound } from "next/navigation";
 
-export default function MarketingLayout({ children }: { children: React.ReactNode }) {
+import { PublicFooter } from "@/components/layout/public-footer";
+import { PublicHeader } from "@/components/layout/public-header";
+import { isLocale } from "@/lib/i18n/routing";
+
+export default async function MarketingLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
+  if (!isLocale(locale)) {
+    notFound();
+  }
+
   return (
-    <div className="grid h-svh grid-rows-[auto_1fr]">
-      <Header />
-      {children}
+    <div className="flex min-h-svh flex-col">
+      <PublicHeader locale={locale} />
+      <main id="main" className="flex-1">
+        {children}
+      </main>
+      <PublicFooter locale={locale} />
     </div>
   );
 }

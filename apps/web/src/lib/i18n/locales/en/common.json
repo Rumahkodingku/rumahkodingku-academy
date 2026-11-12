@@ -1,5 +1,37 @@
 {
   "welcome": "Welcome to {{projectName}}",
-  "description": "Get started by editing this page",
-  "language": "Language"
+  "description": "A technology learning platform with courses, projects, and certificates.",
+  "language": {
+    "label": "Language",
+    "id": "Indonesia",
+    "en": "English"
+  },
+  "nav": {
+    "label": "Main navigation",
+    "home": "Home",
+    "program": "Programs",
+    "howItWorks": "How it works",
+    "skipToContent": "Skip to content"
+  },
+  "brand": {
+    "tagline": "Learn · Build · Grow"
+  },
+  "menu": {
+    "title": "Menu",
+    "description": "Choose the page you want to open."
+  },
+  "actions": {
+    "openMenu": "Open menu"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "footer": {
+    "description": "Learn, build, and grow your technology skills through structured courses and real projects.",
+    "navLabel": "Footer navigation",
+    "rights": "© {{year}} RumahKodingku Academy."
+  }
 }

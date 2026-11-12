@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { isLocale, isProtectedPath, localizedPath } from "./routing";
+import { isLocale, isProtectedPath, localizedPath, stripLocale } from "./routing";
 
 describe("locale routing", () => {
   it("keeps the default locale unprefixed", () => {
@@ -11,6 +11,14 @@ describe("locale routing", () => {
   it("prefixes a non-default locale", () => {
     expect(localizedPath("en", "/courses")).toBe("/en/courses");
     expect(localizedPath("en", "/")).toBe("/en");
+  });
+
+  it("strips a supported locale prefix for language switching", () => {
+    expect(stripLocale("/en/courses")).toBe("/courses");
+    expect(stripLocale("/en")).toBe("/");
+    expect(stripLocale("/id/#program")).toBe("/#program");
+    expect(stripLocale("/courses")).toBe("/courses");
+    expect(stripLocale("/")).toBe("/");
   });
 
   it("validates supported locales", () => {
