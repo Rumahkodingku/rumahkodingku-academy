@@ -622,15 +622,276 @@ If the answer is no, keep it in the feature. Do not create `packages/ui` or `pac
 
 ## 10. Data Fetching and API Client
 
-<!-- SECTION_10 -->
+### 10.1 Contract
+
+All LMS data comes from NestJS under `/api/v1`.
+
+- Success: `{ data, meta }`.
+- Error: RFC 9457 Problem Details with `Content-Type: application/problem+json`, `type`, `title`, `status`, `detail`, `instance`, `code`, `requestId`, and optional `errors`.
+- Authentication uses HttpOnly cookies owned by the API.
+- Cookie-authenticated mutations send `x-csrf-token`.
+- The frontend MUST NOT call MySQL, Redis, or provider SDKs directly.
+
+### 10.2 Browser Client
+
+`src/lib/api/client.ts` is the only browser transport.
+
+- Base URL: `${NEXT_PUBLIC_SERVER_URL}/api/v1`.
+- `withCredentials: true`.
+- Default `Accept: application/json` and `Content-Type: application/json` for JSON requests.
+- Timeout: 10 seconds for normal requests; uploads use a streaming uploader.
+- Request interceptor attaches the CSRF token for non-GET requests when available.
+- Response interceptor converts Problem Details into `ApiProblemError`.
+- 401 handling redirects to login or refreshes once through the API; it MUST NOT loop.
+- The client MUST NOT read or write auth cookies.
+
+### 10.3 Server Fetch
+
+`src/lib/api/server.ts` is server-only.
+
+- `import "server-only";`
+- Base URL: `API_URL` (server-only), falling back to `NEXT_PUBLIC_SERVER_URL` only in local development.
+- Forward the incoming cookie header with `cookies()`.
+- Accept an explicit cache policy:
+  - `no-store` for authenticated user data.
+  - `next: { revalidate, tags }` for public catalog/marketing data.
+- Return typed data or throw `ApiProblemError`.
+- Do not keep a module-level token or user object.
+- Do not log the cookie header.
+
+### 10.4 Generated API Types
+
+Types are generated from the NestJS OpenAPI document.
+
+- Tool: `openapi-typescript`.
+- Source: `GET /swagger-json` in development or a committed `openapi.json` snapshot for deterministic CI.
+- Output: `src/lib/api/schema.d.ts`.
+- Script: `pnpm --filter web generate:api`.
+- The generated file MUST be committed and reviewed when the API contract changes.
+- Hand-written transport wrappers use `schema` types; do not hand-maintain duplicate payload types.
+- CI SHOULD fail when generated types are stale relative to the committed schema.
+
+### 10.5 Query Keys and Query Functions
+
+Each feature owns a query key factory:
+
+```ts
+export const courseKeys = {
+  all: ["courses"] as const,
+  list: (filters: CourseFilters) => [...courseKeys.all, "list", filters] as const,
+  detail: (slug: string) => [...courseKeys.all, "detail", slug] as const,
+  player: (courseId: string) => [...courseKeys.all, "player", courseId] as const,
+};
+```
+
+Rules:
+
+- Query keys are stable, serializable, and scoped by feature.
+- Filters and pagination are part of the key.
+- Server and client use the same key names when data is shared.
+- Mutations invalidate the smallest relevant key, not the entire cache.
+- Do not use array index as a key for lists.
+
+### 10.6 Error Normalization
+
+- `ApiProblemError` exposes `status`, `code`, `requestId`, `errors`, and a safe user message.
+- Validation errors map to form fields when `errors` provides field paths.
+- 401 → login/refresh flow.
+- 403 → permission-denied state.
+- 404 → not-found state.
+- 409 → conflict message with a recovery action.
+- 429 → retry-after message.
+- 5xx → generic recovery state; never expose internal details.
+- Unknown errors are logged server-side or reported to observability; the UI shows a safe message.
+
+### 10.7 Pagination and Filtering
+
+- Use the API’s documented `page`, `limit`, `sort`, and `order` conventions.
+- Keep filters, search, and page in the URL when shareable.
+- Do not fetch all rows and filter in the browser when the API supports server-side filtering.
+- Preserve scroll position on back navigation where practical.
+- Show total counts and empty states honestly.
+
+### 10.8 When a BFF Is Allowed
+
+Direct API is the default. A narrow Route Handler MAY be added only if:
+
+- A server-only credential must never reach the browser.
+- A third-party service requires a same-origin callback.
+- A response must be transformed for a browser-only integration that cannot use the API contract.
+- The route uses a fixed allowlist and is covered by tests.
+
+A catch-all `/api/proxy/[...path]` is prohibited.
+
+### 10.9 Retries and Timeouts
+
+- GET requests MAY retry transient network failures with bounded attempts.
+- Mutations MUST NOT retry automatically unless the operation is idempotent and documented.
+- Payment/order mutations MUST send an idempotency key when the API supports it.
+- Uploads use progress and cancellation; do not silently retry a partially completed upload.
+- Timeouts produce a recoverable error state, not an infinite spinner.
+
+### 10.10 Environment Variables
+
+| Variable                   | Scope            | Purpose                                  |
+| -------------------------- | ---------------- | ---------------------------------------- |
+| `NEXT_PUBLIC_SERVER_URL`   | Browser + server | Public API origin                        |
+| `API_URL`                  | Server only      | Internal API origin for RSC/server fetch |
+| `NEXT_PUBLIC_STRAPI_URL`   | Browser + server | Public Strapi media/content origin       |
+| `STRAPI_API_TOKEN`         | Server only      | Authenticated Strapi reads               |
+| `NEXT_PUBLIC_POSTHOG_KEY`  | Browser          | Product analytics                        |
+| `NEXT_PUBLIC_POSTHOG_HOST` | Browser          | PostHog host                             |
+
+All values MUST be validated through `packages/env/web`. Components and library files MUST NOT read `process.env` directly.
 
 ## 11. State Management
 
-<!-- SECTION_11 -->
+### 11.1 State Categories
+
+| State                             | Owner                      | Tool                        |
+| --------------------------------- | -------------------------- | --------------------------- |
+| Server data fetched on the server | RSC                        | Server fetch + props        |
+| Client-cached server data         | TanStack Query             | Query cache                 |
+| Shareable navigation state        | URL                        | search params               |
+| Ephemeral local UI                | Component                  | `useState`/`useReducer`     |
+| Cross-component UI state          | Client store               | Zustand                     |
+| Auth session                      | Server                     | Cookie + session DAL        |
+| Realtime notifications            | TanStack Query + Socket.io | Query cache + socket events |
+
+### 11.2 TanStack Query
+
+Use TanStack Query for client-side server state:
+
+- Infinite lists, polling, live status, and mutations.
+- Data that must refresh after a client action.
+- Data shared across client components.
+- Socket-driven cache updates.
+- Optimistic mutation flows.
+
+Do not use it as a replacement for RSC data on initial page load. If the server already fetched the data, pass it as `initialData` or hydrate only when the client needs immediate interaction.
+
+### 11.3 Zustand
+
+Use Zustand only for ephemeral UI state that is shared across components:
+
+- Sidebar open/closed.
+- Command palette.
+- Multi-step draft UI that is not ready for the URL.
+- Density or view preferences that are not server data.
+
+Do not store:
+
+- User profiles, orders, enrollments, or course content.
+- Auth tokens.
+- API responses that belong in TanStack Query.
+- State that should survive reload and is shareable; put it in the URL.
+
+### 11.4 URL State
+
+Use `searchParams` for:
+
+- Search query.
+- Category, difficulty, and price filters.
+- Sort and order.
+- Page number.
+- Tabs that represent distinct views.
+
+Rules:
+
+- Parse and validate search params with Zod.
+- Ignore unknown params safely.
+- Preserve unrelated params when updating one value.
+- Do not put secrets or long-lived sensitive data in the URL.
+
+### 11.5 Hydration and Initial Data
+
+- Prefer server-rendered data and no client refetch on mount.
+- When hydrating a query, ensure the server query and client query use the same key and shape.
+- Do not serialize large trees unnecessarily; pass only the data the client needs.
+- Dates cross the boundary as ISO strings, not `Date` instances.
+
+### 11.6 Realtime Notifications
+
+- Socket.io is the primary in-app notification channel.
+- TanStack Query polling is the fallback when the socket is disconnected.
+- Socket authentication uses the same session cookie as REST.
+- The client MUST NOT send a user ID as proof of identity.
+- On `notification.created`, update the notification query cache and unread count.
+- On reconnect, refetch the notification list and unread count.
+
+### 11.7 Logout and Cache Reset
+
+On logout:
+
+- Call the API logout endpoint.
+- Clear TanStack Query cache for user-scoped data.
+- Clear Zustand user-scoped UI state.
+- Disconnect the socket.
+- Redirect to the public home or login page.
+- Do not leave stale personal data in memory or storage.
 
 ## 12. Caching and Revalidation
 
-<!-- SECTION_12 -->
+### 12.1 Cache Matrix
+
+| Data                     | Source  | Strategy                 | Tag / key            |
+| ------------------------ | ------- | ------------------------ | -------------------- |
+| Marketing page           | Strapi  | ISR, about 1 hour        | `strapi:page:<slug>` |
+| Blog list                | Strapi  | ISR, about 1 hour        | `strapi:blog`        |
+| Blog detail              | Strapi  | ISR, about 1 hour        | `strapi:blog:<slug>` |
+| Course catalog           | NestJS  | 60 seconds               | `catalog:courses`    |
+| Course detail (public)   | NestJS  | 60–300 seconds           | `course:<id>`        |
+| Public roadmap           | NestJS  | 300 seconds              | `roadmaps`           |
+| Certificate verification | NestJS  | `no-store` or very short | none                 |
+| Learner area             | NestJS  | `no-store`               | none                 |
+| Account area             | NestJS  | `no-store`               | none                 |
+| Admin area               | NestJS  | `no-store`               | none                 |
+| Session/user             | NestJS  | per-request `cache()`    | none                 |
+| Static assets            | Next.js | immutable                | file hash            |
+
+### 12.2 Rules
+
+- Private, personalized, or role-dependent data MUST NOT be cached in a shared cache.
+- `revalidateTag(tag, "max")` is the Next.js 16 form when tag invalidation is used.
+- `revalidatePath` is acceptable for a specific public page whose content changed.
+- Mutations that change catalog or marketing data MUST invalidate the affected tag.
+- A cache tag name MUST be stable and documented in the feature that owns it.
+- Do not cache by URL alone when the response depends on cookies or locale.
+- Locale-specific content MUST include the locale in the cache key or tag.
+- Do not use `force-cache` as a default. Choose it explicitly.
+
+### 12.3 Marketing Content
+
+- Strapi content is public and cacheable unless preview/draft mode is active.
+- Draft/preview mode MUST use a server-only token and MUST NOT be enabled for anonymous users.
+- Media URLs are normalized through the Strapi adapter; do not expose internal admin URLs.
+- SEO metadata from Strapi is mapped explicitly, not dumped as raw HTML.
+
+### 12.4 Catalog
+
+- Public course catalog can tolerate short staleness.
+- After an admin publishes or unpublishes a course, invalidate the catalog and course tags.
+- Price and availability shown on the client are display values; checkout recalculates on the server.
+- Enrollment-dependent course access is never cached as public content.
+
+### 12.5 Cache Components
+
+`cacheComponents` / `use cache` is not part of the baseline.
+
+If adopted later:
+
+- Define cache boundaries per route.
+- Add `cacheLife` and `cacheTag` for every cached function.
+- Re-test personalization, cookies, and locale behavior.
+- Update this matrix and the Definition of Done.
+- Record the decision as an ADR.
+
+### 12.6 HTTP Cache Headers
+
+- Static assets: long-lived immutable cache.
+- HTML: follow the Next.js route strategy; do not add a conflicting CDN rule.
+- API responses: NestJS owns API cache headers. The web client MUST NOT cache API responses in a service worker unless a concrete offline requirement exists.
+- `no-store` applies to authenticated and personalized responses.
 
 ## 13. Authentication and Session
 
