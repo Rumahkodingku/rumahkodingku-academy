@@ -56,3 +56,12 @@ temp
 
 # Fumadocs generated source
 apps/docs/.source
+# Next.js generated agent rules
+apps/*/AGENTS.md
+
+# Playwright artifacts
+playwright-report
+test-results
+
+# Storybook output
+storybook-static

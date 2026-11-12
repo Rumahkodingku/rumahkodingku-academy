@@ -53,11 +53,9 @@
   "devDependencies": {
     "@playwright/test": "catalog:",
     "@rumahkodingku-academy/config": "workspace:*",
-    "@storybook/addon-essentials": "^8.6.14",
-    "@storybook/addon-interactions": "^8.6.14",
+    "@storybook/addon-docs": "^10.6.7",
     "@storybook/nextjs": "^10.6.7",
     "@storybook/react": "^10.6.7",
-    "@storybook/test": "^8.6.15",
     "@tailwindcss/postcss": "catalog:",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
