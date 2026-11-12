@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 
+import { FileQuestion } from "lucide-react";
+
+import { ButtonLink } from "@/components/ui/button-link";
+import { EmptyState } from "@/components/ui/empty-state";
+
 import "../index.css";
 
 export const metadata: Metadata = {
@@ -11,12 +16,14 @@ export default function GlobalNotFound() {
   return (
     <html lang="id">
       <body>
-        <main className="container mx-auto flex min-h-svh max-w-3xl flex-col items-start gap-4 px-4 py-16">
-          <h1 className="text-2xl font-semibold">Halaman tidak ditemukan</h1>
-          <p className="text-muted-foreground">Halaman yang Anda cari tidak tersedia.</p>
-          <a className="rounded border px-4 py-2 text-sm" href="/">
-            Kembali ke beranda
-          </a>
+        <main className="mx-auto flex min-h-svh w-full max-w-page items-center px-4 py-16 sm:px-5 md:px-6 lg:px-8 xl:px-12">
+          <EmptyState
+            className="w-full"
+            icon={FileQuestion}
+            title="Halaman tidak ditemukan"
+            description="Halaman yang Anda cari tidak tersedia atau sudah dipindahkan."
+            action={<ButtonLink href="/">Kembali ke beranda</ButtonLink>}
+          />
         </main>
       </body>
     </html>

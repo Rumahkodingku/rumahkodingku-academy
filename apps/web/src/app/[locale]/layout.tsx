@@ -35,7 +35,10 @@ export async function generateMetadata({
   const i18n = await getServerI18n(locale);
 
   return {
-    title: i18n.t("welcome", { projectName: "RumahKodingku Academy" }),
+    title: {
+      default: "RumahKodingku Academy — Learn · Build · Grow",
+      template: "%s | RumahKodingku Academy",
+    },
     description: i18n.t("description"),
   };
 }

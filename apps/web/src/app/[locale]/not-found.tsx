@@ -1,14 +1,25 @@
 import type { Route } from "next";
-import Link from "next/link";
+import type { Metadata } from "next";
+
+import { FileQuestion } from "lucide-react";
+
+import { ButtonLink } from "@/components/ui/button-link";
+import { EmptyState } from "@/components/ui/empty-state";
+
+export const metadata: Metadata = {
+  title: "Halaman tidak ditemukan",
+  description: "Halaman yang Anda cari tidak tersedia.",
+};
 
 export default function LocaleNotFound() {
   return (
-    <main className="container mx-auto flex min-h-[50vh] max-w-3xl flex-col items-start gap-4 px-4 py-16">
-      <h1 className="text-2xl font-semibold">Halaman tidak ditemukan</h1>
-      <p className="text-muted-foreground">Halaman yang Anda cari tidak tersedia.</p>
-      <Link className="rounded border px-4 py-2 text-sm" href={"/" as Route}>
-        Kembali ke beranda
-      </Link>
+    <main className="mx-auto w-full max-w-page px-4 py-16 sm:px-5 md:px-6 lg:px-8 xl:px-12">
+      <EmptyState
+        icon={FileQuestion}
+        title="Halaman tidak ditemukan"
+        description="Halaman yang Anda cari tidak tersedia atau sudah dipindahkan."
+        action={<ButtonLink href={"/" as Route}>Kembali ke beranda</ButtonLink>}
+      />
     </main>
   );
 }

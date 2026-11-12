@@ -22,7 +22,9 @@ import { homepageFixtures, marketingPageFixtures, siteSettingsFixtures } from ".
 import { strapiServerFetch, strapiServerFetchSingle } from "./lib/server-client";
 import type { StrapiCollectionResponse, StrapiSingleResponse } from "./lib/types";
 
-const allowDevelopmentFallback = process.env.NODE_ENV !== "production";
+// Static builds run without a Strapi instance; runtime production reads still fail loudly.
+const allowDevelopmentFallback =
+  process.env.NODE_ENV !== "production" || process.env.NEXT_PHASE === "phase-production-build";
 
 function assertMarketingCollection(collection: string): asserts collection is MarketingCollection {
   if (!isMarketingCollection(collection)) {

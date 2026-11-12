@@ -1,5 +1,8 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { ErrorState } from "@/components/ui/error-state";
+
 export default function LocaleError({
   reset,
 }: {
@@ -7,12 +10,12 @@ export default function LocaleError({
   reset: () => void;
 }) {
   return (
-    <main className="container mx-auto flex min-h-[50vh] max-w-3xl flex-col items-start gap-4 px-4 py-16">
-      <h1 className="text-2xl font-semibold">Terjadi kesalahan</h1>
-      <p className="text-muted-foreground">Permintaan tidak dapat diproses. Silakan coba lagi.</p>
-      <button className="rounded border px-4 py-2 text-sm" onClick={reset} type="button">
-        Coba lagi
-      </button>
+    <main className="mx-auto w-full max-w-page px-4 py-16 sm:px-5 md:px-6 lg:px-8 xl:px-12">
+      <ErrorState
+        title="Terjadi kesalahan"
+        description="Permintaan tidak dapat diproses. Silakan coba lagi."
+        action={<Button onClick={reset}>Coba lagi</Button>}
+      />
     </main>
   );
 }

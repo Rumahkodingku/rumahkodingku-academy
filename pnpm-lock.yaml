@@ -81,6 +81,9 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^21.2.4
         version: 21.2.4
+      '@playwright/test':
+        specifier: 'catalog:'
+        version: 1.65.0
       '@rumahkodingku-academy/config':
         specifier: workspace:*
         version: link:packages/config

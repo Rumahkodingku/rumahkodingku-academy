@@ -33,6 +33,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
+    "@playwright/test": "catalog:",
     "@rumahkodingku-academy/config": "workspace:*",
     "@types/node": "catalog:",
     "husky": "^9.1.7",
