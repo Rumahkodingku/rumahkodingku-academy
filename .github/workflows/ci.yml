@@ -27,6 +27,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate API types
+        run: pnpm --filter web generate:api
+
+      - name: Check generated API types
+        run: |
+          pnpm exec oxfmt --write apps/web/src/lib/api/schema.d.ts
+          git diff --exit-code -- apps/web/src/lib/api/schema.d.ts
+
       - name: Format check
         run: pnpm run format:check
 
