@@ -3,6 +3,10 @@ import { AuthenticationModule } from "@nestjs/authentication";
 import { AuthorizationModule } from "@nestjs/authorization";
 import { env } from "@rumahkodingku-academy/env/server";
 
+import { assertProductionSecrets } from "../../config/security.config";
+
+assertProductionSecrets(env);
+
 @Module({
   imports: [
     AuthenticationModule.forRoot({

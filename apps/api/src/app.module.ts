@@ -1,8 +1,6 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { DevtoolsModule } from "@nestjs/devtools-integration";
-import { TerminusModule } from "@nestjs/terminus";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { env } from "@rumahkodingku-academy/env/server";
 
@@ -23,7 +21,6 @@ import { HealthModule } from "./modules/health/health.module";
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
     ThrottlerModule.forRootAsync({
       imports: [RedisModule],
       inject: [RedisThrottlerStorage],
@@ -32,7 +29,6 @@ import { HealthModule } from "./modules/health/health.module";
         storage,
       }),
     }),
-    TerminusModule,
     DevtoolsModule.register({
       http: env.NODE_ENV !== "production",
       port: 8003,

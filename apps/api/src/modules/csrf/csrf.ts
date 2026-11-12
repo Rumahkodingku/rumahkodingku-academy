@@ -7,6 +7,7 @@ import { env } from "@rumahkodingku-academy/env/server";
 
 const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
   getSecret: () => env.CSRF_SECRET,
+  // shortcut: bind CSRF to IP until Auth sessions exist; replace with session id after Auth domain lands.
   getSessionIdentifier: (req: Request) => req.ip ?? "anonymous",
   cookieName: "csrf-token",
   cookieOptions: {
