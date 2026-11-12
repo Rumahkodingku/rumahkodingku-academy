@@ -14,7 +14,7 @@ export class CouponRedemption extends BaseEntity {
   @Column({ name: "user_id", type: "char", length: 36 })
   userId!: string;
 
-  @Column({ name: "order_id", type: "char", length: 36, unique: true })
+  @Column({ name: "order_id", type: "char", length: 36 })
   orderId!: string;
 
   @Column({ name: "redeemed_amount", type: "int" })

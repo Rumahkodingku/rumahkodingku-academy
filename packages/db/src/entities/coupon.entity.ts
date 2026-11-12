@@ -10,7 +10,7 @@ export enum CouponType {
 @Entity("coupons")
 @Index(["code"], { unique: true })
 export class Coupon extends BaseEntity {
-  @Column({ type: "varchar", length: 64, unique: true })
+  @Column({ type: "varchar", length: 64 })
   code!: string;
 
   @Column({ type: "enum", enum: CouponType })

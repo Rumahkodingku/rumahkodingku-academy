@@ -22,7 +22,7 @@ export class Order extends BaseEntity {
   @Column({ name: "user_id", type: "char", length: 36 })
   userId!: string;
 
-  @Column({ name: "order_number", type: "varchar", length: 64, unique: true })
+  @Column({ name: "order_number", type: "varchar", length: 64 })
   orderNumber!: string;
 
   @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.Pending })

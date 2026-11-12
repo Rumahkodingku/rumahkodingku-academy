@@ -1,4 +1,4 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { Course } from "./course.entity";
@@ -11,9 +11,6 @@ export enum CertificateStatus {
 }
 
 @Entity("certificates")
-@Index(["number"], { unique: true })
-@Index(["verificationCode"], { unique: true })
-@Index(["activeEnrollmentId"], { unique: true })
 export class Certificate extends BaseEntity {
   @Column({ name: "enrollment_id", type: "char", length: 36 })
   enrollmentId!: string;

@@ -19,7 +19,7 @@ export enum CourseStatus {
 @Entity("courses")
 @Index(["slug"], { unique: true })
 export class Course extends BaseEntity {
-  @Column({ type: "varchar", length: 255, unique: true })
+  @Column({ type: "varchar", length: 255 })
   slug!: string;
 
   @Column({ type: "varchar", length: 255 })

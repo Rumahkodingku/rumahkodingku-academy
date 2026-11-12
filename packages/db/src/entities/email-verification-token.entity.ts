@@ -9,7 +9,7 @@ export class EmailVerificationToken extends BaseEntity {
   @Column({ name: "user_id", type: "char", length: 36 })
   userId!: string;
 
-  @Column({ name: "token_hash", type: "varchar", length: 255, unique: true })
+  @Column({ name: "token_hash", type: "varchar", length: 255 })
   tokenHash!: string;
 
   @Column({ name: "expires_at", type: "datetime" })

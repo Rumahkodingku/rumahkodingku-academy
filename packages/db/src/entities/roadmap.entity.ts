@@ -12,7 +12,7 @@ export enum RoadmapStatus {
 @Entity("roadmaps")
 @Index(["slug"], { unique: true })
 export class Roadmap extends BaseEntity {
-  @Column({ type: "varchar", length: 255, unique: true })
+  @Column({ type: "varchar", length: 255 })
   slug!: string;
 
   @Column({ type: "varchar", length: 255 })

@@ -34,6 +34,20 @@ import { SubmissionFile } from "./submission-file.entity";
 import { SubmissionScore } from "./submission-score.entity";
 import { Certificate, CertificateStatus } from "./certificate.entity";
 
+import { ModerationState } from "./moderation-state";
+import { DiscussionTopic } from "./discussion-topic.entity";
+import { DiscussionReply } from "./discussion-reply.entity";
+import { LessonQuestion } from "./lesson-question.entity";
+import { LessonAnswer } from "./lesson-answer.entity";
+import { ContentReport, ContentReportStatus } from "./content-report.entity";
+import { CourseReview, ReviewStatus } from "./course-review.entity";
+import { Wishlist } from "./wishlist.entity";
+import { Notification } from "./notification.entity";
+import { NotificationOutbox, OutboxStatus } from "./notification-outbox.entity";
+import { Announcement, AnnouncementAudience, AnnouncementStatus } from "./announcement.entity";
+import { PlatformSetting } from "./platform-setting.entity";
+import { AuditLog } from "./audit-log.entity";
+
 export { User, UserRole, UserStatus };
 export { RefreshSession };
 export { EmailVerificationToken };
@@ -70,6 +84,20 @@ export { SubmissionFile };
 export { SubmissionScore };
 export { Certificate, CertificateStatus };
 
+export { ModerationState };
+export { DiscussionTopic };
+export { DiscussionReply };
+export { LessonQuestion };
+export { LessonAnswer };
+export { ContentReport, ContentReportStatus };
+export { CourseReview, ReviewStatus };
+export { Wishlist };
+export { Notification };
+export { NotificationOutbox, OutboxStatus };
+export { Announcement, AnnouncementAudience, AnnouncementStatus };
+export { PlatformSetting };
+export { AuditLog };
+
 export const entities: Function[] = [
   User,
   RefreshSession,
@@ -101,4 +129,16 @@ export const entities: Function[] = [
   SubmissionFile,
   SubmissionScore,
   Certificate,
+  DiscussionTopic,
+  DiscussionReply,
+  LessonQuestion,
+  LessonAnswer,
+  ContentReport,
+  CourseReview,
+  Wishlist,
+  Notification,
+  NotificationOutbox,
+  Announcement,
+  PlatformSetting,
+  AuditLog,
 ];

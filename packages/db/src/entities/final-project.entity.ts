@@ -1,4 +1,4 @@
-import { Column, Entity, Index, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { Course } from "./course.entity";
@@ -6,9 +6,8 @@ import { ProjectRubricCriterion } from "./project-rubric-criterion.entity";
 import { ProjectSubmission } from "./project-submission.entity";
 
 @Entity("final_projects")
-@Index(["course"], { unique: true })
 export class FinalProject extends BaseEntity {
-  @Column({ name: "course_id", type: "char", length: 36, unique: true })
+  @Column({ name: "course_id", type: "char", length: 36 })
   courseId!: string;
 
   @Column({ type: "varchar", length: 255 })

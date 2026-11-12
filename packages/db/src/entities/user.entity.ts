@@ -17,7 +17,7 @@ export enum UserStatus {
 @Entity("users")
 @Index(["email"], { unique: true })
 export class User extends BaseEntity {
-  @Column({ type: "varchar", length: 255, unique: true })
+  @Column({ type: "varchar", length: 255 })
   email!: string;
 
   @Column({ name: "password_hash", type: "varchar", length: 255 })
