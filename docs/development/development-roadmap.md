@@ -111,6 +111,8 @@ Deliverables: API/data foundation, design tokens, reusable components, responsiv
 
 Exit gate: migrations run cleanly; UI primitives have keyboard/focus states; parent brand colors are sourced from official assets, not guessed; Strapi cannot serve LMS data.
 
+Status: backend data foundation implemented with UUID v7 entities, initial MySQL migration, CI migration verification, and a server-only Strapi boundary. Design tokens, UI primitives, and the full app shell are deferred to Phase 4/5; that part of the Phase 2 exit gate is not yet met.
+
 ## 6. Phase 3 — Authentication and account security
 
 Tasks:
