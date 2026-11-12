@@ -895,15 +895,283 @@ If adopted later:
 
 ## 13. Authentication and Session
 
-<!-- SECTION_13 -->
+### 13.1 Ownership
+
+NestJS owns authentication:
+
+- Access and refresh tokens.
+- HttpOnly cookies.
+- Refresh token rotation.
+- Session revocation.
+- Password reset and email verification.
+- Rate limiting.
+- CSRF token issuance.
+
+The web app owns the presentation and session _reads_:
+
+- Login/register/recovery forms.
+- Redirects and protected layouts.
+- Session-aware navigation.
+- Optimistic route protection.
+
+### 13.2 Cookie Policy
+
+- Authentication cookies MUST be HttpOnly.
+- Cookies MUST be Secure in production.
+- `SameSite` policy MUST match the deployment topology; prefer same-site subdomains with `Lax`.
+- The web app MUST NOT read, write, or mirror auth cookies in JavaScript.
+- Token values MUST NOT be placed in localStorage, sessionStorage, IndexedDB, or a non-HttpOnly cookie.
+- The API owns cookie names and domains. The frontend reads only the session through the API.
+
+### 13.3 Proxy Rules
+
+`src/proxy.ts` performs optimistic checks only.
+
+- A protected path without a session cookie redirects to `/login?next=<safe-path>`.
+- An authenticated user visiting `/login` or `/register` may be redirected to `/learn`.
+- The proxy reads cookie presence, not a decoded JWT role.
+- The proxy MUST NOT query MySQL/Redis or call `/auth/me` on every request.
+- The `next` parameter MUST be validated as a local path; never redirect to an external URL.
+
+### 13.4 Session DAL
+
+`src/lib/auth/session.ts` is server-only.
+
+```ts
+import "server-only";
+
+export type SessionUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: "USER" | "ADMIN";
+};
+
+export async function getSession(): Promise<SessionUser | null>;
+export async function requireUser(): Promise<SessionUser>;
+export async function requireAdmin(): Promise<SessionUser>;
+```
+
+Behavior:
+
+- `getSession()` calls `GET /auth/me` with the incoming cookie and caches the result per request with React `cache()`.
+- `requireUser()` redirects to login with a safe `next` path when unauthenticated.
+- `requireAdmin()` requires an authenticated `ADMIN`; otherwise render the forbidden state or redirect.
+- A network failure is not the same as unauthenticated. Render a dependency-error state; do not silently log the user out.
+- The DAL MUST NOT accept a user ID or role from the client as proof of identity.
+
+### 13.5 Protected Layouts
+
+- `(learn)/layout.tsx` calls `requireUser()`.
+- `(account)/layout.tsx` calls `requireUser()`.
+- `(admin)/layout.tsx` calls `requireAdmin()`.
+- The API still checks authorization on every request; layout guards are UX only.
+- Do not fetch sensitive data in a layout before the guard resolves.
+
+### 13.6 Auth Flows
+
+- Login: POST credentials, API sets cookies, client invalidates session query, redirect to safe `next` or `/learn`.
+- Register: POST registration, handle email-verification requirement, redirect to the documented next step.
+- Refresh: the API rotates cookies. The client retries a failed request at most once after a successful refresh.
+- Logout: POST logout, API revokes the refresh session, client clears user cache and socket, redirect to `/`.
+- Forgot/reset password: always show a neutral response that does not reveal whether an email exists.
+- Verification: handle expired/invalid tokens with a recovery path.
+
+### 13.7 Client Session Query
+
+Client components MAY use a TanStack Query wrapper around `/auth/me` for navigation state. The query:
+
+- Uses the same data shape as the DAL.
+- Is not the authorization source.
+- Is cleared on logout.
+- Is not persisted to localStorage.
+
+### 13.8 Failure Semantics
+
+| Status | UI behavior                                                       |
+| ------ | ----------------------------------------------------------------- |
+| 401    | Attempt refresh once; if still unauthenticated, redirect to login |
+| 403    | Render permission-denied state; do not retry                      |
+| 404    | Render not-found state                                            |
+| 409    | Show conflict and a recovery action                               |
+| 429    | Show retry-after and disable submit temporarily                   |
+| 5xx    | Show generic recovery; log with request ID                        |
+
+Never reveal whether another user’s resource exists when the API intentionally returns 404 for unauthorized access.
 
 ## 14. Authorization and Route Protection
 
-<!-- SECTION_14 -->
+### 14.1 Security Boundary
+
+Frontend route protection is a user-experience feature, not a security boundary. Every protected operation MUST be authorized by NestJS.
+
+The frontend MUST NOT:
+
+- Decide that a user may access a course from client state alone.
+- Hide a destructive action and assume the API is safe without its own check.
+- Trust a role, user ID, entitlement, price, or status supplied by the browser.
+- Render sensitive data before the server has authorized the request.
+
+### 14.2 Roles
+
+The initial roles are:
+
+- `USER` — learner and buyer.
+- `ADMIN` — platform administrator.
+
+Additional roles require a product decision and a backend permission model. The frontend MUST NOT invent roles or permission strings.
+
+### 14.3 Access Matrix
+
+| Surface                  | Guest             | USER                        | ADMIN                    |
+| ------------------------ | ----------------- | --------------------------- | ------------------------ |
+| Marketing/catalog        | Yes               | Yes                         | Yes                      |
+| Certificate verification | Yes               | Yes                         | Yes                      |
+| Login/register           | Yes               | Redirect                    | Redirect                 |
+| Checkout                 | Redirect to login | Yes                         | Yes                      |
+| Learner area             | Redirect to login | Yes, with entitlement check | Yes if enrolled          |
+| Account area             | Redirect to login | Yes                         | Yes                      |
+| Admin area               | Redirect to login | Forbidden                   | Yes                      |
+| Admin mutations          | No                | No                          | Yes + backend permission |
+
+Entitlement and ownership are checked by the API on every request. The UI may use the same data to explain locked states, but it MUST not grant access.
+
+### 14.4 Admin UI Rules
+
+- The admin layout calls `requireAdmin()`.
+- The API still checks the role and resource permission.
+- Destructive actions require confirmation and show the resource name.
+- Sensitive changes display an audit hint: actor, action, resource, timestamp when available.
+- Admin tables do not render data the current permission cannot access.
+- Admin routes are excluded from search indexing and analytics pageviews that would leak private paths.
+
+### 14.5 Ownership Checks
+
+For user-owned resources (orders, submissions, reviews, certificates, notifications):
+
+- The API returns only the current user’s records, or 404 when disclosure is unsafe.
+- The frontend does not construct “other user” URLs.
+- A copied URL to another user’s resource must fail at the API, not just render an empty page.
+- Client-side ownership checks are explanatory only.
+
+### 14.6 Socket Authorization
+
+- The socket handshake uses the same session identity as REST.
+- The client never sends a user ID as identity proof.
+- The server joins rooms; the client does not choose arbitrary rooms.
+- On logout or session revocation, disconnect the socket and clear user-scoped caches.
+
+### 14.7 Forbidden State
+
+- Render a clear “Anda tidak memiliki akses” state.
+- Offer a safe next action: back to dashboard, contact support, or login with another account.
+- Do not reveal the protected resource’s contents.
+- Log the event without sensitive data.
 
 ## 15. Forms, Mutations, and Validation
 
-<!-- SECTION_15 -->
+### 15.1 Default Mutation Path
+
+Core LMS mutations use the browser API client and TanStack Query:
+
+- Create order.
+- Apply coupon.
+- Start payment.
+- Update profile.
+- Submit quiz attempt.
+- Submit final project.
+- Mark notification read.
+- Create/update/delete community content.
+
+The flow:
+
+1. Validate input with a Zod schema.
+2. Ensure a CSRF token is available for cookie-authenticated mutations.
+3. Call the typed browser client.
+4. Map Problem Details to fields or a form-level message.
+5. Invalidate affected query keys and public cache tags when needed.
+6. Show a persistent success/failure state for money, access, or assessment outcomes.
+
+### 15.2 Server Actions
+
+Server Actions are allowed only for Next-local concerns:
+
+- Locale preference.
+- Theme preference.
+- Contact/newsletter forms that do not require LMS data.
+- Simple redirects or local state changes.
+
+If a Server Action calls NestJS:
+
+- Forward the session cookie.
+- Obtain and send the CSRF token.
+- Validate input and authorization.
+- Never expose the API token or session in the client.
+- Do not use it for parallel data fetching.
+
+### 15.3 Validation
+
+- Client validation is for UX and immediate feedback.
+- Server validation is authoritative.
+- Share simple field rules through Zod schemas in `features/<domain>/schemas`.
+- Do not duplicate price, coupon, entitlement, grading, or payment calculations in the client.
+- Validate URL params and search params with Zod.
+- Validate file type and size before upload; the API validates again.
+
+### 15.4 Error Mapping
+
+- Field errors from `ProblemDetails.errors` attach to the matching form field.
+- Form-level errors render above the submit button or in an inline alert.
+- `requestId` is shown in a copyable support detail, not in the primary message.
+- Do not display raw API messages that contain internal details.
+- Unexpected errors produce a retry path and a generic Indonesian message.
+
+### 15.5 Optimistic Updates
+
+Optimistic updates MAY be used for:
+
+- Notification read state.
+- Wishlist toggle.
+- Review draft visibility.
+- Small UI preferences.
+
+They MUST NOT be used for:
+
+- Payment success.
+- Enrollment access.
+- Quiz grading.
+- Certificate issuance.
+- Project approval.
+- Refund decisions.
+
+Every optimistic mutation needs a rollback path and a final server-confirmed state.
+
+### 15.6 Double Submit and Idempotency
+
+- Disable submit while a mutation is pending.
+- Use an idempotency key for order/payment creation when the API supports it.
+- Do not create a second order because the user clicked twice.
+- After a timeout, show “cek status” instead of silently retrying a money operation.
+
+### 15.7 File Uploads
+
+- Upload entry points use the approved uploader (Uppy/Tus/XHR) and the API’s authorized upload flow.
+- Do not upload directly to a bucket from the browser with long-lived credentials.
+- Show progress, cancellation, and failure recovery.
+- Validate size/type before upload.
+- Never trust a user-provided storage path.
+- Final project files are optional only when the course configuration says so.
+
+### 15.8 Forms Checklist
+
+- Label, description, and error are associated with the input.
+- Required fields are clear.
+- Submit is disabled during pending state.
+- Success is visible without relying only on a toast.
+- Failure preserves user input.
+- Keyboard-only submission works.
+- The form works at mobile widths.
+- The form does not expose server secrets or internal IDs unnecessarily.
 
 ## 16. Internationalization and Locale Routing
 
