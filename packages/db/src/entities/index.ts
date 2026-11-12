@@ -27,6 +27,13 @@ import { QuizAnswer } from "./quiz-answer.entity";
 import { Roadmap, RoadmapStatus } from "./roadmap.entity";
 import { RoadmapCourse } from "./roadmap-course.entity";
 
+import { FinalProject } from "./final-project.entity";
+import { ProjectRubricCriterion } from "./project-rubric-criterion.entity";
+import { ProjectSubmission, ProjectSubmissionStatus } from "./project-submission.entity";
+import { SubmissionFile } from "./submission-file.entity";
+import { SubmissionScore } from "./submission-score.entity";
+import { Certificate, CertificateStatus } from "./certificate.entity";
+
 export { User, UserRole, UserStatus };
 export { RefreshSession };
 export { EmailVerificationToken };
@@ -56,6 +63,13 @@ export { QuizAnswer };
 export { Roadmap, RoadmapStatus };
 export { RoadmapCourse };
 
+export { FinalProject };
+export { ProjectRubricCriterion };
+export { ProjectSubmission, ProjectSubmissionStatus };
+export { SubmissionFile };
+export { SubmissionScore };
+export { Certificate, CertificateStatus };
+
 export const entities: Function[] = [
   User,
   RefreshSession,
@@ -81,4 +95,10 @@ export const entities: Function[] = [
   QuizAnswer,
   Roadmap,
   RoadmapCourse,
+  FinalProject,
+  ProjectRubricCriterion,
+  ProjectSubmission,
+  SubmissionFile,
+  SubmissionScore,
+  Certificate,
 ];
