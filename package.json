@@ -1,0 +1,46 @@
+{
+  "name": "rumahkodingku-academy",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "dev:web": "turbo -F web dev",
+    "dev:docs": "turbo -F docs dev",
+    "build:docs": "turbo -F docs build",
+    "check:docs": "turbo -F docs check-types",
+    "dev:server": "turbo -F server dev",
+    "db:push": "turbo -F @rumahkodingku-academy/db db:push",
+    "db:studio": "turbo -F @rumahkodingku-academy/db db:studio",
+    "test": "pnpm --filter web test && pnpm --filter server test",
+    "check": "oxlint && oxfmt --write",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@rumahkodingku-academy/env": "workspace:*",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@rumahkodingku-academy/config": "workspace:*",
+    "@types/bun": "catalog:",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "oxfmt": "^0.78.0",
+    "oxlint": "^1.93.0",
+    "turbo": "2.11.11",
+    "typescript": "^6.0.3"
+  },
+  "lint-staged": {
+    "*": [
+      "oxlint",
+      "oxfmt --write"
+    ]
+  },
+  "packageManager": "pnpm@10.34.5"
+}

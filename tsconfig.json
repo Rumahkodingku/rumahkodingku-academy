@@ -1,0 +1,3 @@
+{
+  "extends": "@rumahkodingku-academy/config/tsconfig.base.json"
+}

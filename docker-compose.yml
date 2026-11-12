@@ -1,0 +1,66 @@
+# Docker Compose for rumahkodingku-academy
+# Full-stack container orchestration
+
+name: rumahkodingku-academy
+
+services:
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: rumahkodingku-academy-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - VITE_API_URL=http://server:3001
+    restart: unless-stopped
+    depends_on:
+      - server
+    networks:
+      - rumahkodingku-academy-network
+
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    env_file:
+      - apps/server/.env
+    container_name: rumahkodingku-academy-server
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=mysql://root:password@db:3306/rumahkodingku-academy
+    restart: unless-stopped
+    depends_on:
+      - db
+    networks:
+      - rumahkodingku-academy-network
+
+  db:
+    image: mysql:8
+    container_name: rumahkodingku-academy-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: rumahkodingku-academy
+    ports:
+      - "3306:3306"
+    volumes:
+      - rumahkodingku-academy_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - rumahkodingku-academy-network
+
+networks:
+  rumahkodingku-academy-network:
+    driver: bridge
+
+volumes:
+  rumahkodingku-academy_mysql_data:

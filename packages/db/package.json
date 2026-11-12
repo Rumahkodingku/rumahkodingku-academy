@@ -1,0 +1,27 @@
+{
+  "name": "@rumahkodingku-academy/db",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@rumahkodingku-academy/env": "workspace:*",
+    "dotenv": "catalog:",
+    "mysql2": "^3.24.6",
+    "reflect-metadata": "catalog:",
+    "typeorm": "^1.1.2",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@rumahkodingku-academy/config": "workspace:*",
+    "typescript": "^6.0.3"
+  }
+}
