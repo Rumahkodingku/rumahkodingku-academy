@@ -1,0 +1,24 @@
+import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+
+import { BaseEntity } from "./base.entity";
+import { User } from "./user.entity";
+
+@Entity("password_reset_tokens")
+@Index(["tokenHash"], { unique: true })
+export class PasswordResetToken extends BaseEntity {
+  @Column({ name: "user_id", type: "char", length: 36 })
+  userId!: string;
+
+  @Column({ name: "token_hash", type: "varchar", length: 255, unique: true })
+  tokenHash!: string;
+
+  @Column({ name: "expires_at", type: "datetime" })
+  expiresAt!: Date;
+
+  @Column({ name: "consumed_at", type: "datetime", nullable: true })
+  consumedAt?: Date | null;
+
+  @ManyToOne(() => User, { onDelete: "RESTRICT" })
+  @JoinColumn({ name: "user_id" })
+  user!: User;
+}
