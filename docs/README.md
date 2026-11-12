@@ -13,7 +13,7 @@ This package is the shared source of truth for product, design, engineering, QA,
 - `database/`: relational model and ERD.
 - `api/`: REST contract baseline.
 - `design/`: design brief, visual direction, tokens, UX rules.
-- `development/`: roadmap, coding standards, testing, and the Phase 0 backlog seed.
+- `development/`: roadmap, coding standards, testing, local setup, and the Phase 0 backlog seed.
 - `deployment/`: VPS + Coolify operating guide.
 - `payments/payment-provider-decision.md`: approved provider direction and onboarding constraints.
 

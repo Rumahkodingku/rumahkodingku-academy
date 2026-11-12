@@ -87,6 +87,8 @@ Deliverables: reproducible monorepo, running web/API/docs, MySQL + Redis connect
 
 Exit gate: a new developer can clone, install, configure, run, test, and build using the docs; no secrets committed.
 
+Status: Phase 1 foundation is implemented. Import boundaries are enforced through `.oxlintrc.json` (`no-restricted-imports`). Seed scripts and a separate test environment are intentionally deferred until the first entity and integration-test database exist.
+
 ## 5. Phase 2 — Architecture, data, and design foundations
 
 Tasks:

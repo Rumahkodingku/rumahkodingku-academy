@@ -4,7 +4,23 @@
   "categories": {
     "correctness": "error"
   },
-  "rules": {},
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["@rumahkodingku-academy/*/src/*"],
+            "message": "Use package entrypoints, not internal source paths."
+          },
+          {
+            "group": ["apps/*", "../apps/*", "../../apps/*"],
+            "message": "Apps must not import another app directly."
+          }
+        ]
+      }
+    ]
+  },
   "env": {
     "builtin": true
   }

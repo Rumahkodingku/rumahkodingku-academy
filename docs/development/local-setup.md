@@ -1,0 +1,141 @@
+# Local Development Setup
+
+This guide is the entry point for running RumahKodingku Academy locally. It complements `development-roadmap.md` and the deployment guide.
+
+## 1. Prerequisites
+
+- Node.js 24 LTS.
+- pnpm 10.34 or the pinned version in `package.json`.
+- Docker Desktop or Docker Engine with Compose.
+- Git.
+
+## 2. Clone and install
+
+```sh
+git clone <repository-url>
+cd rumahkodingku-academy
+pnpm install
+```
+
+Do not use `npm` or `yarn`. The lockfile is authoritative.
+
+## 3. Configure environment
+
+```sh
+cp .env.example .env
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env
+```
+
+Minimum local values:
+
+- `apps/api/.env`:
+  - `DATABASE_URL=mysql://academy_user:academy_password@localhost:3308/rumahkodingku_academy`
+  - `REDIS_URL=redis://localhost:6380`
+  - `CORS_ORIGIN=http://localhost:3001`
+  - `NODE_ENV=development`
+- `apps/web/.env`:
+  - `NEXT_PUBLIC_SERVER_URL=http://localhost:3000`
+  - `NEXT_PUBLIC_SITE_URL=http://localhost:3001`
+
+Never commit real credentials. `.env` files are ignored.
+
+## 4. Start infrastructure
+
+```sh
+docker compose up -d mysql redis mailpit
+docker compose ps
+```
+
+Expected ports:
+
+- MySQL: `localhost:3308`
+- Redis: `localhost:6380`
+- Mailpit UI: `http://localhost:8026`
+
+Strapi is optional for LMS core development. Start it only when working on marketing content:
+
+```sh
+docker compose up -d strapi
+```
+
+## 5. Run database migrations
+
+```sh
+pnpm --filter @rumahkodingku-academy/db db:migrate
+```
+
+Expected: `Ran 0 migration(s)` on a fresh database. `synchronize` is disabled; schema changes require migrations.
+
+## 6. Start applications
+
+All applications:
+
+```sh
+pnpm dev
+```
+
+Single application:
+
+```sh
+pnpm dev:web   # http://localhost:3001
+pnpm dev:api   # http://localhost:3000/api/v1
+pnpm dev:docs  # http://localhost:4000
+```
+
+## 7. Useful endpoints
+
+- API health: `http://localhost:3000/api/v1/health`
+- API live: `http://localhost:3000/api/v1/health/live`
+- Swagger: `http://localhost:3000/swagger`
+- Scalar: `http://localhost:3000/reference`
+- OpenAPI JSON: `http://localhost:3000/swagger-json`
+- CSRF token: `http://localhost:3000/api/v1/csrf/token`
+- Metrics: `http://localhost:9090/metrics`
+
+## 8. Verification
+
+```sh
+pnpm format:check
+pnpm lint
+pnpm check-types
+pnpm test
+pnpm build
+```
+
+Focused tests:
+
+```sh
+pnpm --filter web test
+pnpm --filter api test
+pnpm --filter web test -- <file>
+pnpm --filter api test -- <file>
+```
+
+## 9. Database workflow
+
+```sh
+pnpm --filter @rumahkodingku-academy/db db:migrate
+pnpm --filter @rumahkodingku-academy/db db:revert
+pnpm --filter @rumahkodingku-academy/db db:generate <migration-name>
+pnpm --filter @rumahkodingku-academy/db check-types
+```
+
+Run migrations as a controlled step. Do not enable production schema synchronization.
+
+## 10. Troubleshooting
+
+- **MySQL connection refused:** ensure `docker compose up -d mysql` is healthy and the port is `3308`.
+- **Redis timeout:** ensure Redis is on `6380` and `REDIS_URL` matches.
+- **Env validation fails:** check `.env` values and required server variables.
+- **Port already in use:** stop stale Node processes or choose another port.
+- **Migration fails:** verify `DATABASE_URL`, MySQL user, and that migrations run from `packages/db`.
+- **Build fails after dependency changes:** run `pnpm install`, then `pnpm build`.
+
+## 11. Rules
+
+- Use `pnpm`, not `npm` or `yarn`.
+- Do not commit `.env` or credentials.
+- Run migrations as a controlled step.
+- Keep `synchronize` disabled.
+- Follow `coding-guidelines.md` and `testing-strategy.md`.
