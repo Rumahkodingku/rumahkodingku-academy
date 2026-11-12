@@ -1,4 +1,5 @@
 import { Column, Entity, Index, OneToMany } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { RefreshSession } from "./refresh-session.entity";
@@ -42,5 +43,5 @@ export class User extends BaseEntity {
   profile?: Record<string, unknown> | null;
 
   @OneToMany(() => RefreshSession, (session) => session.user)
-  refreshSessions!: RefreshSession[];
+  refreshSessions!: Relation<RefreshSession[]>;
 }

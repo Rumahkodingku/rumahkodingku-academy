@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { User } from "./user.entity";
@@ -20,5 +21,5 @@ export class EmailVerificationToken extends BaseEntity {
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "user_id" })
-  user!: User;
+  user!: Relation<User>;
 }

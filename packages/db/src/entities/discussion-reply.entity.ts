@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { DiscussionTopic } from "./discussion-topic.entity";
@@ -26,9 +27,9 @@ export class DiscussionReply extends BaseEntity {
 
   @ManyToOne(() => DiscussionTopic, (topic) => topic.replies, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "topic_id" })
-  topic!: DiscussionTopic;
+  topic!: Relation<DiscussionTopic>;
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "author_id" })
-  author!: User;
+  author!: Relation<User>;
 }

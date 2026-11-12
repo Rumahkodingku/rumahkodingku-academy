@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { Course } from "./course.entity";
@@ -19,9 +20,9 @@ export class RoadmapCourse extends BaseEntity {
 
   @ManyToOne(() => Roadmap, (roadmap) => roadmap.courses, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "roadmap_id" })
-  roadmap!: Roadmap;
+  roadmap!: Relation<Roadmap>;
 
   @ManyToOne(() => Course, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "course_id" })
-  course!: Course;
+  course!: Relation<Course>;
 }

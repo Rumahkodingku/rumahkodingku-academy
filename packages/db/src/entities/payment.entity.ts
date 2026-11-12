@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { Order } from "./order.entity";
@@ -47,5 +48,5 @@ export class Payment extends BaseEntity {
 
   @ManyToOne(() => Order, (order) => order.payments, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "order_id" })
-  order!: Order;
+  order!: Relation<Order>;
 }

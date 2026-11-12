@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { Coupon } from "./coupon.entity";
@@ -22,13 +23,13 @@ export class CouponRedemption extends BaseEntity {
 
   @ManyToOne(() => Coupon, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "coupon_id" })
-  coupon!: Coupon;
+  coupon!: Relation<Coupon>;
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "user_id" })
-  user!: User;
+  user!: Relation<User>;
 
   @ManyToOne(() => Order, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "order_id" })
-  order!: Order;
+  order!: Relation<Order>;
 }

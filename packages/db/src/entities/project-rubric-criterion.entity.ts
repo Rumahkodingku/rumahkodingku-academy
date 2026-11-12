@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { FinalProject } from "./final-project.entity";
@@ -20,5 +21,5 @@ export class ProjectRubricCriterion extends BaseEntity {
 
   @ManyToOne(() => FinalProject, (project) => project.rubricCriteria, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "final_project_id" })
-  finalProject!: FinalProject;
+  finalProject!: Relation<FinalProject>;
 }

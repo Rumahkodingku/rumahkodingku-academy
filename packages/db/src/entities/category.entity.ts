@@ -1,4 +1,5 @@
 import { Column, Entity, Index, ManyToMany } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { Course } from "./course.entity";
@@ -22,5 +23,5 @@ export class Category extends BaseEntity {
   active!: boolean;
 
   @ManyToMany(() => Course, (course) => course.categories)
-  courses!: Course[];
+  courses!: Relation<Course[]>;
 }

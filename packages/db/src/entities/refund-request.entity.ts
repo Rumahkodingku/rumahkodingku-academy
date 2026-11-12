@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { Order } from "./order.entity";
@@ -49,17 +50,17 @@ export class RefundRequest extends BaseEntity {
 
   @ManyToOne(() => Order, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "order_id" })
-  order!: Order;
+  order!: Relation<Order>;
 
   @ManyToOne(() => Payment, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "payment_id" })
-  payment!: Payment;
+  payment!: Relation<Payment>;
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "user_id" })
-  user!: User;
+  user!: Relation<User>;
 
   @ManyToOne(() => User, { onDelete: "SET NULL", nullable: true })
   @JoinColumn({ name: "reviewer_id" })
-  reviewer?: User | null;
+  reviewer?: Relation<User | null>;
 }

@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { Course } from "./course.entity";
@@ -37,17 +38,17 @@ export class CourseReview extends BaseEntity {
 
   @ManyToOne(() => Enrollment, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "enrollment_id" })
-  enrollment!: Enrollment;
+  enrollment!: Relation<Enrollment>;
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "user_id" })
-  user!: User;
+  user!: Relation<User>;
 
   @ManyToOne(() => Course, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "course_id" })
-  course!: Course;
+  course!: Relation<Course>;
 
   @ManyToOne(() => User, { onDelete: "SET NULL", nullable: true })
   @JoinColumn({ name: "moderated_by" })
-  moderator?: User | null;
+  moderator?: Relation<User | null>;
 }

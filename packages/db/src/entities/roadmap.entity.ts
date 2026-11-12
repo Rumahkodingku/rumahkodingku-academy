@@ -1,4 +1,5 @@
 import { Column, Entity, Index, OneToMany } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { RoadmapCourse } from "./roadmap-course.entity";
@@ -28,5 +29,5 @@ export class Roadmap extends BaseEntity {
   status!: RoadmapStatus;
 
   @OneToMany(() => RoadmapCourse, (roadmapCourse) => roadmapCourse.roadmap)
-  courses!: RoadmapCourse[];
+  courses!: Relation<RoadmapCourse[]>;
 }

@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { User } from "./user.entity";
@@ -29,5 +30,5 @@ export class AuditLog extends BaseEntity {
 
   @ManyToOne(() => User, { onDelete: "SET NULL", nullable: true })
   @JoinColumn({ name: "actor_user_id" })
-  actor?: User | null;
+  actor?: Relation<User | null>;
 }

@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { CourseLesson } from "./course-lesson.entity";
@@ -27,9 +28,9 @@ export class LessonProgress extends BaseEntity {
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "user_id" })
-  user!: User;
+  user!: Relation<User>;
 
   @ManyToOne(() => CourseLesson, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "lesson_id" })
-  lesson!: CourseLesson;
+  lesson!: Relation<CourseLesson>;
 }

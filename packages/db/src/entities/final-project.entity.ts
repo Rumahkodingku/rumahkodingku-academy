@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { Course } from "./course.entity";
@@ -39,11 +40,11 @@ export class FinalProject extends BaseEntity {
 
   @OneToOne(() => Course, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "course_id" })
-  course!: Course;
+  course!: Relation<Course>;
 
   @OneToMany(() => ProjectRubricCriterion, (criterion) => criterion.finalProject)
-  rubricCriteria!: ProjectRubricCriterion[];
+  rubricCriteria!: Relation<ProjectRubricCriterion[]>;
 
   @OneToMany(() => ProjectSubmission, (submission) => submission.finalProject)
-  submissions!: ProjectSubmission[];
+  submissions!: Relation<ProjectSubmission[]>;
 }

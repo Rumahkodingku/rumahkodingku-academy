@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { Category } from "./category.entity";
@@ -89,7 +90,7 @@ export class Course extends BaseEntity {
   publishedAt?: Date | null;
 
   @OneToMany(() => CourseSection, (section) => section.course)
-  sections!: CourseSection[];
+  sections!: Relation<CourseSection[]>;
 
   @ManyToMany(() => Category, (category) => category.courses)
   @JoinTable({
@@ -97,5 +98,5 @@ export class Course extends BaseEntity {
     joinColumn: { name: "course_id" },
     inverseJoinColumn: { name: "category_id" },
   })
-  categories!: Category[];
+  categories!: Relation<Category[]>;
 }

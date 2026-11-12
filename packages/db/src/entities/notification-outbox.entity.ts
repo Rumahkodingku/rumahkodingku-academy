@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { User } from "./user.entity";
@@ -41,5 +42,5 @@ export class NotificationOutbox extends BaseEntity {
 
   @ManyToOne(() => User, { onDelete: "SET NULL", nullable: true })
   @JoinColumn({ name: "recipient_user_id" })
-  recipient?: User | null;
+  recipient?: Relation<User | null>;
 }

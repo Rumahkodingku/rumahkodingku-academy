@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { ProjectRubricCriterion } from "./project-rubric-criterion.entity";
@@ -22,13 +23,13 @@ export class SubmissionScore extends BaseEntity {
 
   @ManyToOne(() => ProjectSubmission, (submission) => submission.scores, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "submission_id" })
-  submission!: ProjectSubmission;
+  submission!: Relation<ProjectSubmission>;
 
   @ManyToOne(() => ProjectRubricCriterion, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "criterion_id" })
-  criterion!: ProjectRubricCriterion;
+  criterion!: Relation<ProjectRubricCriterion>;
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "reviewer_id" })
-  reviewer!: User;
+  reviewer!: Relation<User>;
 }

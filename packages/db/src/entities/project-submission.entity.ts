@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { FinalProject } from "./final-project.entity";
@@ -55,19 +56,19 @@ export class ProjectSubmission extends BaseEntity {
 
   @ManyToOne(() => FinalProject, (project) => project.submissions, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "final_project_id" })
-  finalProject!: FinalProject;
+  finalProject!: Relation<FinalProject>;
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "user_id" })
-  user!: User;
+  user!: Relation<User>;
 
   @ManyToOne(() => User, { onDelete: "SET NULL", nullable: true })
   @JoinColumn({ name: "reviewer_id" })
-  reviewer?: User | null;
+  reviewer?: Relation<User | null>;
 
   @OneToMany(() => SubmissionFile, (file) => file.submission)
-  files!: SubmissionFile[];
+  files!: Relation<SubmissionFile[]>;
 
   @OneToMany(() => SubmissionScore, (score) => score.submission)
-  scores!: SubmissionScore[];
+  scores!: Relation<SubmissionScore[]>;
 }

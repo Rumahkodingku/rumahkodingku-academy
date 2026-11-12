@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { User } from "./user.entity";
@@ -48,14 +49,14 @@ export class Order extends BaseEntity {
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "user_id" })
-  user!: User;
+  user!: Relation<User>;
 
   @OneToMany(() => OrderItem, (item) => item.order)
-  items!: OrderItem[];
+  items!: Relation<OrderItem[]>;
 
   @OneToMany(() => Payment, (payment) => payment.order)
-  payments!: Payment[];
+  payments!: Relation<Payment[]>;
 
   @OneToMany(() => RefundRequest, (refund) => refund.order)
-  refunds!: RefundRequest[];
+  refunds!: Relation<RefundRequest[]>;
 }

@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { ProjectSubmission } from "./project-submission.entity";
@@ -28,5 +29,5 @@ export class SubmissionFile extends BaseEntity {
 
   @ManyToOne(() => ProjectSubmission, (submission) => submission.files, { onDelete: "CASCADE" })
   @JoinColumn({ name: "submission_id" })
-  submission!: ProjectSubmission;
+  submission!: Relation<ProjectSubmission>;
 }

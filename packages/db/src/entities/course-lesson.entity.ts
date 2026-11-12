@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { CourseSection } from "./course-section.entity";
@@ -51,5 +52,5 @@ export class CourseLesson extends BaseEntity {
 
   @ManyToOne(() => CourseSection, (section) => section.lessons, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "section_id" })
-  section!: CourseSection;
+  section!: Relation<CourseSection>;
 }

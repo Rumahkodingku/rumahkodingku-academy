@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { QuizQuestion } from "./quiz-question.entity";
@@ -20,5 +21,5 @@ export class QuizOption extends BaseEntity {
 
   @ManyToOne(() => QuizQuestion, (question) => question.options, { onDelete: "CASCADE" })
   @JoinColumn({ name: "question_id" })
-  question!: QuizQuestion;
+  question!: Relation<QuizQuestion>;
 }

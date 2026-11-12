@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { User } from "./user.entity";
@@ -34,9 +35,9 @@ export class ContentReport extends BaseEntity {
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "reporter_id" })
-  reporter!: User;
+  reporter!: Relation<User>;
 
   @ManyToOne(() => User, { onDelete: "SET NULL", nullable: true })
   @JoinColumn({ name: "moderator_id" })
-  moderator?: User | null;
+  moderator?: Relation<User | null>;
 }

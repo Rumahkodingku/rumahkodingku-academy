@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import type { Relation } from "typeorm";
 
 import { BaseEntity } from "./base.entity";
 import { Quiz } from "./quiz.entity";
@@ -41,12 +42,12 @@ export class QuizAttempt extends BaseEntity {
 
   @ManyToOne(() => Quiz, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "quiz_id" })
-  quiz!: Quiz;
+  quiz!: Relation<Quiz>;
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "user_id" })
-  user!: User;
+  user!: Relation<User>;
 
   @OneToMany(() => QuizAnswer, (answer) => answer.attempt)
-  answers!: QuizAnswer[];
+  answers!: Relation<QuizAnswer[]>;
 }
