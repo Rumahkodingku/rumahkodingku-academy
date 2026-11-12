@@ -1,8 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import type { ThrottlerStorage } from "@nestjs/throttler";
-import { Redis } from "ioredis";
 
-import { env } from "@rumahkodingku-academy/env/server";
+import type { RedisService } from "./redis.service";
 
 type ThrottlerStorageRecord = {
   totalHits: number;
@@ -13,7 +12,7 @@ type ThrottlerStorageRecord = {
 
 @Injectable()
 export class RedisThrottlerStorage implements ThrottlerStorage {
-  private readonly redis = new Redis(env.REDIS_URL);
+  constructor(private readonly redis: RedisService) {}
 
   async increment(
     key: string,
@@ -22,21 +21,21 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
     blockDuration: number,
     _throttlerName: string,
   ): Promise<ThrottlerStorageRecord> {
-    const totalHits = await this.redis.incr(key);
+    const totalHits = await this.redis.client.incr(key);
 
     if (totalHits === 1) {
-      await this.redis.pexpire(key, ttl);
+      await this.redis.client.pexpire(key, ttl);
     }
 
     const isBlocked = totalHits > limit;
 
     if (isBlocked) {
-      await this.redis.pexpire(key, blockDuration);
+      await this.redis.client.pexpire(key, blockDuration);
     }
 
     return {
       totalHits,
-      timeToExpire: Math.max(await this.redis.pttl(key), 0),
+      timeToExpire: Math.max(await this.redis.client.pttl(key), 0),
       isBlocked,
       timeToBlockExpire: isBlocked ? blockDuration : 0,
     };
