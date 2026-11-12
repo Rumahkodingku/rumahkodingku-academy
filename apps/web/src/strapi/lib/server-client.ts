@@ -1,5 +1,7 @@
 import "server-only";
 
+import type { MarketingCollection, MarketingSingle } from "../content-types";
+
 import { strapi } from "@strapi/client";
 import { env } from "@rumahkodingku-academy/env/web";
 
@@ -16,7 +18,7 @@ export async function strapiServerFetch<T>({
   documentId,
   params = {},
 }: {
-  collection: string;
+  collection: MarketingCollection;
   documentId?: string;
   params?: Record<string, unknown>;
 }): Promise<T> {
@@ -35,7 +37,7 @@ export async function strapiServerFetchSingle<T>({
   resource,
   params = {},
 }: {
-  resource: string;
+  resource: MarketingSingle;
   params?: Record<string, unknown>;
 }): Promise<T> {
   const singleManager = strapiServerClient.single(resource);

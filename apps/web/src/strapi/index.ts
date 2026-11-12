@@ -30,3 +30,25 @@ export type {
   Page,
   Homepage,
 } from "./lib/types";
+export type {
+  HomepageContent,
+  HomepageDocument,
+  MarketingBlock,
+  MarketingCollection,
+  MarketingFaqItem,
+  MarketingFeature,
+  MarketingFeatureIcon,
+  MarketingLink,
+  MarketingPageContent,
+  MarketingPageDocument,
+  MarketingSingle,
+  MarketingStep,
+  SiteSettingsContent,
+  SiteSettingsDocument,
+} from "./content-types";
+export {
+  isMarketingCollection,
+  isMarketingSingle,
+  MARKETING_COLLECTIONS,
+  MARKETING_SINGLES,
+} from "./content-types";

@@ -10,6 +10,7 @@ This package is the shared source of truth for product, design, engineering, QA,
 - `product/`: user journeys, functional requirements, business rules, and the approved Phase 0 decision log.
 - `architecture/`: system boundaries, monorepo, technology decisions.
 - `architecture/nextjs-architecture.md`: Next.js App Router rendering, routing, data, auth, caching, i18n, testing, and migration baseline.
+- `architecture/strapi-content-model.md`: marketing-only Strapi content contract, boundary, permissions, and fixtures.
 - `database/`: relational model and ERD.
 - `api/`: REST contract baseline.
 - `design/`: design brief, visual direction, tokens, UX rules.
