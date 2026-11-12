@@ -24,6 +24,9 @@ import { QuizOption } from "./quiz-option.entity";
 import { QuizAttempt, QuizAttemptStatus } from "./quiz-attempt.entity";
 import { QuizAnswer } from "./quiz-answer.entity";
 
+import { Roadmap, RoadmapStatus } from "./roadmap.entity";
+import { RoadmapCourse } from "./roadmap-course.entity";
+
 export { User, UserRole, UserStatus };
 export { RefreshSession };
 export { EmailVerificationToken };
@@ -50,6 +53,9 @@ export { QuizOption };
 export { QuizAttempt, QuizAttemptStatus };
 export { QuizAnswer };
 
+export { Roadmap, RoadmapStatus };
+export { RoadmapCourse };
+
 export const entities: Function[] = [
   User,
   RefreshSession,
@@ -73,4 +79,6 @@ export const entities: Function[] = [
   QuizOption,
   QuizAttempt,
   QuizAnswer,
+  Roadmap,
+  RoadmapCourse,
 ];
