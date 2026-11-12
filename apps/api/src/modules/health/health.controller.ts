@@ -1,5 +1,7 @@
 import { Controller, Get } from "@nestjs/common";
 import { Public } from "@nestjs/authentication";
+
+import { SkipEnvelope } from "../../common/http/api-response";
 import {
   HealthCheck,
   HealthCheckService,
@@ -9,6 +11,7 @@ import {
 import { env } from "@rumahkodingku-academy/env/server";
 
 @Public()
+@SkipEnvelope()
 @Controller("health")
 export class HealthController {
   constructor(

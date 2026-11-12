@@ -1,4 +1,4 @@
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, HttpException } from "@nestjs/common";
 import { describe, expect, it } from "vitest";
 
 import { ApiError } from "./api-response";
@@ -36,6 +36,21 @@ describe("toProblemDetails", () => {
     expect(problem.status).toBe(400);
     expect(problem.code).toBe("VALIDATION_ERROR");
     expect(problem.errors).toEqual(["email must be an email", "password is too short"]);
+  });
+
+  it("maps rate limit errors", () => {
+    const problem = toProblemDetails(
+      new HttpException("Too many requests", 429),
+      { url: "/api/v1/auth/login" },
+      "req_429",
+    );
+
+    expect(problem).toMatchObject({
+      status: 429,
+      title: "Too Many Requests",
+      code: "HTTP_429",
+      requestId: "req_429",
+    });
   });
 
   it("preserves an explicit problem", () => {

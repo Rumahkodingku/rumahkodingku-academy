@@ -10,6 +10,7 @@ import { IoAdapter } from "@nestjs/platform-socket.io";
 import { ZodValidationPipe } from "nestjs-zod";
 
 import { AppModule } from "./app.module";
+import { REQUEST_ID_HEADER, requestIdMiddleware } from "./common/http/request-id.middleware";
 import { csrfProtection } from "./modules/csrf/csrf";
 import { startMetricsServer, stopMetricsServer } from "./infrastructure/metrics/metrics";
 import { ProblemDetailsFilter } from "./common/http/problem-details.filter";
@@ -20,6 +21,7 @@ async function bootstrap() {
   app.setGlobalPrefix("api/v1");
   app.useGlobalFilters(new ProblemDetailsFilter());
   app.useGlobalPipes(new ZodValidationPipe());
+  app.use(requestIdMiddleware);
   app.use(helmet());
   app.use(compression());
   app.use(cookieParser());
@@ -28,6 +30,7 @@ async function bootstrap() {
     origin: env.CORS_ORIGIN,
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    exposedHeaders: [REQUEST_ID_HEADER],
   });
   app.useWebSocketAdapter(new IoAdapter(app));
   app.enableShutdownHooks();

@@ -1,3 +1,7 @@
+import { SetMetadata, type CustomDecorator } from "@nestjs/common";
+
+export const IS_SKIP_ENVELOPE = "skipEnvelope";
+
 export type ApiMeta = {
   requestId?: string;
   [key: string]: unknown;
@@ -8,16 +12,43 @@ export type ApiSuccess<T> = {
   meta: ApiMeta;
 };
 
-export type ApiFailure = {
-  error: {
-    code: string;
-    message: string;
-    details?: unknown;
-    requestId?: string;
-  };
-};
+/**
+ * Excludes a handler or controller from the global success envelope.
+ * Used by operational endpoints such as health checks.
+ */
+export const SkipEnvelope = (): CustomDecorator<string> => SetMetadata(IS_SKIP_ENVELOPE, true);
 
-export type ApiResult<T> = ApiSuccess<T> | ApiFailure;
+function isEnvelope(value: unknown): value is ApiSuccess<unknown> {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const candidate = value as { data?: unknown; meta?: unknown };
+  return (
+    "data" in candidate &&
+    "meta" in candidate &&
+    typeof candidate.meta === "object" &&
+    candidate.meta !== null
+  );
+}
+
+/**
+ * Normalizes a handler result into the `{ data, meta }` success envelope.
+ * Existing envelopes keep their metadata and gain the request id.
+ */
+export function toEnvelope<T>(value: T, requestId: string): ApiSuccess<T> {
+  if (isEnvelope(value)) {
+    return {
+      data: value.data as T,
+      meta: { ...value.meta, requestId },
+    };
+  }
+
+  return {
+    data: (value ?? null) as T,
+    meta: { requestId },
+  };
+}
 
 /**
  * Standardized API envelopes. HTTP status is set by the controller or filter.
@@ -34,22 +65,11 @@ export class ApiResponse {
   static noContent(meta: ApiMeta = {}): ApiSuccess<null> {
     return { data: null, meta };
   }
-
-  static failure(code: string, message: string, details?: unknown, requestId?: string): ApiFailure {
-    return {
-      error: {
-        code,
-        message,
-        ...(details !== undefined ? { details } : {}),
-        ...(requestId !== undefined ? { requestId } : {}),
-      },
-    };
-  }
 }
 
 /**
  * Throw from any handler to produce a structured HTTP error response via the
- * global error handler.
+ * global Problem Details filter.
  */
 export class ApiError extends Error {
   readonly status: number;

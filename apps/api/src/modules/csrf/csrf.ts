@@ -28,7 +28,8 @@ export function csrfProtection(request: Request, response: Response, next: NextF
       return;
     }
 
-    const requestId = request.headers["x-request-id"]?.toString() ?? randomUUID();
+    const requestId =
+      request.requestId ?? request.headers["x-request-id"]?.toString() ?? randomUUID();
 
     response.status(403).type("application/problem+json").json({
       type: "https://rumahkodingku.com/problems/invalid-csrf-token",

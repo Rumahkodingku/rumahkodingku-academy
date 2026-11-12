@@ -11,7 +11,8 @@ export class ProblemDetailsFilter implements ExceptionFilter {
     const context = host.switchToHttp();
     const response = context.getResponse<Response>();
     const request = context.getRequest<Request>();
-    const requestId = request.headers["x-request-id"]?.toString() ?? randomUUID();
+    const requestId =
+      request.requestId ?? request.headers["x-request-id"]?.toString() ?? randomUUID();
     const problem = toProblemDetails(exception, request, requestId);
 
     response.status(problem.status).type("application/problem+json").json(problem);

@@ -10,17 +10,6 @@ describe("ApiResponse", () => {
     });
   });
 
-  it("wraps failure with a stable code and request id", () => {
-    expect(ApiResponse.failure("VALIDATION_ERROR", "Invalid input", [], "req_2")).toEqual({
-      error: {
-        code: "VALIDATION_ERROR",
-        message: "Invalid input",
-        details: [],
-        requestId: "req_2",
-      },
-    });
-  });
-
   it("preserves ApiError metadata", () => {
     const error = new ApiError(409, "CONFLICT", "Already exists", { field: "email" });
 
