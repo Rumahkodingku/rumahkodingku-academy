@@ -49,6 +49,7 @@
   --status-danger: #b91c1c;
   --status-info: #0369a1;
   --brand-parent: #406194;
+  --overlay: rgb(2 6 23 / 0.5);
 
   --elevation-1: 0 1px 2px rgb(15 23 42 / 0.06);
   --elevation-2: 0 4px 12px rgb(15 23 42 / 0.08);
@@ -100,6 +101,7 @@
   --status-warning: #facc15;
   --status-danger: #f87171;
   --status-info: #38bdf8;
+  --overlay: rgb(2 6 23 / 0.7);
 
   --elevation-1: 0 1px 2px rgb(0 0 0 / 0.22);
   --elevation-2: 0 6px 16px rgb(0 0 0 / 0.28);
@@ -150,6 +152,7 @@
   --color-status-danger: var(--status-danger);
   --color-status-info: var(--status-info);
   --color-brand-parent: var(--brand-parent);
+  --color-overlay: var(--overlay);
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
