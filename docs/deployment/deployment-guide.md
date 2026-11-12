@@ -18,15 +18,27 @@ Internet
 
 Separate local, CI/test, staging, production. Never reuse production database credentials, Redis, payment secrets, or Strapi content in lower environments.
 
+Production domains:
+
+- Web: `academy.rumahkodingku.com`
+- API: `api.rumahkodingku.com`
+- Staging: `staging-academy.rumahkodingku.com` and `staging-api.rumahkodingku.com` (DNS/TLS to be provisioned)
+
+Auth cookies are host-only (no `Domain` attribute), `HttpOnly`, `Secure` in production, and `SameSite=Lax`. Staging and production must not share cookies. Use exact-origin CORS with credentials.
+
 ## Configuration
 
 Use Coolify-managed environment variables/secrets for app URLs, DB connection, Redis URL, JWT signing/session settings, cookie domain/security, Midtrans server/client keys and notification verification, upload root/policies, email provider, CORS origins, Socket.io origins, Strapi URL/token, PostHog key/host, logging/monitoring. Never commit actual values.
 
 Minimum variable groups:
 
-- Web: `NEXT_PUBLIC_SERVER_URL`, `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_STRAPI_URL`, `STRAPI_API_TOKEN`.
-- API: `DATABASE_URL`, `CORS_ORIGIN`, `REDIS_URL`, `JWT_*`, `CSRF_SECRET`, `MIDTRANS_*`, `UPLOAD_ROOT`, `EMAIL_*`, `GARAGE_*`, `STRAPI_URL`, `POSTHOG_API_KEY`, `POSTHOG_HOST`, `LOG_LEVEL`, `METRICS_*`.
+- Web: `NEXT_PUBLIC_SERVER_URL`, `NEXT_PUBLIC_SITE_URL`, `API_URL`, `AUTH_SESSION_COOKIE`, `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_STRAPI_URL`, `STRAPI_API_TOKEN`.
+- API: `DATABASE_URL`, `CORS_ORIGIN`, `REDIS_URL`, `JWT_*`, `CSRF_SECRET`, `MIDTRANS_*`, `UPLOAD_ROOT`, `EMAIL_*`, `RESEND_API_KEY`, `EMAIL_FROM`, `GARAGE_*`, `STRAPI_URL`, `POSTHOG_API_KEY`, `POSTHOG_HOST`, `LOG_LEVEL`, `METRICS_*`.
 - Strapi: database connection, app keys, public URL, media storage configuration.
+
+Email provider: Resend. Sender: `academy@rumahkodingku.com`. Verify SPF/DKIM/DMARC and the sending domain before production. Do not use sandbox or personal email credentials.
+
+Upload policy: 10 MB per file; JPG/JPEG, PNG, WebP, PDF, ZIP; maximum 5 files per final-project submission; 1-year retention; malware scanning deferred for the MVP.
 
 ## Containers and persistence
 
@@ -39,7 +51,7 @@ Build immutable images from pinned dependencies; avoid `latest`; run non-root wh
 
 ## Network
 
-HTTPS for web/API; prefer same-site topology for cookies; strict CORS allowlist; expose only reverse-proxy ports; keep MySQL, Redis, and Strapi admin private; configure trusted proxy correctly. Socket.io requires WebSocket upgrade support at the proxy. If API instances scale horizontally, configure sticky sessions or a Socket.io adapter and shared upload storage.
+HTTPS for web/API; use the approved same-site subdomains; strict CORS allowlist; host-only auth cookies; expose only reverse-proxy ports; keep MySQL, Redis, and Strapi admin private; configure trusted proxy correctly. Socket.io requires WebSocket upgrade support at the proxy. If API instances scale horizontally, configure sticky sessions or a Socket.io adapter and shared upload storage.
 
 ## Release procedure
 
@@ -58,13 +70,15 @@ HTTPS for web/API; prefer same-site topology for cookies; strict CORS allowlist;
 
 TypeORM synchronize disabled. Review migration SQL; back up first; prefer additive changes; run migrations as a controlled release step; prepare forward-fix/rollback. Do not assume reversing a migration is safe after data writes. IDR integer money; no float columns.
 
+Backup baseline: daily database backup, 7-day retention, RPO 24 hours, RTO 4 hours. Test restore before production launch.
+
 ## File storage
 
 Mount stable persistent storage root; store relative keys in DB; keep uploads outside executable/public app root; monitor disk; back up DB and files consistently; test restore; retain submission evidence according to approved policy.
 
 ## Backup/recovery
 
-Recommended daily DB backup and more frequent file backup based on approved RPO; encrypted off-site copy; approved retention; documented RPO/RTO; regular restore drills. Back up Strapi content and LMS files separately. A backup is not valid until restore-tested.
+Baseline: daily database backup, 7-day retention, RPO 24 hours, RTO 4 hours. Back up LMS files and Strapi content separately; keep an encrypted off-site copy. Run restore drills; a backup is not valid until restore-tested.
 
 ## Monitoring
 
@@ -72,7 +86,7 @@ CPU/memory/disk/container restarts; HTTP availability/latency/errors; MySQL heal
 
 ## Security
 
-HTTPS, Coolify secrets, strong DB/Redis credentials, private MySQL/Redis/Strapi admin, Secure HttpOnly cookies, CSRF, CORS allowlist, rate limits, admin MFA recommended, upload restrictions, patching, audit, encrypted backups. Never expose PostHog keys with server privileges; never send secrets or payment data to PostHog. Strapi must not receive LMS personal data.
+HTTPS, Coolify secrets, strong DB/Redis credentials, private MySQL/Redis/Strapi admin, host-only Secure HttpOnly cookies, CSRF, CORS allowlist, rate limits, admin MFA required before production, upload restrictions, patching, audit, encrypted backups. Never expose PostHog keys with server privileges; never send secrets or payment data to PostHog. Strapi must not receive LMS personal data.
 
 ## Rollback
 

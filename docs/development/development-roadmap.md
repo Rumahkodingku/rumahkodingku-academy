@@ -41,6 +41,8 @@ This roadmap follows the approved product and technical decisions:
 
 **Goal:** close high-impact product decisions before building dependent behavior.
 
+Approved decisions are recorded in `docs/product/decision-log.md`.
+
 Tasks:
 
 - Review all documents and resolve contradictions.
@@ -56,9 +58,11 @@ Tasks:
 - Approve analytics event taxonomy, platform settings, and announcement scope.
 - Create backlog tickets linked to FR/BR IDs and define acceptance criteria.
 
-Deliverables: approved decision log, prioritized backlog, brand assets, external account checklist, Strapi content model.
+Deliverables: approved decision log (`docs/product/decision-log.md`), prioritized backlog (`docs/development/phase-0-backlog.md`), brand assets, external account checklist, Strapi content model.
 
 Exit gate: no unresolved ambiguity affecting money, access, privacy, security, certificate eligibility, or data retention.
+
+Status: Phase 0 decisions approved on 12 November 2026 in `docs/product/decision-log.md`. External setup (Midtrans onboarding, Resend domain verification, DNS/TLS, final legal review, official brand assets) remains pending but does not change the approved behavior.
 
 ## 4. Phase 1 — Repository and engineering foundation
 
@@ -229,7 +233,7 @@ Tasks:
 - Build admin user management, enrollment/order/payment lookup, and audit log viewer.
 - Build MySQL-derived analytics: revenue, top courses, enrollment trend, completion rate, quiz pass rate, project approval rate, review time, certificates.
 - Configure PostHog product analytics and feature flags; exclude financial/admin reports from PostHog.
-- Add confirmation for high-risk actions and consider admin MFA.
+- Add confirmation for high-risk actions and enforce admin MFA before production launch.
 - Test permissions, state transitions, coupon limits, review moderation, and analytics correctness.
 
 Exit gate: supporting features are usable; each sensitive action is auditable; analytics match MySQL source data; no PII or payment data leaks to PostHog.
@@ -260,7 +264,7 @@ Performance/reliability:
 - Optimize images, fonts, bundles, and route loading.
 - Review MySQL indexes/slow queries, Redis hit rate, and API concurrency.
 - Test upload/storage capacity behavior.
-- Test payment reconciliation/retries, app restart, migrations, backup and restore.
+- Test payment reconciliation/retries, app restart, migrations, and daily backup restore against RPO 24 hours / RTO 4 hours.
 - Validate health checks, alerts, incident runbooks, Strapi availability, and Redis degradation behavior.
 
 Staging/UAT/release:

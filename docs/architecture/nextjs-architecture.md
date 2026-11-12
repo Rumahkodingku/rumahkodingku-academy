@@ -202,8 +202,9 @@ The browser and the Next.js server call NestJS directly.
 
 ### 5.3 Cookie and Origin Topology
 
-- Production SHOULD use a same-site topology (for example `academy.example.com` and `api.example.com`) so HttpOnly `SameSite=Lax` cookies work without weakening the policy.
-- If the deployment must be cross-site, the API cookie policy, CORS allowlist, and CSRF strategy MUST be reviewed together. Do not set `SameSite=None` casually.
+- Production web is `academy.rumahkodingku.com`; production API is `api.rumahkodingku.com`.
+- Staging uses isolated hosts: `staging-academy.rumahkodingku.com` and `staging-api.rumahkodingku.com`.
+- Auth cookies are host-only (no `Domain` attribute), `HttpOnly`, `Secure` in production, and `SameSite=Lax`. Staging and production cookies MUST NOT be shared.
 - CORS MUST allow only the configured web origin and MUST allow credentials.
 - The web app MUST NOT set or read authentication cookies directly; the API owns them.
 - CSRF tokens are fetched from `GET /api/v1/csrf/token` and sent as `x-csrf-token` on cookie-authenticated mutations.

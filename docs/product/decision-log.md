@@ -1,0 +1,89 @@
+# Product and Policy Decision Log
+
+**Project:** RumahKodingku Academy  
+**Document type:** Approved decision log  
+**Status:** Baseline approved; external account setup and legal review remain before launch  
+**Decision date:** 12 November 2026  
+**Owner:** Product owner / technical lead
+
+This log records Phase 0 decisions that were previously marked TBD. It is normative for implementation unless a newer approved decision supersedes it. Business behavior remains governed by `business-rules.md`; technical contracts remain governed by the architecture and API documents.
+
+## 1. Approved decisions
+
+| ID      | Area                    | Decision                                                                                                                                                                                                                                                                                                                                                           | References                           |
+| ------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ |
+| DEC-001 | Course completion       | Completion requires all required lessons, all required quizzes, and final project approval when the final project is enabled. No other hidden completion rule is allowed.                                                                                                                                                                                          | BR-109, FR-LEARN-08                  |
+| DEC-002 | Quiz policy             | Supported types: multiple choice, multiple select, true/false, short answer. Default pass score: 70%. Default attempts: 3. Default time limit: 30 minutes. Answer review is available after submission. Short answer is exact-match after trim, case, and whitespace normalization.                                                                                | BR-120–BR-127, FR-QUIZ-01–FR-QUIZ-06 |
+| DEC-003 | Refund policy           | Refund window: 14 calendar days from the confirmed payment date. A request must include the order ID, reason, and supporting evidence such as a payment receipt, error screenshot, or access log. MVP supports full refunds only. Access is revoked only after the refund reaches `SUCCEEDED`, unless an approved fraud/security hold applies.                     | BR-090–BR-096, FR-COM-08             |
+| DEC-004 | Certificate policy      | Issuer: `RumahKodingku Academy`. Certificate code format: `RK-YYYY-XXXXXX`, where `XXXXXX` is a unique six-character uppercase alphanumeric code. Public verification shows learner name, course title, issue date, issuer, and status (`VALID`/`REVOKED`). Reissue revokes the old record and creates a new record; history is preserved.                         | BR-140–BR-145, FR-CERT-01–FR-CERT-05 |
+| DEC-005 | Upload policy           | Maximum size: 10 MB per file. Allowed types: JPG/JPEG, PNG, WebP, PDF, ZIP. Maximum 5 files per final-project submission. Retention: 1 year from upload unless the associated record must be retained for audit or legal reasons. Malware scanning is not included in the MVP; file type/content validation and authorized access remain mandatory.                | BR-130–BR-134, FR-PROJ-02            |
+| DEC-006 | Domains and cookies     | Production web: `academy.rumahkodingku.com`. Production API: `api.rumahkodingku.com`. Staging: `staging-academy.rumahkodingku.com` and `staging-api.rumahkodingku.com` (DNS/TLS to be provisioned). Auth cookies are host-only (no `Domain` attribute), `HttpOnly`, `Secure` in production, and `SameSite=Lax`. Staging and production cookies must not be shared. | BR-003, BR-005, security docs        |
+| DEC-007 | Email provider          | Provider: Resend. Sender: `academy@rumahkodingku.com`. Domain verification, SPF/DKIM/DMARC, and production API key are external setup tasks.                                                                                                                                                                                                                       | BR-171, deployment guide             |
+| DEC-008 | Analytics and settings  | Start with the minimal event taxonomy in Section 3. Platform settings and announcements use a simple ADMIN-managed model with audit on public-behavior changes. PostHog is not a financial or learning source of truth.                                                                                                                                            | BR-174, BR-175                       |
+| DEC-009 | Legal/policy baseline   | Approve the current draft terms, privacy, refund, community, and data-retention baseline for implementation. Legal review and final publication remain required before launch.                                                                                                                                                                                     | README, deployment guide             |
+| DEC-010 | Tax and fee display     | The course price shown to the learner is the final payable amount for the course. If tax, payment fee, or another charge applies, show it as an explicit line item before payment confirmation; never hide it inside an unexplained total. The server remains authoritative for the amount.                                                                        | BR-012, BR-030, payment decision     |
+| DEC-011 | Payment provider        | Midtrans remains the preferred initial provider, subject to merchant onboarding and digital-education category approval. Local mock and Midtrans Sandbox never grant production access.                                                                                                                                                                            | BR-020–BR-020c                       |
+| DEC-012 | Data retention baseline | Uploads: 1 year from upload unless retained for audit/legal reasons. Application logs: 30 days. Product analytics: 12 months. Audit and financial records: retained according to applicable legal/tax requirements and never removed by routine cleanup. Account deletion removes personal data except records that must be retained.                              | DEC-009, security docs               |
+| DEC-013 | Brand assets            | Use only official parent-brand and Academy assets. Academy Blue `#2563EB` is an accent, not a replacement palette. Do not guess missing brand colors or logo usage.                                                                                                                                                                                                | design system                        |
+| DEC-014 | Coupon limits           | Maximum discount is 100% of the course price; minimum purchase is 0; global limit is 100 uses; per-user limit is 1; stacking is not allowed. ADMIN may configure a stricter coupon.                                                                                                                                                                                | BR-164–BR-166, FR-COUPON-01          |
+| DEC-015 | Admin MFA               | Admin MFA is required before production launch. The selected mechanism must be compatible with the authentication stack and covered by recovery procedures.                                                                                                                                                                                                        | security docs, Phase 10              |
+| DEC-016 | Backup and recovery     | Daily database backup; 7-day retention; RPO 24 hours; RTO 4 hours. Restore must be tested before production launch.                                                                                                                                                                                                                                                | deployment guide, Phase 10           |
+
+## 2. External setup still required
+
+These are operational tasks, not unresolved product decisions:
+
+- Midtrans merchant onboarding and confirmation that online course/digital education sales are accepted.
+- Resend account, sending-domain verification, SPF/DKIM/DMARC, and production API key.
+- DNS and TLS for production and staging domains.
+- Final legal review of terms, privacy, refund, community, and retention wording.
+- Official parent-brand assets and final Academy logo lockup.
+- Production sizing and capacity validation.
+- Review moderation SLA.
+
+These MUST NOT block implementation of already approved behavior, but they MUST be resolved before production launch.
+
+## 3. Minimal analytics event taxonomy
+
+The initial PostHog set is intentionally small. Events MUST NOT include passwords, tokens, cookies, payment secrets, or unnecessary personal data.
+
+| Area          | Events                                                                        |
+| ------------- | ----------------------------------------------------------------------------- |
+| Auth          | `auth_registered`, `auth_login_succeeded`, `auth_login_failed`, `auth_logout` |
+| Catalog       | `catalog_viewed`, `course_viewed`, `catalog_search_performed`                 |
+| Commerce      | `checkout_started`, `order_created`, `payment_succeeded`, `payment_failed`    |
+| Learning      | `lesson_started`, `lesson_completed`, `course_completed`                      |
+| Quiz          | `quiz_started`, `quiz_submitted`, `quiz_passed`                               |
+| Project       | `project_submitted`, `project_reviewed`                                       |
+| Certificate   | `certificate_issued`, `certificate_verified`                                  |
+| Community     | `community_post_created`, `community_reply_created`                           |
+| Notifications | `notification_opened`                                                         |
+
+Event names and properties follow the approved analytics taxonomy. Admin financial and learning reports are computed from MySQL, not PostHog.
+
+## 4. Platform settings and announcements
+
+Initial scope:
+
+- Platform settings: site announcement banner, support contact, maintenance notice, and public feature toggles that do not alter financial or authorization policy.
+- Announcements: title, body, audience (`PUBLIC`/`USER`/`ADMIN`), publish window, active flag, and audit metadata.
+- Sensitive settings require ADMIN permission and an audit record.
+- Settings must not be used to bypass backend business rules.
+
+## 5. Decision governance
+
+- Any change to an approved decision MUST be recorded here or in a superseding ADR.
+- A change that affects money, access, privacy, security, certificate eligibility, or data retention requires explicit product approval.
+- Implementation MUST update the affected business rules, API contract, tests, and deployment configuration.
+- “TBD” is not an implementation instruction. It means the behavior is not approved and MUST NOT be shipped as a fixed rule.
+
+## 6. Related documents
+
+- `business-rules.md`
+- `functional-requirements.md`
+- `../api/api-specification.md`
+- `../architecture/nextjs-architecture.md`
+- `../architecture/nestjs-architecture.md`
+- `../deployment/deployment-guide.md`
+- `../payments/payment-provider-decision.md`
+- `../design/design-system.md`

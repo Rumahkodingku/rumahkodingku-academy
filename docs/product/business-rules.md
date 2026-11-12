@@ -8,6 +8,8 @@ This document is normative for business behavior.
 - BR-002: Authorization is enforced server-side on every protected operation.
 - BR-003: Client-supplied role/ownership fields are never trusted.
 - BR-004: Course instructor/author information is descriptive text on the course. It does not create a role or login.
+- BR-005: Production web is `academy.rumahkodingku.com`; production API is `api.rumahkodingku.com`. Auth cookies are host-only (no `Domain` attribute), `HttpOnly`, `Secure` in production, and `SameSite=Lax`. Staging hosts are isolated; cookies must never be shared between staging and production.
+- BR-006: Cookie-authenticated mutations require a CSRF token. CORS allows only the configured web origin with credentials.
 
 ## Courses and purchases
 
@@ -38,6 +40,7 @@ This document is normative for business behavior.
 - BR-028: Money is stored and compared as IDR integer. Floating point is forbidden.
 - BR-029: One coupon is allowed per order. A second coupon is rejected.
 - BR-030: Checkout snapshots subtotal, discount, coupon code, total, currency, and course price.
+- BR-031: The learner-facing course price is the final payable amount. Any tax, payment fee, or additional charge is shown as an explicit line item before payment confirmation; it is never hidden in the total. The server calculates the amount.
 
 ## Refunds
 
@@ -47,7 +50,7 @@ This document is normative for business behavior.
 - BR-093: Record amount, reviewer, reason, provider reference, and outcome.
 - BR-094: Refund statuses are `REQUESTED`, `UNDER_REVIEW`, `APPROVED`, `REJECTED`, `PROCESSING`, `SUCCEEDED`, `FAILED`.
 - BR-095: Revoke access only after confirmed refund success (`SUCCEEDED`), unless an approved fraud/security hold applies.
-- BR-096: Refund window and required evidence remain TBD until approved.
+- BR-096: Refund requests are accepted within 14 calendar days from the confirmed payment date. The request must include the order ID, reason, and at least one supporting artifact such as a payment receipt, error screenshot, or access log. ADMIN may request additional evidence.
 
 ## Roadmap and learning
 
@@ -60,7 +63,7 @@ This document is normative for business behavior.
 - BR-106: Rich text is sanitized.
 - BR-107: Lessons may be required or optional; preview is configured per lesson.
 - BR-108: Progress is tracked per user/lesson.
-- BR-109: Course completion requires all required lessons, all required quizzes, final project approval when enabled, and any additional course requirements.
+- BR-109: Course completion requires all required lessons, all required quizzes, and final project approval when the final project is enabled. No other hidden completion rule is allowed.
 - BR-110: Video watch percentage is not proof of learning unless explicitly implemented and disclosed.
 
 ## Quiz
@@ -70,16 +73,17 @@ This document is normative for business behavior.
 - BR-122: Answer keys are server-only before submission.
 - BR-123: Supported question types are multiple choice, multiple select, true/false, and short answer.
 - BR-124: Short answer is auto-graded by exact match after trim, case, and whitespace normalization.
-- BR-125: Pass score and attempt policy are configurable; suggested initial pass score 70%, subject to approval.
+- BR-125: The default pass score is 70%. The default attempt limit is 3 attempts. The default time limit is 30 minutes. ADMIN may configure these values per quiz within approved limits.
 - BR-126: Quiz affects completion only when configured as required and passed.
 - BR-127: Attempts are retained.
+- BR-128: Answer review is available after submission. Answer keys are never exposed before submission. Short answer is exact-match after trim, case, and whitespace normalization.
 
 ## Final project
 
 - BR-130: Final project is configurable per course; it may be disabled.
 - BR-131: When enabled, submission requires a GitHub repository URL and a live deployment URL.
 - BR-132: Supporting files are optional and controlled by course configuration.
-- BR-133: Uploads validate size, MIME, extension, authorization, and generated storage key.
+- BR-133: Uploads validate size, MIME, extension, authorization, and generated storage key. Maximum size is 10 MB per file; allowed types are JPG/JPEG, PNG, WebP, PDF, and ZIP; maximum 5 files per final-project submission. Uploads are retained for 1 year from upload unless audit/legal retention requires longer. Malware scanning is not part of the MVP and is recorded as an accepted risk.
 - BR-134: Resubmission is unlimited. Each resubmission is a new immutable version.
 - BR-135: ADMIN records decision, score, and feedback.
 - BR-136: Review decisions are `REVISION_REQUIRED` and `APPROVED`. There is no `REJECTED` state.
@@ -93,6 +97,7 @@ This document is normative for business behavior.
 - BR-143: Manual correction/revocation is exceptional and audited.
 - BR-144: Revoked certificates remain searchable and verify as invalid.
 - BR-145: Public verification discloses only approved fields.
+- BR-146: Certificate issuer is `RumahKodingku Academy`. Certificate code format is `RK-YYYY-XXXXXX`, where `XXXXXX` is a unique six-character uppercase alphanumeric code. Public verification shows learner name, course title, issue date, issuer, and status (`VALID`/`REVOKED`). Reissue revokes the old record and creates a new record; history is preserved.
 
 ## Community
 
@@ -112,15 +117,20 @@ This document is normative for business behavior.
 - BR-164: Coupons have code, type, value, maximum discount, minimum purchase, validity period, global limit, per-user limit, eligible courses, and active status.
 - BR-165: Coupon redemption is recorded and cannot exceed configured limits.
 - BR-166: One coupon per order; coupons never make the server-derived total negative.
+- BR-167: MVP coupon limits: maximum discount 100% of course price, minimum purchase 0, global limit 100 uses, per-user limit 1, and no stacking. ADMIN may configure a stricter coupon.
 
 ## Notifications and admin operations
 
 - BR-170: In-app notifications are delivered through Socket.io with polling fallback.
-- BR-171: Email notifications use the approved provider and a transactional outbox; notification failure must not roll back core transactions.
+- BR-171: Email notifications use Resend with sender `academy@rumahkodingku.com` and a transactional outbox; notification failure must not roll back core transactions. Domain verification and production API key are external setup tasks.
 - BR-172: Notifications never include secrets, tokens, cookies, or unnecessary personal data.
 - BR-173: Sensitive admin actions are audited.
 - BR-174: Admin analytics and financial reports are computed from MySQL, not PostHog.
-- BR-175: Announcements and platform settings are managed by ADMIN and audited when they affect public behavior.
+- BR-175: Announcements and platform settings are managed by ADMIN and audited when they affect public behavior. Initial settings cover announcement banner, support contact, maintenance notice, and public feature toggles. Announcements have title, body, audience, publish window, active flag, and audit metadata.
+- BR-176: PostHog uses the minimal approved event taxonomy in `product/decision-log.md`. Events never include passwords, tokens, cookies, payment secrets, or unnecessary personal data.
+- BR-177: Retention baseline: uploads 1 year; application logs 30 days; product analytics 12 months; audit and financial records follow applicable legal/tax requirements and are not removed by routine cleanup. Account deletion removes personal data except records that must be retained.
+- BR-178: Admin MFA is required before production launch. The mechanism must be compatible with the authentication stack and covered by recovery procedures.
+- BR-179: Backup baseline: daily database backup, 7-day retention, RPO 24 hours, RTO 4 hours. Restore must be tested before production launch.
 
 ## Recommended states
 

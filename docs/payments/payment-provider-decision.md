@@ -70,6 +70,8 @@ Sandbox and production credentials, URLs, databases, and webhook secrets MUST be
 - Store provider name, provider transaction/order reference, payment method, amount, currency, status, and relevant event identifiers.
 - Store and compare money as IDR integer; never use floating point.
 - MVP supports full refunds only. Partial refunds are out of scope until explicitly approved.
+- Refund requests are accepted within 14 calendar days from confirmed payment; evidence is required; access is revoked only after `SUCCEEDED`.
+- Display the final payable amount with any tax/payment-fee line item before confirmation; never hide fees in an unexplained total.
 - Verify Midtrans notifications using the current official signature/verification mechanism.
 - Make webhook/notification handling idempotent and safe for retries/out-of-order events.
 - Reconcile provider amount, currency, order reference, and status before marking paid.
@@ -91,7 +93,7 @@ Published fees are subject to change, tax, merchant category, and negotiated ter
 - Notification URL verified and production notification authenticity tested.
 - Duplicate, forged, delayed, out-of-order, amount-mismatch, and failed-payment cases tested.
 - Enrollment is created exactly once after verified payment success.
-- Refund/void workflow and access-revocation policy are approved.
+- Refund/void workflow and access-revocation policy are approved (14-day window, evidence required, revoke after confirmed success).
 - Full-refund lifecycle `REQUESTED → UNDER_REVIEW → APPROVED/REJECTED → PROCESSING → SUCCEEDED/FAILED` is tested and audited; partial refunds are not exposed.
 - Terms, privacy, refund policy, and customer support contact are published.
 - A controlled production transaction is reconciled with settlement records.

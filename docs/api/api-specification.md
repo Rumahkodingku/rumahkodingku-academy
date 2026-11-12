@@ -63,7 +63,7 @@ Never expose stack traces, SQL, secrets, or internal file paths.
 - `POST /auth/verify-email`
 - `POST /auth/resend-verification`
 
-Set/clear HttpOnly cookies; apply Redis-backed rate limits and CSRF/origin protections.
+Set/clear HttpOnly cookies; apply Redis-backed rate limits and CSRF/origin protections. Production auth cookies are host-only (no `Domain` attribute), `Secure`, and `SameSite=Lax`; staging and production cookies are isolated.
 
 ## Public catalog
 
@@ -97,7 +97,11 @@ Admin:
 - `/admin/coupons`
 - `/admin/coupons/:id`
 
-Order request contains course ID, optional coupon code, and optional idempotency key. Price, discount, and total are server-derived. One coupon per order. Webhook endpoint is provider-specific, for example `POST /payments/webhooks/midtrans`; it uses the official verification contract and does not require browser cookies. Full refunds only.
+Order request contains course ID, optional coupon code, and optional idempotency key. Price, discount, and total are server-derived. One coupon per order. MVP coupon limits: maximum discount 100% of course price, minimum purchase 0, global limit 100 uses, per-user limit 1, no stacking. Webhook endpoint is provider-specific, for example `POST /payments/webhooks/midtrans`; it uses the official verification contract and does not require browser cookies. Full refunds only.
+
+Refund requests are accepted within 14 calendar days from the confirmed payment date. The request includes the order ID, reason, and at least one supporting artifact such as a payment receipt, error screenshot, or access log. Access is revoked only after the refund reaches `SUCCEEDED`.
+
+Money responses use IDR integer. If tax, payment fee, or another charge applies, the response exposes it as an explicit line item so the client can show the final payable amount before confirmation.
 
 ## Learning
 
@@ -118,7 +122,9 @@ Every protected endpoint checks enrollment and roadmap prerequisites. Preview le
 - `POST /quiz-attempts/:attemptId/submit`
 - `GET /me/quiz-attempts`
 
-Correct answers are omitted from learner responses. Short answer is exact-match graded after normalization.
+Correct answers are omitted from learner responses before submission. Short answer is exact-match graded after trim, case, and whitespace normalization.
+
+Initial quiz defaults: pass score 70%, 3 attempts, 30-minute time limit, answer review after submission. Supported types are multiple choice, multiple select, true/false, and short answer. ADMIN may configure these per quiz within approved limits.
 
 ## Roadmap
 
@@ -153,6 +159,10 @@ Admin:
 - `/admin/certificates/:id/reissue`
 
 Submission requires GitHub URL and deployment URL when the final project is enabled. Files are optional. Review decisions are `REVISION_REQUIRED` and `APPROVED`; no rejected state. Certificate reissue creates a new record.
+
+Submission files: maximum 10 MB per file; allowed types JPG/JPEG, PNG, WebP, PDF, ZIP; maximum 5 files per submission; retention 1 year from upload unless audit/legal retention requires longer. Malware scanning is not part of the MVP; content validation and authorized access remain mandatory.
+
+Certificate issuer is `RumahKodingku Academy`. Certificate code format is `RK-YYYY-XXXXXX`. Public verification returns learner name, course title, issue date, issuer, and status (`VALID`/`REVOKED`); it does not expose email, user IDs, or payment data.
 
 ## Community
 

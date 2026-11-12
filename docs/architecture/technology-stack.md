@@ -2,31 +2,32 @@
 
 ## Confirmed
 
-| Layer                   | Choice                                                 |
-| ----------------------- | ------------------------------------------------------ |
-| Frontend                | Next.js 16 + React 19                                  |
-| Backend                 | NestJS on Node.js 24 LTS, `apps/api`                   |
-| Language                | TypeScript strict mode                                 |
-| Monorepo                | Turborepo + pnpm                                       |
-| Database                | MySQL 8                                                |
-| ORM                     | TypeORM                                                |
-| Auth                    | JWT access + refresh in HttpOnly cookies               |
-| Payment                 | Midtrans (initial provider; merchant approval pending) |
-| File storage            | Local filesystem on persistent VPS storage             |
-| Cache/rate limit        | Redis                                                  |
-| Realtime                | Socket.io                                              |
-| Product analytics/flags | PostHog                                                |
-| Marketing CMS           | Strapi (marketing content only)                        |
-| i18n                    | i18next; Indonesian default, English-ready             |
-| Deployment              | VPS + Coolify                                          |
-| Lint/format             | oxlint + oxfmt                                         |
-| Tests                   | Vitest + Playwright                                    |
-| API docs                | Swagger + Scalar                                       |
-| API errors              | RFC 9457 Problem Details                               |
-| Auth                    | `@nestjs/authentication` + `@nestjs/authorization`     |
-| Mail                    | `@nestjs/mail` + Handlebars                            |
-| File storage            | `@nestjs/storage` (local, S3/Garage)                   |
-| Realtime                | NestJS WebSocket gateway + Socket.io                   |
+| Layer                   | Choice                                                            |
+| ----------------------- | ----------------------------------------------------------------- |
+| Frontend                | Next.js 16 + React 19                                             |
+| Backend                 | NestJS on Node.js 24 LTS, `apps/api`                              |
+| Language                | TypeScript strict mode                                            |
+| Monorepo                | Turborepo + pnpm                                                  |
+| Database                | MySQL 8                                                           |
+| ORM                     | TypeORM                                                           |
+| Auth                    | JWT access + refresh in HttpOnly cookies; host-only in production |
+| Payment                 | Midtrans (initial provider; merchant approval pending)            |
+| File storage            | Local filesystem on persistent VPS storage                        |
+| Cache/rate limit        | Redis                                                             |
+| Realtime                | Socket.io                                                         |
+| Product analytics/flags | PostHog                                                           |
+| Marketing CMS           | Strapi (marketing content only)                                   |
+| i18n                    | i18next; Indonesian default, English-ready                        |
+| Deployment              | VPS + Coolify                                                     |
+| Lint/format             | oxlint + oxfmt                                                    |
+| Tests                   | Vitest + Playwright                                               |
+| API docs                | Swagger + Scalar                                                  |
+| API errors              | RFC 9457 Problem Details                                          |
+| Auth                    | `@nestjs/authentication` + `@nestjs/authorization`                |
+| Mail                    | `@nestjs/mail` + Handlebars                                       |
+| Email provider          | Resend; sender `academy@rumahkodingku.com`                        |
+| File storage            | `@nestjs/storage` (local, S3/Garage)                              |
+| Realtime                | NestJS WebSocket gateway + Socket.io                              |
 
 ## API and money
 

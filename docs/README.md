@@ -7,13 +7,13 @@ This package is the shared source of truth for product, design, engineering, QA,
 ## Document map
 
 - `PLAN.md`: product vision, scope, users, outcomes, phases, and confirmed product decisions.
-- `product/`: user journeys, functional requirements, business rules.
+- `product/`: user journeys, functional requirements, business rules, and the approved Phase 0 decision log.
 - `architecture/`: system boundaries, monorepo, technology decisions.
 - `architecture/nextjs-architecture.md`: Next.js App Router rendering, routing, data, auth, caching, i18n, testing, and migration baseline.
 - `database/`: relational model and ERD.
 - `api/`: REST contract baseline.
 - `design/`: design brief, visual direction, tokens, UX rules.
-- `development/`: roadmap, coding standards, testing.
+- `development/`: roadmap, coding standards, testing, and the Phase 0 backlog seed.
 - `deployment/`: VPS + Coolify operating guide.
 - `payments/payment-provider-decision.md`: approved provider direction and onboarding constraints.
 
@@ -35,6 +35,23 @@ Canonical learning structure: `Course → Section → Lesson`; database table `c
 
 Canonical money representation: IDR integer. Never use floating point for money.
 
+## Phase 0 decisions
+
+The approved Phase 0 decision log is `product/decision-log.md`. It records the initial policy for:
+
+- Course completion: required lessons, required quizzes, and final project approval when enabled.
+- Quiz: multiple choice, multiple select, true/false, short answer; 70% pass; 3 attempts; 30 minutes; review after submission.
+- Refund: 14 days from confirmed payment; evidence required; full refund only; access revoked after confirmed success.
+- Certificate: `RumahKodingku Academy` issuer; `RK-YYYY-XXXXXX` code; name/course/date/issuer/status verification; reissue creates a new record.
+- Uploads: 10 MB; JPG/JPEG/PNG/WebP/PDF/ZIP; 5 files per submission; 1-year retention; no malware scan in the MVP.
+- Domains: `academy.rumahkodingku.com` and `api.rumahkodingku.com`; host-only auth cookies; staging isolated on separate hostnames.
+- Email: Resend with `academy@rumahkodingku.com`.
+- Analytics: minimal event taxonomy; MySQL remains the source for financial and learning reports.
+- Tax/fee: show the final payable amount and any explicit fee line before payment confirmation.
+- Coupons: max 100% discount, minimum purchase 0, global limit 100, per-user limit 1, no stacking.
+- Admin MFA: required before production launch.
+- Backup: daily database backup, 7-day retention, RPO 24 hours, RTO 4 hours.
+
 ## Normative terms
 
 **MUST** = mandatory; **SHOULD** = recommended; **MAY** = optional. “Recommended default” and “TBD” are not confirmed business decisions.
@@ -47,18 +64,12 @@ Midtrans is the preferred initial provider candidate because its official onboar
 
 These remain TBD and MUST NOT be implemented as fixed business rules without approval:
 
-- Quiz default pass score, attempt limits, and time limits.
-- Upload size/MIME/extension limits, file count, retention, and malware-scanning approach.
-- Refund eligibility window and required evidence.
-- Certificate numbering format, issuer wording, verification fields, and PDF template.
-- Email provider and sending domain.
-- Staging/production domains and cookie-domain strategy.
-- Backup RPO/RTO and production sizing.
-- Tax/fee display.
-- Admin MFA rollout.
-- PostHog event taxonomy and exact analytics metric definitions.
-- Platform settings and announcement content model.
-- Coupon value limits and review moderation SLA.
+- Production sizing and capacity validation.
+- Review moderation SLA.
+- Final legal review and publication of terms, privacy, refund, community, and retention wording.
+- Official parent-brand assets and final Academy logo lockup.
+
+Resolved Phase 0 items are recorded in `product/decision-log.md`; do not reopen them without a superseding decision.
 
 ## AI-agent instructions
 
