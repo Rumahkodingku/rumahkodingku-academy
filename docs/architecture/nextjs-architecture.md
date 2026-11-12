@@ -1409,31 +1409,596 @@ For every page and major component:
 
 ## 19. Security
 
-<!-- SECTION_19 -->
+### 19.1 Trust Boundaries
+
+- Browser input is untrusted.
+- Client-side authorization is explanatory only.
+- Session identity comes from the API-verified cookie, never from a client-supplied user ID or role.
+- Strapi content is trusted only after sanitization for rich text.
+- Server-only environment values never cross into a client bundle.
+
+### 19.2 Server-Only Code
+
+The following MUST be server-only:
+
+- Session DAL and route guards.
+- Server API fetch.
+- Authenticated Strapi client and token.
+- Any code that reads `API_URL`, `STRAPI_API_TOKEN`, or other secrets.
+- Any code that reads cookies or private headers.
+
+Use `import "server-only";` and verify the production build does not include these modules in client chunks.
+
+### 19.3 Environment and Secrets
+
+- `NEXT_PUBLIC_*` values are public by definition. Never put a secret behind that prefix.
+- `STRAPI_API_TOKEN` is server-only.
+- PostHog keys are project public keys; still do not send secrets, tokens, payment data, or unnecessary PII.
+- Do not commit `.env` files.
+- Validate all values through `packages/env/web`.
+- Components and feature code MUST NOT read `process.env` directly.
+
+### 19.4 Security Headers and CSP
+
+The app MUST send:
+
+- `Content-Security-Policy`.
+- `Strict-Transport-Security` in production.
+- `X-Content-Type-Options: nosniff`.
+- `Referrer-Policy`.
+- `X-Frame-Options` or a CSP `frame-ancestors` equivalent.
+- `Permissions-Policy` for unused browser capabilities.
+
+CSP rollout:
+
+1. Start in report-only mode and collect violations.
+2. Allow only required script/style/font/image/connect/frame sources.
+3. Use nonces for inline scripts where Next.js requires them; implement via `proxy.ts`.
+4. Enforce after the report is clean.
+5. Do not add `unsafe-eval` or broad `*` sources to silence violations.
+
+### 19.5 CSRF
+
+- Cookie-authenticated mutations MUST send `x-csrf-token`.
+- The token comes from `GET /api/v1/csrf/token`.
+- The browser client fetches and caches the token for the session.
+- Server-side fetches forward the cookie; they do not bypass CSRF for browser-originated mutations.
+- GET/HEAD/OPTIONS do not require the token.
+- Payment webhooks are API-only and use provider signature verification, not browser CSRF.
+
+### 19.6 XSS and Rich Text
+
+- Do not use `dangerouslySetInnerHTML` without a sanitizer.
+- Sanitize Strapi rich text on the server with an allowlist of tags/attributes.
+- Lesson rich text follows the same rule.
+- URLs from content are validated; reject `javascript:` and unexpected protocols.
+- User-generated content is rendered as text by default.
+- Markdown, if introduced, uses a safe renderer with raw HTML disabled or sanitized.
+
+### 19.7 Images and Remote Content
+
+- Configure `images.remotePatterns` only for approved Strapi and storage hosts.
+- Do not proxy arbitrary remote images.
+- Validate image dimensions and alt text from content.
+- Do not use user-provided URLs as `src` without host validation.
+- YouTube embeds use the privacy-enhanced domain where possible.
+
+### 19.8 Uploads
+
+- Upload through the API’s authorized flow.
+- Do not store long-lived storage credentials in the browser.
+- Validate file type and size on both client and server.
+- Generate opaque storage keys on the server.
+- Do not render user-uploaded HTML/SVG as active content.
+- Show upload progress and cancellation.
+
+### 19.9 Server Actions
+
+- Only use Server Actions for approved cases (Section 15.2).
+- Validate input.
+- Verify the session and authorization.
+- Configure `experimental.serverActions.allowedOrigins` when behind a proxy or multiple hosts.
+- Set a stable `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` for multi-instance deployments.
+- Keep the default body size limit unless a reviewed upload flow requires otherwise.
+
+### 19.10 Authentication and Cookies
+
+- Auth cookies are HttpOnly, Secure in production, and SameSite according to deployment.
+- The web app never reads token values.
+- Logout revokes the refresh session on the API.
+- Session errors do not reveal whether an account exists.
+- Admin access requires a server-side role check plus API authorization.
+
+### 19.11 Privacy and Analytics
+
+- Collect only events needed for product decisions.
+- Do not send passwords, tokens, cookies, payment details, or unnecessary personal data to PostHog.
+- Do not include email/name in event properties unless approved and minimized.
+- Admin financial and learning reports come from MySQL via the API, not PostHog.
+- Redact request IDs and user identifiers where they are not needed.
+
+### 19.12 Dependency and Supply Chain
+
+- Keep Next.js, React, and UI dependencies patched.
+- Review new dependencies for bundle size, license, maintenance, and security.
+- Do not add a second UI kit or a large client library without an ADR.
+- Run the repository’s audit/CI checks.
+- Do not enable remote code execution or arbitrary script injection through configuration.
+
+### 19.13 Error Exposure
+
+- Never render stack traces, SQL, internal paths, or provider credentials.
+- Use safe Indonesian messages.
+- Include `requestId` for support.
+- Log internal details server-side only.
 
 ## 20. Performance
 
-<!-- SECTION_20 -->
+### 20.1 Budgets
+
+Target Core Web Vitals on a mid-range mobile device:
+
+| Metric | Target                     |
+| ------ | -------------------------- |
+| LCP    | ≤ 2.5 s                    |
+| CLS    | ≤ 0.1                      |
+| INP    | ≤ 200 ms                   |
+| TTFB   | ≤ 800 ms on the app server |
+
+Budgets are measured on representative pages (home, catalog, course detail, learner dashboard), not only in development.
+
+### 20.2 Server-First
+
+- Fetch on the server when the data is needed for first render.
+- Stream slow sections.
+- Keep the static shell useful.
+- Avoid client-side waterfalls.
+- Do not ship a client component whose only job is to fetch data that the server could have fetched.
+
+### 20.3 Client Bundle
+
+- Every `"use client"` boundary increases JavaScript cost.
+- Split large widgets with `dynamic()` only when the interaction is deferred.
+- Do not import a heavy chart/editor/uploader into the initial bundle.
+- Analyze the bundle before adding a dependency.
+- Keep third-party scripts out of the critical path.
+- Do not duplicate a library already provided by the framework or the design system.
+
+### 20.4 Images
+
+- Use `next/image` for content images.
+- Provide `sizes` for responsive layouts.
+- Use `priority` only for the actual LCP image.
+- Use appropriate formats and dimensions; do not upscale.
+- Set explicit width/height or aspect ratio to prevent layout shift.
+- Lazy-load below-the-fold media.
+
+### 20.5 Fonts
+
+- Use `next/font`.
+- Subset to needed glyphs.
+- Avoid multiple font families without a design reason.
+- Prevent layout shift with `display: swap` and fallback metrics.
+- Do not load fonts from an unapproved third-party host.
+
+### 20.6 Streaming and Suspense
+
+- Use sibling Suspense boundaries for independent sections.
+- Keep fallbacks layout-stable.
+- Do not block the whole page on a slow personalized widget.
+- Avoid nested Suspense that causes visible content jumps.
+
+### 20.7 Navigation and Prefetch
+
+- Prefetch links that the user is likely to visit.
+- Do not prefetch expensive personalized routes indiscriminately.
+- Use `startTransition` for non-urgent client navigation where appropriate.
+- Preserve scroll position on back navigation.
+
+### 20.8 Caching
+
+- Follow the cache matrix.
+- Public content should be cacheable.
+- Private content must not be cached.
+- Revalidate tags after mutations.
+- Do not use cache as a substitute for a fast query.
+
+### 20.9 React Compiler
+
+React Compiler is enabled. Write idiomatic React; do not add manual memoization without measurement. Measure the actual bundle and render behavior when optimizing.
+
+### 20.10 Measurement
+
+- Use Web Vitals reporting.
+- Use bundle analysis in CI or before major releases.
+- Test on a throttled connection and mid-range device.
+- Compare before/after for performance changes.
+- Record regressions with the page and metric.
 
 ## 21. Accessibility
 
-<!-- SECTION_21 -->
+### 21.1 Target
+
+WCAG 2.2 AA for all user-facing flows. Accessibility is part of the Definition of Done, not a post-launch audit.
+
+### 21.2 Semantics
+
+- Use semantic HTML first: `button`, `a`, `label`, `table`, `nav`, `main`, `header`, `footer`, headings in order.
+- Do not use a `div` as a button.
+- Every page has one clear `h1`.
+- Landmark regions are present and not duplicated.
+- Lists use list semantics; tables use table semantics.
+
+### 21.3 Keyboard
+
+- Every interactive control is reachable by keyboard.
+- Focus order follows the visual order.
+- Dialogs trap focus and return focus on close.
+- Menus, tabs, and comboboxes support arrow keys and Escape.
+- Skip-to-content link is available.
+- No keyboard trap outside an intentional modal.
+
+### 21.4 Focus
+
+- Focus is always visible.
+- Focus styles meet contrast requirements.
+- Route changes move focus to the page heading or a sensible landmark.
+- Do not remove outlines without a replacement.
+- Error summaries receive focus when validation fails.
+
+### 21.5 Forms
+
+- Every input has a programmatic label.
+- Required state is conveyed in text, not color alone.
+- Errors are associated with the field and announced.
+- Help text is linked with `aria-describedby`.
+- Disabled and pending states are understandable.
+- Do not use placeholder as the only label.
+
+### 21.6 Contrast and Visuals
+
+- Normal text contrast ≥ 4.5:1; large text ≥ 3:1.
+- Non-text UI and focus indicators ≥ 3:1.
+- Do not use color alone to convey status.
+- Check light and dark themes.
+- Check disabled, hover, active, and error states.
+- Support 200% zoom and reflow.
+
+### 21.7 Target Size
+
+- Aim for 44×44 CSS px for touch targets.
+- Exceptions must be reviewed against WCAG 2.2 criteria.
+- Icon-only buttons need an accessible name.
+
+### 21.8 Motion
+
+- Respect `prefers-reduced-motion`.
+- Do not auto-play distracting animation.
+- Motion must not be the only signal of a state change.
+- Loading skeletons should be calm and optional for reduced motion.
+
+### 21.9 Media
+
+- Video/lesson embeds provide captions or transcripts where available.
+- Do not autoplay audio.
+- Provide controls for playback and volume.
+- YouTube embeds use a privacy-enhanced domain where possible and have a fallback link.
+
+### 21.10 Tables and Data
+
+- Column headers are programmatic.
+- Sort state is announced.
+- Pagination controls are labeled.
+- Empty/loading states are announced.
+- Mobile transformation preserves meaning.
+
+### 21.11 Language
+
+- `<html lang>` matches the locale.
+- Language changes inside content use `lang` attributes where needed.
+- Error messages are localized.
+
+### 21.12 Testing
+
+- Keyboard-only pass for auth, checkout, learning, and admin critical flows.
+- Automated accessibility scan in Playwright where practical.
+- Manual screen-reader spot check before major release.
+- Accessibility defects on critical flows block release.
 
 ## 22. SEO and Metadata
 
-<!-- SECTION_22 -->
+### 22.1 Metadata
+
+- Use `generateMetadata` for dynamic pages.
+- The root layout defines a title template and default description.
+- Every public page has a unique title and description.
+- Private pages are `noindex`.
+- Metadata is localized for `id` and `en`.
+
+### 22.2 Canonical and Alternates
+
+- Public pages emit a canonical URL.
+- Locale alternates use `hreflang` for `id` and `en`.
+- `x-default` points to the Indonesian page when appropriate.
+- Avoid duplicate URLs caused by trailing slashes, query variants, or locale prefixes.
+
+### 22.3 Open Graph and Social
+
+- Provide Open Graph and Twitter card metadata.
+- Use a stable default image and page-specific images where available.
+- Course pages use the course cover image and title.
+- Certificate verification pages avoid exposing private learner data.
+- OG images are generated or cached server-side; do not expose signed private URLs.
+
+### 22.4 Sitemap and Robots
+
+- `sitemap.ts` includes public marketing, catalog, roadmap, blog, and certificate verification URLs.
+- `robots.ts` disallows `/learn`, `/me`, `/admin`, `/login`, `/register`, and other private routes.
+- Sitemap entries include locale alternates.
+- Do not include unpublished courses or revoked certificates.
+
+### 22.5 Structured Data
+
+- Use JSON-LD for course, organization, breadcrumb, and article where relevant.
+- Certificate verification pages use minimal disclosure; do not embed personal data.
+- Validate structured data before release.
+- Do not invent ratings or reviews that the product does not have.
+
+### 22.6 Strapi SEO
+
+- Map Strapi SEO fields to Next metadata explicitly.
+- Sanitize rich text and metadata.
+- Do not render raw Strapi HTML into `<head>`.
+- Preview/draft content is not indexed.
+
+### 22.7 Private Routes
+
+- Learner, account, checkout, and admin routes are not indexed.
+- Auth pages are not indexed.
+- Error pages return the correct status codes.
+- Avoid exposing internal IDs in public URLs when a slug or public code exists.
 
 ## 23. Testing
 
-<!-- SECTION_23 -->
+### 23.1 Test Levels
+
+| Level     | Tool                          | Scope                                                                        |
+| --------- | ----------------------------- | ---------------------------------------------------------------------------- |
+| Unit      | Vitest + Testing Library      | Synchronous components, hooks, utils, Zod schemas, query keys, formatters    |
+| Component | Storybook + interaction tests | Visual states, keyboard interactions, responsive variants                    |
+| Contract  | TypeScript + generated schema | API type drift, envelope and Problem Details types                           |
+| E2E       | Playwright                    | Auth, catalog, checkout, learning, admin, i18n, accessibility-critical flows |
+| Security  | Playwright + targeted checks  | Route guards, CSRF, XSS sanitization, secret leakage                         |
+
+Vitest does not support async Server Components. Use Playwright for pages that await server data.
+
+### 23.2 Unit Tests
+
+Cover:
+
+- Pure formatters and validators.
+- Query key factories.
+- Problem Details mapping.
+- Form error mapping.
+- Client-side state transitions.
+- Permission-driven UI visibility.
+- Locale-aware formatting.
+
+Avoid asserting implementation details of React internals.
+
+### 23.3 Component Tests
+
+Cover:
+
+- Loading, empty, error, forbidden, and success states.
+- Keyboard interaction.
+- Focus management.
+- Responsive variants.
+- Dark theme.
+- Long translated strings.
+
+### 23.4 E2E Tests
+
+Critical journeys:
+
+1. Register/login/logout/refresh.
+2. Browse catalog and open a course.
+3. Create order, apply coupon, complete mock payment.
+4. Verify enrollment appears after verified payment.
+5. Play a lesson and persist progress.
+6. Take a quiz and see the result.
+7. Submit a final project and view review status.
+8. View/download a certificate and verify publicly.
+9. Admin reviews a project and a refund.
+10. Locale switch preserves the correct page.
+11. Unauthorized user cannot open learner/admin routes.
+12. CSRF rejection is handled safely.
+
+E2E uses deterministic fixtures and a disposable environment. Never use production data.
+
+### 23.5 Contract Tests
+
+- Generate API types from the committed OpenAPI schema.
+- Typecheck web code against the generated schema.
+- Add a CI check for stale generated output.
+- Test Problem Details handling for 400/401/403/404/409/429/500.
+
+### 23.6 Accessibility Tests
+
+- Automated scan on critical pages.
+- Keyboard-only pass for auth, checkout, learning, and admin.
+- Focus order and dialog behavior.
+- Form error announcement.
+
+### 23.7 Test Data
+
+- Use factories and fixtures.
+- Keep test users separate from real accounts.
+- Reset disposable databases only.
+- Never use production Redis, Strapi, or payment credentials.
+- Mock payment outcomes are labeled and never grant production access.
+
+### 23.8 CI Gates
+
+PR:
+
+- Format.
+- Lint.
+- Typecheck.
+- Unit tests.
+- Relevant E2E or component tests.
+- Build.
+
+Release:
+
+- Full E2E.
+- Accessibility pass.
+- Performance smoke.
+- API contract check.
+- Migration/deployment verification.
+
+### 23.9 Coverage Policy
+
+Do not optimize for a global percentage. Prioritize auth, money, access control, assessment, certificate, and error recovery. A critical flow without a test is unfinished.
 
 ## 24. Observability and Analytics
 
-<!-- SECTION_24 -->
+### 24.1 Web Vitals
+
+- Report LCP, CLS, INP, TTFB, and FCP.
+- Attach the route group and page name, not raw query strings with sensitive values.
+- Use the metrics to prioritize performance work.
+- Do not send personal data in analytics properties.
+
+### 24.2 Product Analytics
+
+PostHog is product analytics and feature flags only.
+
+- Use a typed event wrapper in `lib/analytics`.
+- Event names are stable and documented.
+- Capture pageviews and key product events, not every click.
+- Do not send passwords, tokens, cookies, payment details, or unnecessary PII.
+- Admin financial/learning reports come from MySQL via the API, not PostHog.
+- Feature flags are UI hints; authorization remains server-side.
+
+### 24.3 Error Observability
+
+- Error boundaries report unexpected client errors with route and request ID when available.
+- API Problem Details include `requestId`; surface it in support details.
+- Server-side errors are logged by the API; the web app does not duplicate sensitive details.
+- A chosen error-tracking service MAY be added later; it MUST scrub secrets and PII.
+- Do not log cookies or authorization headers.
+
+### 24.4 Realtime and Fallback
+
+- Track socket connection failures and polling fallback usage.
+- Do not log notification payloads with personal data.
+- Alert when notification delivery is degraded.
+
+### 24.5 Server Logs
+
+- Include route/request ID when forwarding to the API.
+- Do not log response bodies containing personal data.
+- Log dependency failures with safe context.
+- Correlate frontend errors with API request IDs where possible.
+
+### 24.6 Dashboards
+
+Minimum dashboards:
+
+- Web Vitals by page group.
+- Error rate by route group.
+- API dependency failures.
+- Socket connection and fallback rate.
+- Checkout/login failure rate.
+- Build/deploy success and cache hit behavior.
+
+### 24.7 Privacy
+
+- Analytics and logs follow data minimization.
+- Retention is defined by the platform policy.
+- User deletion/revocation must clear user-scoped client caches.
+- Do not use analytics to reconstruct financial state.
 
 ## 25. Deployment and Configuration
 
-<!-- SECTION_25 -->
+### 25.1 Runtime
+
+- Next.js 16 on Node.js 24 LTS.
+- `output: "standalone"`.
+- React Compiler and typed routes enabled.
+- HTTPS only.
+- Same-origin or same-site topology preferred for cookies.
+
+### 25.2 Environment Matrix
+
+| Variable                   | Build time | Runtime | Exposure        |
+| -------------------------- | ---------- | ------- | --------------- |
+| `NEXT_PUBLIC_SERVER_URL`   | Yes        | Yes     | Public          |
+| `API_URL`                  | No         | Yes     | Server only     |
+| `NEXT_PUBLIC_STRAPI_URL`   | Yes        | Yes     | Public          |
+| `STRAPI_API_TOKEN`         | No         | Yes     | Server only     |
+| `NEXT_PUBLIC_POSTHOG_KEY`  | Yes        | Yes     | Public          |
+| `NEXT_PUBLIC_POSTHOG_HOST` | Yes        | Yes     | Public          |
+| `NODE_ENV`                 | Yes        | Yes     | Public behavior |
+
+`NEXT_PUBLIC_*` values are baked into the client bundle at build time. Changing them requires a rebuild.
+
+### 25.3 Docker
+
+- Multi-stage build.
+- Builder installs the workspace, generates the standalone output, and builds.
+- Runner copies only the standalone output, static assets, and public files.
+- Run as a non-root user.
+- Do not copy `.env`, source maps with secrets, or development tooling.
+- Health check uses a lightweight route.
+- Graceful shutdown drains requests.
+
+### 25.4 API Connectivity
+
+- `API_URL` uses the internal service hostname in Docker/Coolify where possible.
+- The browser uses the public API URL from `NEXT_PUBLIC_SERVER_URL`.
+- Do not route browser traffic through the Next.js server unless a reviewed BFF case exists.
+- CORS allowlist must match the deployed web origin exactly.
+
+### 25.5 Caching and CDN
+
+- Static assets are immutable and fingerprinted.
+- HTML caching follows Next.js output and the cache matrix.
+- Do not put a CDN rule in front of authenticated pages that overrides `no-store`.
+- Image optimization runs on the Next.js server; the deployment needs sufficient CPU/memory or an approved external loader.
+
+### 25.6 Health and Readiness
+
+- Provide a lightweight health endpoint or use the root page.
+- Readiness should reflect the ability to serve the app, not Strapi availability.
+- Do not expose dependency credentials in health output.
+- Configure Coolify health checks and restart policy.
+
+### 25.7 Rollback
+
+- Keep the previous image.
+- Roll back the web image independently of API migrations when the contract remains compatible.
+- Verify auth, catalog, checkout, and learner entry after rollback.
+- Record the incident and the deployed versions.
+
+### 25.8 Build and Release
+
+- CI: frozen install, format, lint, typecheck, tests, build.
+- Generate API types before typecheck when the contract changed.
+- Deploy staging, run smoke/E2E, then production.
+- Apply API migrations before dependent web changes.
+- Verify environment values before deployment.
+- Do not build production with development API URLs.
+
+### 25.9 Observability in Deployment
+
+- Emit Web Vitals.
+- Check error rate after deploy.
+- Check socket/polling fallback.
+- Check image optimization failures.
+- Check API 5xx and 429 rates.
+- Record the release and operator.
 
 ## 26. Architectural Anti-Patterns
 
