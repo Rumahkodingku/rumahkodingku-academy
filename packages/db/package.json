@@ -10,7 +10,10 @@
     }
   },
   "scripts": {
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "db:migrate": "tsx src/cli/run-migrations.ts",
+    "db:revert": "tsx src/cli/revert-migration.ts",
+    "db:generate": "tsx ./node_modules/typeorm/cli.js migration:generate -d src/data-source.ts"
   },
   "dependencies": {
     "@rumahkodingku-academy/env": "workspace:*",
@@ -23,6 +26,7 @@
   "devDependencies": {
     "@rumahkodingku-academy/config": "workspace:*",
     "@types/node": "catalog:",
+    "tsx": "^4.20.0",
     "typescript": "^6.0.3"
   }
 }

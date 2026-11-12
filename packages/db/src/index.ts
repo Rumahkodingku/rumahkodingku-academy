@@ -1,16 +1,7 @@
-import "reflect-metadata";
-import { env } from "@rumahkodingku-academy/env/server";
-import { DataSource } from "typeorm";
+import { AppDataSource } from "./data-source";
 
-export const AppDataSource = new DataSource({
-  type: "mysql",
-  url: env.DATABASE_URL,
-  synchronize: env.NODE_ENV !== "production",
-  logging: false,
-  entities: ["src/entities/**/*.ts"],
-  migrations: ["src/migrations/**/*.ts"],
-  subscribers: ["src/subscribers/**/*.ts"],
-});
+export { AppDataSource };
+export { entities } from "./entities/index";
 
 export const initializeDatabase = async () => {
   if (!AppDataSource.isInitialized) {

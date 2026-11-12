@@ -9,6 +9,7 @@ import { env } from "@rumahkodingku-academy/env/server";
 import { ApiResponseInterceptor } from "./common/http/api-response.interceptor";
 import { LoggingInterceptor } from "./common/logging/logging.interceptor";
 import { PostHogModule } from "./infrastructure/analytics/posthog.module";
+import { DatabaseModule } from "./infrastructure/database/database.module";
 import { MetricsInterceptor } from "./infrastructure/metrics/metrics.interceptor";
 import { MetricsModule } from "./infrastructure/metrics/metrics.module";
 import { SecurityModule } from "./infrastructure/security/security.module";
@@ -37,6 +38,7 @@ import { HealthModule } from "./modules/health/health.module";
       port: 8003,
     }),
     SecurityModule,
+    DatabaseModule,
     RedisModule,
     MetricsModule,
     PostHogModule,
