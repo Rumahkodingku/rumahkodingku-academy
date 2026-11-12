@@ -61,10 +61,10 @@ function problemFromCode(
 
 export function toProblemDetails(
   exception: unknown,
-  request: { url?: string } | undefined,
+  request: { url?: string; originalUrl?: string } | undefined,
   requestId: string,
 ): ProblemDetails {
-  const instance = request?.url;
+  const instance = request?.originalUrl ?? request?.url;
 
   if (exception instanceof ProblemDetailsError) {
     return {

@@ -38,6 +38,16 @@ describe("toProblemDetails", () => {
     expect(problem.errors).toEqual(["email must be an email", "password is too short"]);
   });
 
+  it("prefers originalUrl for the instance", () => {
+    const problem = toProblemDetails(
+      new ApiError(404, "NOT_FOUND", "Not found"),
+      { url: "/courses", originalUrl: "/api/v1/courses" },
+      "req_url",
+    );
+
+    expect(problem.instance).toBe("/api/v1/courses");
+  });
+
   it("maps rate limit errors", () => {
     const problem = toProblemDetails(
       new HttpException("Too many requests", 429),
