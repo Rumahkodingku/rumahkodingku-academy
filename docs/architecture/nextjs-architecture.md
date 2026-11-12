@@ -2002,12 +2002,374 @@ Minimum dashboards:
 
 ## 26. Architectural Anti-Patterns
 
-<!-- SECTION_26 -->
+The following are prohibited unless a documented exception is approved.
+
+1. **Page-level client components.** Marking an entire page or layout `"use client"` because one widget needs state.
+2. **Client-side data fetching for first render.** Fetching data in `useEffect` that the server could have rendered.
+3. **Token storage in the browser.** Putting access/refresh tokens in localStorage, sessionStorage, IndexedDB, or a readable cookie.
+4. **Frontend JWT verification.** Sharing `JWT_SECRET` with the web app or trusting a decoded role as authorization.
+5. **Client-supplied identity.** Accepting a user ID, role, entitlement, price, or status from the browser as proof.
+6. **Caching private data.** Shared caches for learner, account, checkout, or admin responses.
+7. **Unsanitized HTML.** `dangerouslySetInnerHTML` without a server-side allowlist sanitizer.
+8. **Direct `process.env` access.** Reading environment values in components or feature code instead of `packages/env/web`.
+9. **Server-only imports in client code.** Importing session, Strapi token, or server fetch modules into a client bundle.
+10. **Business logic duplication.** Recalculating price, coupon, eligibility, progress, grading, or refund rules in the UI.
+11. **`any` API responses.** Disabling type safety instead of fixing the contract or generated type.
+12. **Manual generated-file edits.** Editing `schema.d.ts` or other generated output.
+13. **Domain-aware primitives.** Putting course/order/lesson concepts into `components/ui`.
+14. **Server Actions for data fetching.** Using actions as a parallel data-loading layer.
+15. **Waterfall rendering.** Sequential awaits that could be parallel or streamed.
+16. **URL/local-state conflict.** Two sources of truth for filters, pagination, or selected tabs.
+17. **Silent failure.** A mutation that fails without a visible recovery path.
+18. **Toast-only outcomes.** Payment, access, assessment, or certificate results shown only in a transient toast.
+19. **Unbounded retries.** Retrying mutations or uploads without idempotency and a limit.
+20. **Unapproved UI dependencies.** Adding a second component library or CSS runtime without an ADR.
 
 ## 27. Definition of Done
 
-<!-- SECTION_27 -->
+### 27.1 Architecture
+
+- [ ] Correct route group and feature module identified.
+- [ ] Page is a Server Component unless a documented client reason exists.
+- [ ] Client boundary is the smallest practical leaf.
+- [ ] No server-only module imported by client code.
+- [ ] No cross-feature private import.
+- [ ] No business rule duplicated from NestJS.
+- [ ] No new shared abstraction without a second consumer.
+
+### 27.2 Data and API
+
+- [ ] Browser and server clients are used correctly.
+- [ ] API types are generated from the committed OpenAPI schema.
+- [ ] Success and Problem Details envelopes are handled.
+- [ ] Query keys are stable and scoped.
+- [ ] Pagination/filtering use the API contract.
+- [ ] No direct database/Redis/provider access from the browser.
+- [ ] `API_URL` is server-only; `NEXT_PUBLIC_*` contains no secrets.
+
+### 27.3 Auth and Authorization
+
+- [ ] Protected layout uses `requireUser`/`requireAdmin`.
+- [ ] `proxy.ts` performs only optimistic checks.
+- [ ] No token is stored in browser storage.
+- [ ] Backend authorization remains authoritative.
+- [ ] 401/403/404 behavior is defined.
+- [ ] Logout clears user caches and socket state.
+
+### 27.4 Rendering and States
+
+- [ ] Loading, empty, error, forbidden, and partial states exist.
+- [ ] Async route props are awaited.
+- [ ] Independent data is parallelized or streamed.
+- [ ] Payment/access/assessment outcomes persist in page state.
+- [ ] Timeout and retry behavior is safe.
+- [ ] No infinite spinner.
+
+### 27.5 Caching
+
+- [ ] Cache matrix is followed.
+- [ ] Private data is `no-store`.
+- [ ] Public content has an explicit TTL/tag.
+- [ ] Mutations invalidate affected tags/keys.
+- [ ] Locale is part of the cache identity when needed.
+
+### 27.6 UI and i18n
+
+- [ ] Semantic tokens are used; no hardcoded palette.
+- [ ] Components use the approved UI layer.
+- [ ] All user-facing copy is translated.
+- [ ] `id` and `en` keys are complete for the surface.
+- [ ] Dates/numbers/currency use `Intl`.
+- [ ] Unsupported locale files removed.
+- [ ] Dark theme checked.
+- [ ] Mobile and keyboard behavior checked.
+
+### 27.7 Accessibility
+
+- [ ] Semantic HTML and heading order.
+- [ ] Keyboard access and visible focus.
+- [ ] Labels, errors, and descriptions associated.
+- [ ] Contrast checked.
+- [ ] Reduced motion respected.
+- [ ] Dialog/menu focus management.
+- [ ] Critical flow keyboard pass.
+
+### 27.8 Security
+
+- [ ] No secret in client bundle.
+- [ ] CSP/security headers applied.
+- [ ] Rich text sanitized.
+- [ ] Images restricted to approved hosts.
+- [ ] CSRF token sent on mutations.
+- [ ] No unsafe `dangerouslySetInnerHTML`.
+- [ ] Error responses do not leak internals.
+- [ ] Analytics excludes PII/secrets.
+
+### 27.9 Performance and SEO
+
+- [ ] Client bundle inspected when adding dependencies.
+- [ ] Images optimized with dimensions/sizes.
+- [ ] Fonts loaded via `next/font`.
+- [ ] Web Vitals measured for the page.
+- [ ] Public metadata/canonical/hreflang present.
+- [ ] Private pages are `noindex`.
+- [ ] Sitemap/robots updated when public routes change.
+
+### 27.10 Testing and Operations
+
+- [ ] Unit tests for new logic.
+- [ ] Component/E2E coverage for the changed surface.
+- [ ] Contract typecheck passes.
+- [ ] Accessibility check passes for critical flow.
+- [ ] Typecheck, lint, format, build pass.
+- [ ] Deployment/env impact documented.
+- [ ] API contract changes reflected in `docs/api/api-specification.md`.
 
 ## 28. Migration Roadmap and Appendices
 
-<!-- SECTION_28 -->
+### 28.1 Migration Principles
+
+- Migrate in vertical slices; do not rewrite the whole app in one branch.
+- Every phase must leave the app deployable.
+- Do not mix a framework migration with a product feature unless the feature is the reason for the phase.
+- Keep the NestJS API contract stable; update generated types with the contract.
+- Reconcile documentation when a decision changes.
+- Do not delete working code until its replacement is covered by tests.
+
+### 28.2 Phase 0 — Approval and Inventory
+
+Tasks:
+
+- Review and approve this document.
+- Inventory current routes, components, env values, and Strapi usage.
+- Confirm supported locales (`id`, `en`).
+- Confirm same-site cookie topology and production domains.
+- Confirm Storybook version alignment owner.
+- Confirm the analytics event taxonomy owner.
+- Decide whether `cacheComponents` remains deferred after catalog stabilization.
+
+Exit criteria:
+
+- This document is approved.
+- No unresolved decision affects auth, money, access, or privacy.
+
+### 28.3 Phase 1 — Foundation
+
+Tasks:
+
+- Add `API_URL` and any missing Strapi/PostHog values to `packages/env/web`.
+- Move to `src/app/[locale]/layout.tsx`.
+- Add `src/proxy.ts` for locale as-needed and optimistic auth redirect.
+- Add route groups and remove the unsupported `fr` locale.
+- Convert the home page to a Server Component.
+- Add root providers for theme, TanStack Query, i18n, analytics, and toasts.
+- Add `error.tsx`, `not-found.tsx`, and `global-not-found.tsx`.
+- Add base metadata, `sitemap.ts`, and `robots.ts`.
+- Add `images.remotePatterns` for approved hosts.
+
+Exit criteria:
+
+- `id` and `en` URLs render correctly.
+- No double locale prefix.
+- Home is server-rendered.
+- No unsupported locale file.
+- Build/typecheck/lint pass.
+
+### 28.4 Phase 2 — Data Layer
+
+Tasks:
+
+- Add `openapi-typescript` and `generate:api`.
+- Generate and commit `src/lib/api/schema.d.ts`.
+- Create browser client with CSRF/ProblemDetails interceptors.
+- Create server-only fetch with cookie forwarding and cache policy.
+- Add query key conventions and error normalization.
+- Add a contract typecheck to CI.
+- Add test coverage for Problem Details mapping and query keys.
+
+Exit criteria:
+
+- Browser and server calls both work against NestJS.
+- No hand-written duplicate API payload types.
+- Generated types are current.
+- CSRF mutation path works.
+
+### 28.5 Phase 3 — Auth Shell
+
+Tasks:
+
+- Build `/login`, `/register`, `/forgot-password`, `/reset-password`, `/verify-email`.
+- Add `getSession`, `requireUser`, `requireAdmin`.
+- Add protected `(learn)`, `(account)`, and `(admin)` layouts.
+- Add 401 refresh-once behavior and logout cache reset.
+- Add safe `next` redirect handling.
+- Add auth E2E tests.
+
+Exit criteria:
+
+- Guest, USER, and ADMIN routes behave as specified.
+- No token is readable by JavaScript.
+- Logout revokes the session and clears caches.
+- Refresh loop cannot occur.
+
+### 28.6 Phase 4 — Marketing, Catalog, and Public Pages
+
+Tasks:
+
+- Build the public shell and landing page.
+- Build catalog with filters, search, pagination, and sorting.
+- Build course detail with curriculum preview, price, outcomes, and certificate conditions.
+- Build roadmap catalog/detail and certificate verification.
+- Add Strapi-backed about/FAQ/contact/blog with server-only adapter.
+- Add metadata, JSON-LD, sitemap entries, and cache tags.
+- Add marketing/catalog E2E and accessibility checks.
+
+Exit criteria:
+
+- Public pages are server-rendered/cacheable.
+- SEO metadata and hreflang are correct.
+- Course prices are displayed but never trusted for checkout.
+- Empty/error states work.
+
+### 28.7 Phase 5 — Learning
+
+Tasks:
+
+- Build learner dashboard and enrolled course list.
+- Build course player with lesson navigation, resume, and locked-state explanations.
+- Persist lesson progress.
+- Build quiz attempt/result UI.
+- Build final project submission with version history.
+- Build certificate list/download and public verification.
+- Add notification list with socket and polling fallback.
+
+Exit criteria:
+
+- Non-enrolled users cannot access paid content.
+- Progress persists and resumes.
+- Quiz answer keys are never exposed before submission.
+- Project outcomes remain visible.
+- Certificate verification discloses minimal data.
+
+### 28.8 Phase 6 — Commerce
+
+Tasks:
+
+- Build order creation and coupon validation.
+- Build checkout/payment status with provider redirect handling.
+- Never treat a redirect as payment confirmation.
+- Build order history and refund request.
+- Add idempotent submit behavior.
+- Add money E2E with the local mock provider.
+
+Exit criteria:
+
+- Duplicate submit does not create duplicate orders.
+- Payment success is shown only after verified API state.
+- Enrollment appears after verified payment.
+- Refund state is visible and auditable.
+
+### 28.9 Phase 7 — Admin
+
+Tasks:
+
+- Build admin shell with `requireAdmin`.
+- Build course/section/lesson management.
+- Build orders, payments, refunds, coupons, users, community, reviews, roadmaps, certificates, analytics, audit, and settings screens as contracted.
+- Add confirmation, audit context, and dense-table behavior.
+- Add admin E2E and permission tests.
+
+Exit criteria:
+
+- USER cannot access admin routes or mutations.
+- Destructive actions require confirmation.
+- Admin lists are paginated and filterable.
+- Sensitive actions show audit context.
+
+### 28.10 Phase 8 — Hardening and Cutover
+
+Tasks:
+
+- Enable CSP report-only, resolve violations, enforce.
+- Fix accessibility findings on critical flows.
+- Run performance budgets and bundle analysis.
+- Align Storybook versions and cover shared states.
+- Add remaining E2E, security, and accessibility checks.
+- Verify deployment env, same-site cookies, CORS, and CSRF.
+- Run backup/rollback checks with operations.
+- Update all affected documentation.
+
+Exit criteria:
+
+- Full CI green.
+- Critical E2E green on staging.
+- CSP enforced.
+- No critical accessibility defect.
+- Performance budgets met or accepted with a documented exception.
+- Rollback path tested.
+
+### Appendix A — Route Map
+
+See Section 7.3. The route map is a UX contract, not an API contract.
+
+### Appendix B — Environment Matrix
+
+| Variable                   | Scope  | Required                      | Notes                                             |
+| -------------------------- | ------ | ----------------------------- | ------------------------------------------------- |
+| `NEXT_PUBLIC_SERVER_URL`   | Public | Yes                           | API origin for browser                            |
+| `API_URL`                  | Server | Yes in deployment             | Internal API origin; may equal public URL locally |
+| `NEXT_PUBLIC_STRAPI_URL`   | Public | Yes if Strapi content is used | Marketing content/media                           |
+| `STRAPI_API_TOKEN`         | Server | If authenticated Strapi reads | Never expose                                      |
+| `NEXT_PUBLIC_POSTHOG_KEY`  | Public | Optional                      | Product analytics                                 |
+| `NEXT_PUBLIC_POSTHOG_HOST` | Public | Optional                      | Defaults to PostHog US host                       |
+| `NODE_ENV`                 | Both   | Yes                           | `development`, `test`, `production`               |
+
+All variables are validated by `packages/env/web`. `NEXT_PUBLIC_*` changes require a rebuild.
+
+### Appendix C — Cache Matrix
+
+See Section 12.1. Public content is cacheable; learner/account/admin is `no-store`; session data is per-request only.
+
+### Appendix D — Dependency Rules Summary
+
+- `app` → `features`, `components`, `lib`, `config`.
+- `features` → own files, `components/ui`, `components/shared`, `lib`, `config`.
+- `components/ui` → no features, no app.
+- `lib` → no React components, no feature state.
+- Server-only modules → never imported by client modules.
+- Generated API files → never edited manually.
+- Cross-feature access → public `index.ts` only.
+
+### Appendix E — References
+
+Official Next.js 16 documentation:
+
+- Project structure: <https://nextjs.org/docs/app/getting-started/project-structure>
+- Server and Client Components: <https://nextjs.org/docs/app/getting-started/server-and-client-components>
+- Fetching data: <https://nextjs.org/docs/app/getting-started/fetching-data>
+- Caching: <https://nextjs.org/docs/app/getting-started/caching>
+- Revalidating: <https://nextjs.org/docs/app/getting-started/revalidating>
+- Cache Components: <https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheComponents>
+- Backend for Frontend: <https://nextjs.org/docs/app/guides/backend-for-frontend>
+- Authentication: <https://nextjs.org/docs/app/guides/authentication>
+- Data security: <https://nextjs.org/docs/app/guides/data-security>
+- Server Actions: <https://nextjs.org/docs/app/guides/server-actions>
+- Internationalization: <https://nextjs.org/docs/app/guides/internationalization>
+- Testing with Vitest: <https://nextjs.org/docs/app/guides/testing/vitest>
+- Testing with Playwright: <https://nextjs.org/docs/app/guides/testing/playwright>
+- Next.js 16 upgrade guide: <https://nextjs.org/docs/app/guides/upgrading/version-16>
+
+Project references:
+
+- `nestjs-architecture.md`
+- `system-architecture.md`
+- `monorepo-structure.md`
+- `technology-stack.md`
+- `../api/api-specification.md`
+- `../design/design-system.md`
+- `../development/coding-guidelines.md`
+- `../development/testing-strategy.md`
+
+### 28.11 Final Architecture Statement
+
+`apps/web` is a server-first Next.js 16 App Router application organized by business feature modules. Server Components render public and authenticated pages; Client Components exist only for interaction, browser APIs, and client-side server state. NestJS remains the source of truth for authentication, authorization, LMS data, money, access, and assessment. Strapi supplies marketing content only. The browser and the Next.js server call NestJS directly, with HttpOnly cookies, CSRF protection, RFC 9457 errors, and generated API types. Caching is explicit and user-aware. Internationalization uses i18next with as-needed locale routing. Security, accessibility, performance, and testability are part of every feature's definition of done, not a final phase.
