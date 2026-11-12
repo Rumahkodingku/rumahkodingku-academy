@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import type { ThrottlerStorage } from "@nestjs/throttler";
 
-import type { RedisService } from "./redis.service";
+import { RedisService } from "./redis.service";
 
 type ThrottlerStorageRecord = {
   totalHits: number;
