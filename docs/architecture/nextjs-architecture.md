@@ -194,19 +194,431 @@ The browser and the Next.js server call NestJS directly.
 
 ## 6. Rendering Model
 
-<!-- SECTION_6 -->
+### 6.1 Default: Server Components
+
+Pages, layouts, and data-oriented sections MUST be Server Components unless they need client behavior. Server Components may:
+
+- Fetch data directly from NestJS or Strapi.
+- Read cookies and headers through server-only APIs.
+- Access server-only environment values.
+- Render Client Components as children or leaves.
+- Stream content with Suspense.
+
+Server Components MUST NOT:
+
+- Use `useState`, `useEffect`, event handlers, or browser APIs.
+- Import a module marked `server-only` from a Client Component.
+- Pass functions, class instances, or secrets to Client Components.
+
+### 6.2 When a Client Component Is Required
+
+Use `"use client"` only when the component needs one or more of:
+
+- State or reducers.
+- Event handlers (`onClick`, `onChange`, `onSubmit`).
+- Lifecycle effects.
+- Browser-only APIs (`window`, `document`, `localStorage`, `IntersectionObserver`).
+- Client-only hooks or libraries.
+- A third-party component that is not Server Component compatible.
+
+A Client Component SHOULD be a leaf. If a page needs one interactive widget, the page remains a Server Component and renders the widget as a child.
+
+### 6.3 Composition Rules
+
+- Server Components MAY import and render Client Components.
+- Client Components MUST NOT import Server Components directly. They may receive Server Components through the `children` prop or another serializable slot.
+- Props crossing the boundary MUST be serializable. Do not pass functions, Dates with methods, class instances, or Promises outside the supported `use` pattern.
+- Providers that use context or browser APIs belong in a Client Component wrapper near the root layout. Keep the provider surface small.
+- Client Components MUST NOT re-fetch data that the server already provided unless freshness or interactivity requires it. Pass initial data or use hydration deliberately.
+
+### 6.4 Async Route Props
+
+In the target Next.js version, `params` and `searchParams` are Promises in pages and layouts. Code MUST await them before use:
+
+```tsx
+export default async function CoursePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  // ...
+}
+```
+
+Do not rely on synchronous route props from older Next.js versions.
+
+### 6.5 Streaming and Suspense
+
+- Use `loading.tsx` for route-level loading UI.
+- Use `<Suspense>` around independent async sections so one slow query does not block the whole page.
+- Fetch independent data in parallel; avoid sequential waterfalls.
+- Keep the static shell useful while dynamic content streams.
+- Do not wrap the entire page in a single Suspense boundary if sections can resolve independently.
+
+### 6.6 Error and Not-Found Boundaries
+
+- Each route group SHOULD have an `error.tsx` with a retry action.
+- `not-found.tsx` MUST render a useful recovery path, not a bare message.
+- Errors from the API are normalized before they reach the boundary; do not expose raw stack traces or SQL.
+- Expected business rejections (validation, forbidden, conflict) SHOULD be rendered inline or as Problem Details messages, not thrown as unhandled errors.
+
+### 6.7 Server Actions
+
+Server Actions are stable but are not the default data layer.
+
+- Use them for Next-local concerns: locale switching, theme preference, simple contact/newsletter flows, and redirects that do not need to become a general API.
+- Do not use them for parallel data fetching; Server Functions are dispatched sequentially by the client.
+- If an action calls NestJS, it MUST forward the session cookie, obtain a CSRF token, validate authorization server-side, and keep secrets on the server.
+- Server Actions MUST validate their input; do not trust `FormData`.
+- When deployed behind a proxy or multiple hosts, configure `experimental.serverActions.allowedOrigins` and a stable `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY`.
+- Core LMS mutations use the browser API client and TanStack Query, as decided in WEB-011.
+
+### 6.8 Partial Prerendering and Cache Components
+
+`cacheComponents` enables the `use cache` model and Partial Prerendering. It is NOT enabled in the baseline because the team has not yet standardized cache boundaries for every route.
+
+- The baseline uses route segment revalidation, `fetch` cache options, and cache tags.
+- `cacheComponents` MAY be adopted later after marketing and catalog caching are stable.
+- Adoption requires a new decision, a cache review, and updated tests.
+
+### 6.9 React Compiler
+
+React Compiler is enabled in `next.config.ts`. Components SHOULD be written as plain idiomatic React.
+
+- Do not add `useMemo` or `useCallback` only to satisfy an imagined compiler limitation.
+- Add manual memoization only with a measured reason.
+- Keep components pure and avoid mutating props or external state during render.
+
+### 6.10 Rendering Checklist
+
+Before marking a page complete:
+
+- The page is a Server Component by default.
+- Every `"use client"` boundary has a concrete interactivity reason.
+- Route props are awaited.
+- Independent data loads are parallel or streamed.
+- Loading, error, and not-found states exist.
+- No secret or server-only module crosses into a client bundle.
+- The page has a useful static shell and a clear primary action.
 
 ## 7. Routing and App Router Structure
 
-<!-- SECTION_7 -->
+### 7.1 Target App Tree
+
+```text
+apps/web/src/app/
+├── [locale]/
+│   ├── layout.tsx                 # html/body, providers, locale, metadata base
+│   ├── error.tsx                  # route-tree error boundary
+│   ├── not-found.tsx              # locale-aware 404
+│   ├── (marketing)/
+│   │   ├── layout.tsx             # public header/footer
+│   │   ├── page.tsx               # /
+│   │   ├── courses/
+│   │   │   ├── page.tsx
+│   │   │   └── [slug]/page.tsx
+│   │   ├── roadmaps/
+│   │   │   ├── page.tsx
+│   │   │   └── [slug]/page.tsx
+│   │   ├── certificates/verify/[code]/page.tsx
+│   │   ├── blog/
+│   │   │   ├── page.tsx
+│   │   │   └── [slug]/page.tsx
+│   │   ├── about/page.tsx
+│   │   ├── faq/page.tsx
+│   │   └── contact/page.tsx
+│   ├── (auth)/
+│   │   ├── layout.tsx
+│   │   ├── login/page.tsx
+│   │   ├── register/page.tsx
+│   │   ├── forgot-password/page.tsx
+│   │   ├── reset-password/page.tsx
+│   │   └── verify-email/page.tsx
+│   ├── (commerce)/
+│   │   ├── checkout/page.tsx
+│   │   └── checkout/[orderId]/page.tsx
+│   ├── (learn)/
+│   │   ├── layout.tsx             # learner shell + session guard
+│   │   ├── learn/page.tsx
+│   │   ├── learn/courses/[courseId]/page.tsx
+│   │   ├── learn/lessons/[lessonId]/page.tsx
+│   │   ├── learn/quizzes/[quizId]/page.tsx
+│   │   ├── learn/quizzes/attempts/[attemptId]/page.tsx
+│   │   ├── learn/projects/[projectId]/page.tsx
+│   │   └── learn/certificates/page.tsx
+│   ├── (account)/
+│   │   ├── layout.tsx             # account shell + session guard
+│   │   ├── me/page.tsx
+│   │   ├── me/orders/page.tsx
+│   │   ├── me/notifications/page.tsx
+│   │   ├── me/wishlist/page.tsx
+│   │   ├── me/reviews/page.tsx
+│   │   └── me/settings/page.tsx
+│   └── (admin)/
+│       ├── layout.tsx             # admin shell + ADMIN guard
+│       └── admin/...
+├── global-not-found.tsx
+├── sitemap.ts
+├── robots.ts
+└── api/                            # only Next-specific endpoints, never a general BFF
+```
+
+The exact admin child routes follow the confirmed API and product scope. A route that has no backend contract MUST be marked `planned` in the route table and MUST NOT ship as a fake page.
+
+### 7.2 Route Groups
+
+| Group         | Purpose                                                             | Default access   | Layout               |
+| ------------- | ------------------------------------------------------------------- | ---------------- | -------------------- |
+| `(marketing)` | Landing, catalog, public roadmap, verification, blog, company pages | Public           | Public header/footer |
+| `(auth)`      | Login, registration, recovery, verification                         | Guest            | Minimal auth shell   |
+| `(commerce)`  | Checkout and payment status                                         | USER             | Checkout shell       |
+| `(learn)`     | Course player, progress, quizzes, final project, certificates       | USER with access | Learner shell        |
+| `(account)`   | Profile, orders, notifications, wishlist, reviews, settings         | USER             | Account shell        |
+| `(admin)`     | Administration and reporting                                        | ADMIN            | Admin shell          |
+
+Route groups do not appear in URLs. They exist to share layouts and boundaries.
+
+### 7.3 Route Map
+
+| URL                                   | Page                | Group         | Access        | API dependency  |
+| ------------------------------------- | ------------------- | ------------- | ------------- | --------------- |
+| `/`                                   | Home                | `(marketing)` | Public        | Catalog/Strapi  |
+| `/courses`                            | Catalog/search      | `(marketing)` | Public        | Catalog         |
+| `/courses/[slug]`                     | Course detail       | `(marketing)` | Public        | Catalog         |
+| `/roadmaps`                           | Roadmap catalog     | `(marketing)` | Public        | Roadmaps        |
+| `/roadmaps/[slug]`                    | Roadmap detail      | `(marketing)` | Public        | Roadmaps        |
+| `/certificates/verify/[code]`         | Public verification | `(marketing)` | Public        | Certificates    |
+| `/blog`, `/blog/[slug]`               | Marketing content   | `(marketing)` | Public        | Strapi          |
+| `/about`, `/faq`, `/contact`          | Company/help        | `(marketing)` | Public        | Strapi/local    |
+| `/login`                              | Login               | `(auth)`      | Guest         | Auth            |
+| `/register`                           | Registration        | `(auth)`      | Guest         | Auth            |
+| `/forgot-password`                    | Request reset       | `(auth)`      | Guest         | Auth            |
+| `/reset-password`                     | Reset password      | `(auth)`      | Guest         | Auth            |
+| `/verify-email`                       | Verify email        | `(auth)`      | Guest         | Auth            |
+| `/checkout`                           | Start checkout      | `(commerce)`  | USER          | Orders          |
+| `/checkout/[orderId]`                 | Payment status      | `(commerce)`  | USER          | Orders/Payments |
+| `/learn`                              | Learning dashboard  | `(learn)`     | USER          | Enrollments     |
+| `/learn/courses/[courseId]`           | Course player       | `(learn)`     | Enrolled USER | Learning        |
+| `/learn/lessons/[lessonId]`           | Lesson              | `(learn)`     | Enrolled USER | Learning        |
+| `/learn/quizzes/[quizId]`             | Quiz                | `(learn)`     | Enrolled USER | Quizzes         |
+| `/learn/quizzes/attempts/[attemptId]` | Attempt/result      | `(learn)`     | Enrolled USER | Quizzes         |
+| `/learn/projects/[projectId]`         | Final project       | `(learn)`     | Enrolled USER | Projects        |
+| `/learn/certificates`                 | My certificates     | `(learn)`     | USER          | Certificates    |
+| `/me`                                 | Account overview    | `(account)`   | USER          | Users           |
+| `/me/orders`                          | Order history       | `(account)`   | USER          | Orders          |
+| `/me/notifications`                   | Notifications       | `(account)`   | USER          | Notifications   |
+| `/me/wishlist`                        | Wishlist            | `(account)`   | USER          | Wishlist        |
+| `/me/reviews`                         | Reviews             | `(account)`   | USER          | Reviews         |
+| `/me/settings`                        | Profile/settings    | `(account)`   | USER          | Users           |
+| `/admin`                              | Admin dashboard     | `(admin)`     | ADMIN         | Admin/Analytics |
+| `/admin/courses`                      | Course management   | `(admin)`     | ADMIN         | Courses         |
+| `/admin/orders`                       | Orders              | `(admin)`     | ADMIN         | Orders          |
+| `/admin/payments`                     | Payments            | `(admin)`     | ADMIN         | Payments        |
+| `/admin/refund-requests`              | Refunds             | `(admin)`     | ADMIN         | Refunds         |
+| `/admin/coupons`                      | Coupons             | `(admin)`     | ADMIN         | Coupons         |
+| `/admin/users`                        | Users               | `(admin)`     | ADMIN         | Users           |
+| `/admin/community`                    | Moderation          | `(admin)`     | ADMIN         | Community       |
+| `/admin/reviews`                      | Review moderation   | `(admin)`     | ADMIN         | Reviews         |
+| `/admin/roadmaps`                     | Roadmaps            | `(admin)`     | ADMIN         | Roadmaps        |
+| `/admin/certificates`                 | Certificates        | `(admin)`     | ADMIN         | Certificates    |
+| `/admin/analytics`                    | Analytics/reports   | `(admin)`     | ADMIN         | Analytics       |
+| `/admin/audit-logs`                   | Audit trail         | `(admin)`     | ADMIN         | Audit           |
+| `/admin/settings`                     | Platform settings   | `(admin)`     | ADMIN         | Admin           |
+
+The route map is UX routing, not the API contract. API paths, payloads, and status codes remain in `docs/api/api-specification.md`. Add `planned` to this table only when a product requirement and API contract exist.
+
+### 7.4 Locale Routing (As-Needed)
+
+- Supported locales: `id` (default) and `en`.
+- Indonesian URLs have no prefix: `/courses`.
+- English URLs have the `en` prefix: `/en/courses`.
+- `src/proxy.ts` rewrites unprefixed requests to the default locale and passes prefixed requests through.
+- The proxy MUST skip `_next`, static assets, `/api`, and files with extensions.
+- The proxy MUST prevent `/en/en/...` by short-circuiting when the path already starts with a supported locale.
+- `generateStaticParams` returns the supported locales for locale-aware segments.
+- The root layout lives at `src/app/[locale]/layout.tsx` and sets `<html lang={locale}>`.
+- A `NEXT_LOCALE` cookie MAY remember an explicit user preference, but the URL remains authoritative for the rendered locale.
+- Do not ship unsupported locale files. `public/locales/fr` MUST be removed unless French becomes an approved locale.
+
+### 7.5 Proxy Responsibilities
+
+`src/proxy.ts` (Next.js 16 replacement for `middleware.ts`) MAY do only:
+
+- Locale rewrite/redirect.
+- Optimistic authentication redirect based on cookie presence.
+- Redirect authenticated users away from auth pages.
+- Add request correlation headers when needed.
+
+It MUST NOT:
+
+- Query MySQL or Redis.
+- Validate a JWT with a shared secret.
+- Perform role checks as the only authorization.
+- Fetch user profile data on every request.
+- Rewrite arbitrary destinations or act as a general API proxy.
+
+### 7.6 Route Handlers
+
+Route Handlers under `src/app/api` are an exception, not the default API layer.
+
+Allowed uses:
+
+- Next-specific metadata or revalidation endpoints that cannot be done in a page.
+- A narrow integration that must hide a server-only token.
+- An upload bridge when the browser cannot call the API directly.
+- Webhook verification owned by the frontend deployment (rare; prefer NestJS).
+
+Rules:
+
+- Use a fixed endpoint allowlist; never forward an arbitrary path.
+- Validate input and method.
+- Do not duplicate NestJS domain logic.
+- Return RFC 9457-compatible errors when the response is consumed by the app.
+- Document the endpoint in the route table and API notes.
+
+### 7.7 Metadata Files
+
+- `sitemap.ts` generates public URLs for both locales.
+- `robots.ts` disallows `/learn`, `/me`, `/admin`, and auth flows.
+- `opengraph-image.tsx` MAY generate default social images.
+- Static files that are not routes live in `public/` and MUST not contain secrets.
 
 ## 8. Feature Module Structure
 
-<!-- SECTION_8 -->
+### 8.1 Standard Feature Module
+
+```text
+src/features/<domain>/
+├── components/              # domain presentation and composition
+├── hooks/                   # client hooks, query/mutation wrappers
+├── api/                     # query keys, browser calls, TanStack Query hooks
+├── server/                  # server-only queries and data access
+├── schemas/                 # Zod input and UI validation
+├── types.ts                 # frontend view/domain types
+├── utils.ts                 # pure helpers
+└── index.ts                 # public surface for other features
+```
+
+Not every module needs every folder. Add a folder only when it has real content. Do not create empty layers.
+
+### 8.2 Rules
+
+- `src/app` contains routing, layouts, boundaries, and page composition only.
+- Feature components MUST NOT contain raw API transport logic. Use `api/` or `server/`.
+- `server/` files MUST start with `import "server-only";`.
+- `api/` files may be imported by Client Components; they MUST NOT import server-only modules.
+- A feature exposes only what other features need through `index.ts`. Consumers MUST NOT deep-import another feature’s internal files.
+- Shared presentational components move to `components/ui` or `components/shared` only when at least two features use them.
+- Feature-specific business presentation (labels, status mapping, empty copy) stays in the feature.
+- Landmark business rules remain on the server; feature code maps API results into view models.
+
+### 8.3 Initial Feature Modules
+
+| Feature         | Responsibility                                              |
+| --------------- | ----------------------------------------------------------- |
+| `auth`          | Login, registration, recovery, verification UI, session DAL |
+| `account`       | Profile, settings, orders, notifications, wishlist, reviews |
+| `marketing`     | Landing, about, FAQ, contact, Strapi-rendered pages         |
+| `catalog`       | Course catalog, search, filters, course detail              |
+| `checkout`      | Order creation, coupon validation, payment status           |
+| `learning`      | Learner dashboard, course player, lesson progress           |
+| `quiz`          | Quiz attempt, submission, result                            |
+| `project`       | Final project submission, versions, review status           |
+| `certificate`   | User certificates, download, public verification            |
+| `roadmap`       | Public roadmap catalog and learner progression              |
+| `community`     | Course discussions, lesson Q&A, reports                     |
+| `notifications` | In-app list, unread count, socket/polling fallback          |
+| `admin`         | Admin shell and administrative workflows                    |
+
+Feature names describe business capabilities, not UI components. A folder named `dashboard`, `cards`, or `helpers` is not a feature.
+
+### 8.4 Public Surface
+
+`index.ts` exports only what another feature or route may use:
+
+- Public components.
+- Public query keys.
+- Public hooks when cross-feature composition is legitimate.
+- Public types.
+
+If an export is only used inside the feature, do not export it. Remove `index.ts` completely if nothing is shared.
+
+### 8.5 Naming
+
+- Folders: kebab-case or the established repository convention.
+- Components: PascalCase file and export.
+- Hooks: `use-*.ts` file, `use*` export.
+- Query keys: `featureKeys` object.
+- Server functions: verb-first, for example `getCourseForPlayer`.
+- Client mutation hooks: `useCreateOrder`, `useSubmitQuizAttempt`.
+- Zod schemas: `<Entity>Schema`, input types derived with `z.infer`.
+- Avoid vague names: `data.ts`, `helpers.ts`, `manager.ts`, `service.ts` in the feature root unless the responsibility is obvious.
 
 ## 9. Ownership and Dependency Rules
 
-<!-- SECTION_9 -->
+### 9.1 Ownership
+
+| Path                     | Owns                                                        | Must not own                                                 |
+| ------------------------ | ----------------------------------------------------------- | ------------------------------------------------------------ |
+| `src/app/`               | Routing, layouts, boundaries, page composition              | Domain rules, transport details, cross-feature orchestration |
+| `src/features/`          | Domain UI, query/mutation hooks, view models, feature copy  | Another feature’s private files, backend business rules      |
+| `src/components/ui/`     | Primitive design-system components                          | Domain data, API calls, feature copy                         |
+| `src/components/shared/` | App-wide presentational composition                         | Domain-specific policy                                       |
+| `src/components/layout/` | Header, footer, shells, navigation chrome                   | Page data fetching beyond navigation needs                   |
+| `src/lib/api/`           | Browser/server transport, generated schema, Problem Details | Business rules, React rendering                              |
+| `src/lib/strapi/`        | Server-only marketing adapter, media helpers, SEO mapping   | LMS data                                                     |
+| `src/lib/auth/`          | Session DAL, route guards, auth view helpers                | Token issuance, refresh rotation, password hashing           |
+| `src/lib/i18n/`          | Server/client i18n setup, locale metadata                   | Page copy decisions                                          |
+| `src/config/`            | Env access, navigation, site metadata                       | Secrets in client code                                       |
+| `src/types/`             | Technology-neutral shared frontend types                    | Business behavior                                            |
+| `src/proxy.ts`           | Locale and optimistic auth redirect                         | Authorization decisions, DB calls                            |
+
+### 9.2 Import Matrix
+
+| Importer →          | `app` | `features`                         | `components/ui` | `components/shared` | `lib`          | `config` | `types` |
+| ------------------- | ----- | ---------------------------------- | --------------- | ------------------- | -------------- | -------- | ------- |
+| `app`               | —     | Yes                                | Yes             | Yes                 | Yes            | Yes      | Yes     |
+| `features/<self>`   | No    | Yes                                | Yes             | Yes                 | Yes            | Yes      | Yes     |
+| `features/<other>`  | No    | Public `index.ts` only             | Yes             | Yes                 | Yes            | Yes      | Yes     |
+| `components/ui`     | No    | No                                 | Yes             | Yes                 | Pure utilities | No       | Yes     |
+| `components/shared` | No    | Public presentational exports only | Yes             | Yes                 | Yes            | Yes      | Yes     |
+| `lib`               | No    | No                                 | No              | No                  | Yes            | Yes      | Yes     |
+| `lib/strapi`        | No    | No                                 | No              | No                  | `lib/strapi`   | Yes      | Yes     |
+
+Rules:
+
+- `app` MAY import feature modules; features MUST NOT import `app`.
+- Shared UI MUST NOT depend on a feature.
+- `lib` MUST NOT import React components or feature state.
+- Server-only modules MUST NOT be imported by client modules.
+- Generated API files MUST NOT be edited manually.
+
+### 9.3 Server-Only Boundaries
+
+These modules MUST start with `import "server-only";`:
+
+- `src/lib/api/server.ts`
+- `src/lib/strapi/server.ts`
+- `src/lib/strapi/client.ts` (authenticated client)
+- `src/lib/auth/session.ts`
+- Any feature `server/` module that reads cookies, secrets, or privileged data.
+
+The browser client, query hooks, and presentational components MUST remain free of these imports. Violations are build defects, not style nits.
+
+### 9.4 When to Share
+
+Before moving code to `components/shared`, `lib`, or a package, ask:
+
+1. Is it used by at least two features?
+2. Is it free of domain policy?
+3. Does it have a stable interface?
+4. Would duplication be worse than the abstraction?
+
+If the answer is no, keep it in the feature. Do not create `packages/ui` or `packages/contracts` until a concrete, repeated need exists.
+
+### 9.5 Circular Dependencies
+
+- Features MUST NOT import each other cyclically.
+- If two features need each other, move the shared contract to `types/`, `lib/`, or a shared component, or reconsider ownership.
+- `forwardRef`-style workarounds are not acceptable for architectural cycles.
+- Route composition belongs in `app`, not inside a feature.
 
 ## 10. Data Fetching and API Client
 
