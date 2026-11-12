@@ -10,9 +10,9 @@ import { IoAdapter } from "@nestjs/platform-socket.io";
 import { ZodValidationPipe } from "nestjs-zod";
 
 import { AppModule } from "./app.module";
-import { csrfProtection } from "./csrf/csrf";
-import { startMetricsServer, stopMetricsServer } from "./lib/metrics";
-import { ProblemDetailsFilter } from "./problem-details/problem-details.filter";
+import { csrfProtection } from "./modules/csrf/csrf";
+import { startMetricsServer, stopMetricsServer } from "./infrastructure/metrics/metrics";
+import { ProblemDetailsFilter } from "./common/http/problem-details.filter";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

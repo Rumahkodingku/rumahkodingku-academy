@@ -2,7 +2,7 @@ import { Controller, Get, Req, Res } from "@nestjs/common";
 import { Public } from "@nestjs/authentication";
 import type { Request, Response } from "express";
 
-import { ApiResponse, type ApiSuccess } from "../utils/api-response";
+import { ApiResponse, type ApiSuccess } from "../../common/http/api-response";
 import { generateCsrfToken } from "./csrf";
 
 @Public()

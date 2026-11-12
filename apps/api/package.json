@@ -1,13 +1,13 @@
 {
   "name": "api",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "src/main.ts",
   "scripts": {
     "build": "tsdown",
     "check-types": "tsc -b",
     "test": "vitest run --passWithNoTests",
-    "dev": "tsx watch src/index.ts",
-    "start": "node dist/index.mjs"
+    "dev": "tsx watch src/main.ts",
+    "start": "node dist/main.mjs"
   },
   "dependencies": {
     "@nestjs/authentication": "^0.1.5",

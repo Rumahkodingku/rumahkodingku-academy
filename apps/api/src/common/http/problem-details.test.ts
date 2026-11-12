@@ -1,7 +1,7 @@
 import { BadRequestException } from "@nestjs/common";
 import { describe, expect, it } from "vitest";
 
-import { ApiError } from "../utils/api-response";
+import { ApiError } from "./api-response";
 import { ProblemDetailsError, toProblemDetails } from "./problem-details";
 
 describe("toProblemDetails", () => {

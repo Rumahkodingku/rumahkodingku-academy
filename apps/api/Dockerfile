@@ -38,7 +38,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
-COPY --from=builder /app/apps/api/src/mail/templates ./apps/api/src/mail/templates
+COPY --from=builder /app/apps/api/templates ./apps/api/templates
 WORKDIR /app/apps/api
 EXPOSE 3000
-CMD ["node", "dist/index.mjs"]
+CMD ["node", "dist/main.mjs"]

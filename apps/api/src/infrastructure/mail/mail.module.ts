@@ -16,7 +16,7 @@ export const AppMailModule = MailModule.forRoot({
         : undefined,
   }),
   templates: new HandlebarsTemplateEngine({
-    dir: join(process.cwd(), "src", "mail", "templates"),
+    dir: join(process.cwd(), "templates"),
   }),
   from: env.EMAIL_FROM,
 });

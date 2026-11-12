@@ -1,7 +1,7 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: "./src/index.ts",
+  entry: "./src/main.ts",
   format: "esm",
   // Always emit .mjs so start commands do not depend on tsdown's platform default.
   fixedExtension: true,

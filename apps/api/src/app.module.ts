@@ -8,15 +8,13 @@ import { TerminusModule } from "@nestjs/terminus";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { env } from "@rumahkodingku-academy/env/server";
 
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
-import { SecurityModule } from "./auth/security.module";
-import { CsrfController } from "./csrf/csrf.controller";
-import { HealthController } from "./health/health.controller";
-import { AppMailModule } from "./mail/mail.module";
-import { NotificationsGateway } from "./notifications/notifications.gateway";
-import { AppStorageModule } from "./storage/storage.module";
-import { RedisThrottlerStorage } from "./throttler/redis-throttler.storage";
+import { SecurityModule } from "./infrastructure/security/security.module";
+import { AppMailModule } from "./infrastructure/mail/mail.module";
+import { NotificationsGateway } from "./infrastructure/realtime/notifications.gateway";
+import { AppStorageModule } from "./infrastructure/storage/storage.module";
+import { RedisThrottlerStorage } from "./infrastructure/redis/redis-throttler.storage";
+import { CsrfModule } from "./modules/csrf/csrf.module";
+import { HealthModule } from "./modules/health/health.module";
 
 @Module({
   imports: [
@@ -37,10 +35,10 @@ import { RedisThrottlerStorage } from "./throttler/redis-throttler.storage";
     SecurityModule,
     AppMailModule,
     AppStorageModule,
+    CsrfModule,
+    HealthModule,
   ],
-  controllers: [AppController, HealthController, CsrfController],
   providers: [
-    AppService,
     NotificationsGateway,
     {
       provide: APP_GUARD,

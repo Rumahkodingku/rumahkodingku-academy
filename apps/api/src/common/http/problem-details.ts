@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
 
-import { ApiError } from "../utils/api-response";
+import { ApiError } from "./api-response";
 
 export interface ProblemDetails {
   type: string;
