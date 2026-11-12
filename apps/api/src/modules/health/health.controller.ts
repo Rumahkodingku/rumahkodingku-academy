@@ -1,5 +1,6 @@
 import { Controller, Get, Inject } from "@nestjs/common";
 import { Public } from "@nestjs/authentication";
+import { SkipThrottle } from "@nestjs/throttler";
 import { HealthCheck, HealthCheckService, type HealthIndicatorResult } from "@nestjs/terminus";
 import { AppDataSource } from "@rumahkodingku-academy/db";
 
@@ -9,6 +10,7 @@ import { RedisService } from "../../infrastructure/redis/redis.service";
 
 @Public()
 @SkipEnvelope()
+@SkipThrottle()
 @Controller("health")
 export class HealthController {
   constructor(
@@ -39,12 +41,20 @@ export class HealthController {
   }
 
   private async checkDatabase(): Promise<HealthIndicatorResult> {
-    await this.dataSource.query("SELECT 1");
-    return { database: { status: "up" } };
+    try {
+      await this.dataSource.query("SELECT 1");
+      return { database: { status: "up" } };
+    } catch {
+      return { database: { status: "down", message: "database unavailable" } };
+    }
   }
 
   private async checkRedis(): Promise<HealthIndicatorResult> {
-    await this.redis.ping();
-    return { redis: { status: "up" } };
+    try {
+      await this.redis.ping();
+      return { redis: { status: "up" } };
+    } catch {
+      return { redis: { status: "down", message: "redis unavailable" } };
+    }
   }
 }

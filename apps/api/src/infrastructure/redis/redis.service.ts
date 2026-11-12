@@ -33,7 +33,10 @@ export async function closeRedis(client: ClosableRedis, timeoutMs = 2_000): Prom
 
 @Injectable()
 export class RedisService implements OnModuleDestroy {
-  readonly client = new Redis(env.REDIS_URL);
+  readonly client = new Redis(env.REDIS_URL, {
+    maxRetriesPerRequest: 1,
+    enableOfflineQueue: false,
+  });
 
   constructor() {
     this.client.on("error", (error: unknown) => {
