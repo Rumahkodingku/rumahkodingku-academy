@@ -1,5 +1,5 @@
-// Strapi client and utilities
-export { strapiClient, strapiServerClient, strapiFetch, strapiFetchSingle } from "./lib/client";
+// Browser-safe Strapi helpers. Server-only helpers live in ./server.
+export { strapiClient, strapiFetch, strapiFetchSingle } from "./lib/client";
 export {
   buildCollectionQuery,
   stringifyQuery,
@@ -12,7 +12,8 @@ export {
   getStrapiMediaDimensions,
   getStrapiSrcSet,
 } from "./lib/media";
-export { strapiUrl, strapiApiUrl, strapiApiToken } from "./env";
+export { strapiUrl, strapiApiUrl } from "./env";
+export { mockMarketingPage, mockMarketingPages } from "./mock";
 
 // Types
 export type {
