@@ -21,6 +21,7 @@ const labels: Record<string, string> = {
   "nav.program": "Program",
   "nav.howItWorks": "Cara belajar",
   "actions.openMenu": "Buka menu",
+  "actions.closeMenu": "Tutup menu",
   "menu.title": "Menu",
   "menu.description": "Pilih halaman yang ingin dibuka.",
   "theme.label": "Tema",

@@ -21,7 +21,8 @@
     "description": "Pilih halaman yang ingin dibuka."
   },
   "actions": {
-    "openMenu": "Buka menu"
+    "openMenu": "Buka menu",
+    "closeMenu": "Tutup menu"
   },
   "theme": {
     "label": "Tema",

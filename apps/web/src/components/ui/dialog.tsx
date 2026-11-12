@@ -14,7 +14,16 @@ function DialogTrigger(props: DialogPrimitive.Trigger.Props) {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
 }
 
-function DialogContent({ className, children, ...props }: DialogPrimitive.Popup.Props) {
+type DialogContentProps = DialogPrimitive.Popup.Props & {
+  closeLabel?: string;
+};
+
+function DialogContent({
+  className,
+  children,
+  closeLabel = "Tutup",
+  ...props
+}: DialogContentProps) {
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-overlay backdrop-blur-sm transition-opacity data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
@@ -29,7 +38,7 @@ function DialogContent({ className, children, ...props }: DialogPrimitive.Popup.
         >
           {children}
           <DialogPrimitive.Close
-            aria-label="Tutup"
+            aria-label={closeLabel}
             className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X aria-hidden="true" className="size-4" />

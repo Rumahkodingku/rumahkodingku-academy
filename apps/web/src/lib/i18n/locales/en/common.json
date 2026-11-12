@@ -21,7 +21,8 @@
     "description": "Choose the page you want to open."
   },
   "actions": {
-    "openMenu": "Open menu"
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "theme": {
     "label": "Theme",

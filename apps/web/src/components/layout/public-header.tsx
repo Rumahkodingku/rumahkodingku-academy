@@ -94,7 +94,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
                 <span className="h-0.5 w-5 rounded-full bg-current" />
               </span>
             </DialogTrigger>
-            <DialogContent className="max-w-sm">
+            <DialogContent className="max-w-sm" closeLabel={t("actions.closeMenu")}>
               <DialogHeader>
                 <DialogTitle>{t("menu.title")}</DialogTitle>
                 <DialogDescription>{t("menu.description")}</DialogDescription>
