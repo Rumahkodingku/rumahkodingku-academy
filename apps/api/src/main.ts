@@ -11,10 +11,10 @@ import { ZodValidationPipe } from "nestjs-zod";
 
 import { AppModule } from "./app.module";
 import { REQUEST_ID_HEADER, requestIdMiddleware } from "./common/http/request-id.middleware";
+import { ProblemDetailsFilter } from "./common/http/problem-details.filter";
+import { logger } from "./common/logging/logger";
 import { WinstonLoggerService } from "./common/logging/winston-logger.service";
 import { csrfProtection } from "./modules/csrf/csrf";
-import { startMetricsServer, stopMetricsServer } from "./infrastructure/metrics/metrics";
-import { ProblemDetailsFilter } from "./common/http/problem-details.filter";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { logger: new WinstonLoggerService() });
@@ -51,20 +51,11 @@ async function bootstrap() {
     }),
   );
 
-  await startMetricsServer().catch((error: unknown) => {
-    console.warn("Metrics server failed to start", error);
-  });
-
   await app.listen(env.PORT);
-  console.log(`Server is running on http://localhost:${env.PORT}/api/v1`);
+  logger.info(`Server is running on http://localhost:${env.PORT}/api/v1`);
 }
 
-async function shutdown() {
-  await stopMetricsServer();
-  process.exit(0);
-}
-
-process.on("SIGTERM", shutdown);
-process.on("SIGINT", shutdown);
-
-bootstrap();
+void bootstrap().catch((error: unknown) => {
+  logger.error("Failed to start API", { error });
+  process.exit(1);
+});

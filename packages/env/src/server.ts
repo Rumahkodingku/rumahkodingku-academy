@@ -16,7 +16,7 @@ export const env = createEnv({
       .default("info"),
     METRICS_PORT: z.coerce.number().int().positive().default(9090),
     METRICS_PATH: z.string().default("/metrics"),
-    METRICS_PREFIX: z.string().default(""),
+    METRICS_PREFIX: z.string().default("rumahkodingku_academy_"),
     JWT_SECRET: z.string().min(32).default("change-me-development-jwt-secret-at-least-32-chars"),
     JWT_ISSUER: z.url().default("http://localhost:3000"),
     JWT_AUDIENCE: z.string().default("web"),

@@ -8,6 +8,9 @@ import { env } from "@rumahkodingku-academy/env/server";
 
 import { ApiResponseInterceptor } from "./common/http/api-response.interceptor";
 import { LoggingInterceptor } from "./common/logging/logging.interceptor";
+import { PostHogModule } from "./infrastructure/analytics/posthog.module";
+import { MetricsInterceptor } from "./infrastructure/metrics/metrics.interceptor";
+import { MetricsModule } from "./infrastructure/metrics/metrics.module";
 import { SecurityModule } from "./infrastructure/security/security.module";
 import { AppMailModule } from "./infrastructure/mail/mail.module";
 import { NotificationsGateway } from "./infrastructure/realtime/notifications.gateway";
@@ -35,6 +38,8 @@ import { HealthModule } from "./modules/health/health.module";
     }),
     SecurityModule,
     RedisModule,
+    MetricsModule,
+    PostHogModule,
     AppMailModule,
     AppStorageModule,
     CsrfModule,
@@ -49,6 +54,10 @@ import { HealthModule } from "./modules/health/health.module";
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: MetricsInterceptor,
     },
     {
       provide: APP_INTERCEPTOR,
