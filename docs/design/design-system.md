@@ -3,7 +3,8 @@
 > **Document type:** Design tokens, foundations & component rules  
 > **Version:** 1.0.0  
 > **Status:** Baseline specification  
-> **Primary accent:** `#2563EB`  
+> **Primary accent:** `#2563EB`
+> **Brand color:** `#406194`  
 > **Themes:** Light and Dark  
 > **Last updated:** 2026-11-12
 
