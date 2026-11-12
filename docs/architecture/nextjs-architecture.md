@@ -105,7 +105,7 @@ Any change to an accepted decision MUST be recorded as an Architecture Decision 
 
 ## 3. Current State and Target
 
-The current `apps/web` is a starter, not the target. The table below is the migration baseline. It MUST be updated when a gap is closed.
+`apps/web` was a starter at the start of the migration. The table below records that baseline; the status table in Section 3.1 records what has been implemented. It MUST be updated when a gap is closed.
 
 | Area              | Current baseline                                                 | Target                                                         | Migration phase |
 | ----------------- | ---------------------------------------------------------------- | -------------------------------------------------------------- | --------------- |
@@ -125,6 +125,22 @@ The current `apps/web` is a starter, not the target. The table below is the migr
 | Storybook         | Storybook 10 and addons 8 are inconsistent                       | One aligned major version before UI expansion                  | Hardening       |
 
 The current state is recorded for planning. It MUST NOT be treated as an approved exception to the target.
+
+### 3.1 Implementation Status
+
+| Phase                            | Status              | Notes                                                                                                                                                                      |
+| -------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Phase 0 — approval and inventory | Done                | Document reviewed and accepted.                                                                                                                                            |
+| Phase 1 — foundation             | Done                | Locale segment, as-needed proxy, marketing group, providers, metadata, sitemap/robots, image allowlist, starter home converted to a Server Component.                      |
+| Phase 2 — data layer             | Done                | Browser client, server-only fetch, generated OpenAPI schema from the current API, Problem Details mapping, query client, tests.                                            |
+| Phase 3 — auth shell             | Infrastructure only | Session DAL, route guards, protected route-group layouts, optimistic cookie check. Auth UI is intentionally deferred until the backend auth API and UI are built together. |
+| Phase 4 — marketing/catalog      | Pending             | Public pages and Strapi rendering.                                                                                                                                         |
+| Phase 5 — learning               | Pending             | Learner dashboard, player, quiz, project, certificate.                                                                                                                     |
+| Phase 6 — commerce               | Pending             | Checkout and payment status.                                                                                                                                               |
+| Phase 7 — admin                  | Pending             | Administration screens.                                                                                                                                                    |
+| Phase 8 — hardening              | Pending             | CSP enforcement, accessibility, performance, Storybook alignment, full E2E.                                                                                                |
+
+The generated OpenAPI snapshot currently covers the implemented API surface only; it will grow as backend domains are added.
 
 ## 4. Architecture Principles
 
@@ -734,14 +750,16 @@ A catch-all `/api/proxy/[...path]` is prohibited.
 
 ### 10.10 Environment Variables
 
-| Variable                   | Scope            | Purpose                                  |
-| -------------------------- | ---------------- | ---------------------------------------- |
-| `NEXT_PUBLIC_SERVER_URL`   | Browser + server | Public API origin                        |
-| `API_URL`                  | Server only      | Internal API origin for RSC/server fetch |
-| `NEXT_PUBLIC_STRAPI_URL`   | Browser + server | Public Strapi media/content origin       |
-| `STRAPI_API_TOKEN`         | Server only      | Authenticated Strapi reads               |
-| `NEXT_PUBLIC_POSTHOG_KEY`  | Browser          | Product analytics                        |
-| `NEXT_PUBLIC_POSTHOG_HOST` | Browser          | PostHog host                             |
+| Variable                   | Scope            | Purpose                                      |
+| -------------------------- | ---------------- | -------------------------------------------- |
+| `NEXT_PUBLIC_SERVER_URL`   | Browser + server | Public API origin                            |
+| `NEXT_PUBLIC_SITE_URL`     | Browser + server | Public web origin for metadata/sitemap       |
+| `API_URL`                  | Server only      | Internal API origin for RSC/server fetch     |
+| `AUTH_SESSION_COOKIE`      | Server only      | Cookie name used for optimistic proxy checks |
+| `NEXT_PUBLIC_STRAPI_URL`   | Browser + server | Public Strapi media/content origin           |
+| `STRAPI_API_TOKEN`         | Server only      | Authenticated Strapi reads                   |
+| `NEXT_PUBLIC_POSTHOG_KEY`  | Browser          | Product analytics                            |
+| `NEXT_PUBLIC_POSTHOG_HOST` | Browser          | PostHog host                                 |
 
 All values MUST be validated through `packages/env/web`. Components and library files MUST NOT read `process.env` directly.
 
@@ -2318,7 +2336,9 @@ See Section 7.3. The route map is a UX contract, not an API contract.
 | Variable                   | Scope  | Required                      | Notes                                             |
 | -------------------------- | ------ | ----------------------------- | ------------------------------------------------- |
 | `NEXT_PUBLIC_SERVER_URL`   | Public | Yes                           | API origin for browser                            |
+| `NEXT_PUBLIC_SITE_URL`     | Public | Yes                           | Web origin for canonical URLs and sitemap         |
 | `API_URL`                  | Server | Yes in deployment             | Internal API origin; may equal public URL locally |
+| `AUTH_SESSION_COOKIE`      | Server | Yes                           | Cookie name for optimistic proxy checks           |
 | `NEXT_PUBLIC_STRAPI_URL`   | Public | Yes if Strapi content is used | Marketing content/media                           |
 | `STRAPI_API_TOKEN`         | Server | If authenticated Strapi reads | Never expose                                      |
 | `NEXT_PUBLIC_POSTHOG_KEY`  | Public | Optional                      | Product analytics                                 |

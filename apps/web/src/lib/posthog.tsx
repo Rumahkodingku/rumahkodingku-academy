@@ -1,12 +1,13 @@
 import type { PostHog } from "posthog-js";
 import type { PropsWithChildren } from "react";
 
+import { env } from "@rumahkodingku-academy/env/web";
 import posthog from "posthog-js";
 import { createContext, useContext, useEffect, useMemo, useCallback, useState } from "react";
 
-// PostHog configuration from environment variables
-const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY || "";
-const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com";
+// PostHog configuration from validated public environment.
+const posthogKey = env.NEXT_PUBLIC_POSTHOG_KEY ?? "";
+const posthogHost = env.NEXT_PUBLIC_POSTHOG_HOST;
 
 // Initialize PostHog only once (guards React StrictMode double-mount and HMR)
 let initialized = false;

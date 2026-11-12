@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "check-types": "tsc --noEmit",
+    "generate:api": "openapi-typescript ./openapi.json -o src/lib/api/schema.d.ts",
     "dev": "next dev --port 3001",
     "build": "next build",
     "start": "next start",
@@ -41,6 +42,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-i18next": "^18.0.1",
+    "server-only": "^0.0.1",
     "socket.io-client": "^4.8.4",
     "sonner": "^2.0.8",
     "tailwind-merge": "^3.7.0",
@@ -68,6 +70,7 @@
     "@vitest/coverage-v8": "catalog:",
     "@vitest/ui": "catalog:",
     "jsdom": "catalog:",
+    "openapi-typescript": "^7.13.0",
     "playwright": "catalog:",
     "storybook": "^10.6.7",
     "tailwindcss": "catalog:",

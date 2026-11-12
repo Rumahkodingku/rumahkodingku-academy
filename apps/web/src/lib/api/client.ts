@@ -1,43 +1,15 @@
 import { env } from "@rumahkodingku-academy/env/web";
 import axios from "axios";
 
+import { ApiProblemError, isProblemDetails } from "./problem-details";
+import type { ApiSuccess } from "./types";
+
 const serverBaseURL = `${env.NEXT_PUBLIC_SERVER_URL.replace(/\/$/, "")}/api/v1`;
-
-export type ProblemDetails = {
-  type: string;
-  title: string;
-  status: number;
-  detail?: string;
-  instance?: string;
-  code?: string;
-  requestId?: string;
-  errors?: unknown;
-};
-
-export class ApiProblemError extends Error {
-  constructor(
-    public readonly problem: ProblemDetails,
-    public readonly status: number,
-  ) {
-    super(problem.detail ?? problem.title);
-    this.name = "ApiProblemError";
-  }
-}
 
 let csrfToken: string | null = null;
 
 export function setCsrfToken(token: string | null): void {
   csrfToken = token;
-}
-
-function isProblemDetails(value: unknown): value is ProblemDetails {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "type" in value &&
-    "title" in value &&
-    "status" in value
-  );
 }
 
 export function createHttpClient(baseURL = serverBaseURL) {
@@ -82,7 +54,7 @@ export function createHttpClient(baseURL = serverBaseURL) {
 export const httpClient = createHttpClient();
 
 export async function fetchCsrfToken(): Promise<string> {
-  const response = await httpClient.get<{ data: { csrfToken: string } }>("/csrf/token");
+  const response = await httpClient.get<ApiSuccess<{ csrfToken: string }>>("/csrf/token");
   const token = response.data.data.csrfToken;
   setCsrfToken(token);
   return token;
