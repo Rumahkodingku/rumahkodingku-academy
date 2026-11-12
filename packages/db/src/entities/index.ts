@@ -16,6 +16,14 @@ import { RefundRequest, RefundStatus } from "./refund-request.entity";
 import { Coupon, CouponType } from "./coupon.entity";
 import { CouponRedemption } from "./coupon-redemption.entity";
 
+import { Enrollment, EnrollmentSource, EnrollmentStatus } from "./enrollment.entity";
+import { LessonProgress, LessonProgressStatus } from "./lesson-progress.entity";
+import { Quiz, QuizStatus, AnswerRevealTiming } from "./quiz.entity";
+import { QuizQuestion, QuizQuestionType } from "./quiz-question.entity";
+import { QuizOption } from "./quiz-option.entity";
+import { QuizAttempt, QuizAttemptStatus } from "./quiz-attempt.entity";
+import { QuizAnswer } from "./quiz-answer.entity";
+
 export { User, UserRole, UserStatus };
 export { RefreshSession };
 export { EmailVerificationToken };
@@ -34,6 +42,14 @@ export { RefundRequest, RefundStatus };
 export { Coupon, CouponType };
 export { CouponRedemption };
 
+export { Enrollment, EnrollmentSource, EnrollmentStatus };
+export { LessonProgress, LessonProgressStatus };
+export { Quiz, QuizStatus, AnswerRevealTiming };
+export { QuizQuestion, QuizQuestionType };
+export { QuizOption };
+export { QuizAttempt, QuizAttemptStatus };
+export { QuizAnswer };
+
 export const entities: Function[] = [
   User,
   RefreshSession,
@@ -50,4 +66,11 @@ export const entities: Function[] = [
   RefundRequest,
   Coupon,
   CouponRedemption,
+  Enrollment,
+  LessonProgress,
+  Quiz,
+  QuizQuestion,
+  QuizOption,
+  QuizAttempt,
+  QuizAnswer,
 ];
