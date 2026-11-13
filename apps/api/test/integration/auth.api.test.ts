@@ -84,7 +84,7 @@ describe("Phase 3.A auth API", () => {
     expect(setCookie(loginResponse, "access_token")).toBeDefined();
     expect(setCookie(loginResponse, "refresh_token")).toBeDefined();
 
-    const meResponse = await client.get("/api/v1/auth/me").expect(200);
+    const meResponse = await client.get("/api/v1/users/me").expect(200);
     expect(meResponse.body.data.user.email).toBe(email);
     expect(meResponse.body.data.user.emailVerified).toBe(false);
   });
@@ -106,7 +106,7 @@ describe("Phase 3.A auth API", () => {
 
     const logoutResponse = await client.post("/api/v1/auth/logout").set("x-csrf-token", csrfToken);
     expect(logoutResponse.status).toBe(204);
-    await client.get("/api/v1/auth/me").expect(401);
+    await client.get("/api/v1/users/me").expect(401);
   });
 
   it("rejects missing CSRF tokens and accepts a valid token", async () => {
@@ -149,7 +149,7 @@ describe("Phase 3.A auth API", () => {
       .send({ token })
       .expect(200);
 
-    const me = await client.get("/api/v1/auth/me").expect(200);
+    const me = await client.get("/api/v1/users/me").expect(200);
     expect(me.body.data.user.emailVerified).toBe(true);
 
     await client
@@ -196,7 +196,7 @@ describe("Phase 3.A auth API", () => {
     const csrfToken = await csrf(client);
 
     const update = await client
-      .patch("/api/v1/auth/me")
+      .patch("/api/v1/users/me")
       .set("x-csrf-token", csrfToken)
       .send({
         displayName: "Updated Name",
@@ -211,38 +211,38 @@ describe("Phase 3.A auth API", () => {
     expect(update.body.data.user.profile.username).toBe("updated_user");
 
     await client
-      .patch("/api/v1/auth/me")
+      .patch("/api/v1/users/me")
       .set("x-csrf-token", csrfToken)
       .send({ role: "admin" })
       .expect(400);
 
     await client
-      .patch("/api/v1/auth/me")
+      .patch("/api/v1/users/me")
       .set("x-csrf-token", csrfToken)
       .send({ email: "changed@example.com" })
       .expect(400);
     await client
-      .patch("/api/v1/auth/me")
+      .patch("/api/v1/users/me")
       .set("x-csrf-token", csrfToken)
       .send({ status: "SUSPENDED" })
       .expect(400);
     await client
-      .patch("/api/v1/auth/me")
+      .patch("/api/v1/users/me")
       .set("x-csrf-token", csrfToken)
       .send({ password: "another-password" })
       .expect(400);
     await client
-      .patch("/api/v1/auth/me")
+      .patch("/api/v1/users/me")
       .set("x-csrf-token", csrfToken)
       .send({ websiteUrl: "javascript:alert(1)" })
       .expect(400);
     await client
-      .patch("/api/v1/auth/me")
+      .patch("/api/v1/users/me")
       .set("x-csrf-token", csrfToken)
       .send({ timezone: "Mars/Olympus" })
       .expect(400);
     await client
-      .patch("/api/v1/auth/me")
+      .patch("/api/v1/users/me")
       .set("x-csrf-token", csrfToken)
       .send({ username: "Bad Name" })
       .expect(400);
@@ -254,7 +254,7 @@ describe("Phase 3.A auth API", () => {
     await markVerified(otherEmail);
     const otherCsrf = await csrf(other);
     await other
-      .patch("/api/v1/auth/me")
+      .patch("/api/v1/users/me")
       .set("x-csrf-token", otherCsrf)
       .send({ username: "updated_user" })
       .expect(409);
@@ -269,18 +269,18 @@ describe("Phase 3.A auth API", () => {
     const csrfToken = await csrf(client);
 
     await client
-      .post("/api/v1/auth/avatar")
+      .post("/api/v1/users/me/avatar")
       .set("x-csrf-token", csrfToken)
       .attach("file", "../../public/logo.png")
       .expect(200);
 
-    const image = await client.get("/api/v1/auth/avatar").expect(200);
+    const image = await client.get("/api/v1/users/me/avatar").expect(200);
     expect(image.headers["content-type"]).toContain("image/png");
 
-    await request(app.getHttpServer()).get("/api/v1/auth/avatar").expect(401);
+    await request(app.getHttpServer()).get("/api/v1/users/me/avatar").expect(401);
 
-    await client.delete("/api/v1/auth/avatar").set("x-csrf-token", csrfToken).expect(204);
-    await client.get("/api/v1/auth/avatar").expect(404);
+    await client.delete("/api/v1/users/me/avatar").set("x-csrf-token", csrfToken).expect(204);
+    await client.get("/api/v1/users/me/avatar").expect(404);
   });
 
   it("enforces permission, email verification, and ownership policies", async () => {
@@ -325,7 +325,7 @@ describe("Phase 3.A auth API", () => {
     await AppDataSource.query("UPDATE `users` SET `status` = 'SUSPENDED' WHERE `email` = ?", [
       email,
     ]);
-    await client.get("/api/v1/auth/me").expect(401);
+    await client.get("/api/v1/users/me").expect(401);
     expect((await login(client, email)).status).toBe(401);
 
     await AppDataSource.query("UPDATE `users` SET `status` = 'ACTIVE' WHERE `email` = ?", [email]);
@@ -333,7 +333,7 @@ describe("Phase 3.A auth API", () => {
 
     await AppDataSource.query("UPDATE `users` SET `status` = 'DELETED' WHERE `email` = ?", [email]);
     expect((await login(client, email)).status).toBe(401);
-    await client.get("/api/v1/auth/me").expect(401);
+    await client.get("/api/v1/users/me").expect(401);
   });
 
   it("sets host-only HttpOnly cookies with the configured max-age", async () => {
@@ -540,19 +540,19 @@ describe("Phase 3.A auth API", () => {
     );
 
     await client
-      .post("/api/v1/auth/avatar")
+      .post("/api/v1/users/me/avatar")
       .set("x-csrf-token", csrfToken)
       .attach("file", spoofed, { contentType: "text/plain" })
       .expect(415);
 
     await client
-      .post("/api/v1/auth/avatar")
+      .post("/api/v1/users/me/avatar")
       .set("x-csrf-token", csrfToken)
       .attach("file", oversized, { contentType: "image/png" })
       .expect(413);
 
     await client
-      .post("/api/v1/auth/avatar")
+      .post("/api/v1/users/me/avatar")
       .set("x-csrf-token", csrfToken)
       .attach("file", "../../public/logo.png")
       .expect(200);
@@ -564,7 +564,7 @@ describe("Phase 3.A auth API", () => {
     expect(existsSync(firstPath)).toBe(true);
 
     await client
-      .post("/api/v1/auth/avatar")
+      .post("/api/v1/users/me/avatar")
       .set("x-csrf-token", csrfToken)
       .attach("file", "../../public/logo.png")
       .expect(200);
@@ -590,9 +590,12 @@ describe("Phase 3.A auth API", () => {
     const avatarCsrf = await csrf(avatarClient);
 
     for (let attempt = 1; attempt <= 10; attempt += 1) {
-      await avatarClient.post("/api/v1/auth/avatar").set("x-csrf-token", avatarCsrf).expect(422);
+      await avatarClient
+        .post("/api/v1/users/me/avatar")
+        .set("x-csrf-token", avatarCsrf)
+        .expect(422);
     }
-    await avatarClient.post("/api/v1/auth/avatar").set("x-csrf-token", avatarCsrf).expect(429);
+    await avatarClient.post("/api/v1/users/me/avatar").set("x-csrf-token", avatarCsrf).expect(429);
 
     for (let attempt = 1; attempt <= 4; attempt += 1) {
       await register(client, `register-limit-${attempt}-${randomUUID()}@example.com`).then(

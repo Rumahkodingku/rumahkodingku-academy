@@ -116,7 +116,7 @@ WEB_APP_URL=http://localhost:3001
 - [ ] Write a failing Playwright test that logs in through `/api/v1/auth/login` and asserts the browser receives `access_token` and `refresh_token` cookies for the web origin.
 - [ ] Add the local rewrite and env changes.
 - [ ] Verify `Set-Cookie` forwarding in Chromium, Firefox, and WebKit.
-- [ ] Verify `GET /api/v1/auth/me` through the web origin sends the cookie.
+- [ ] Verify `GET /api/v1/users/me` through the web origin sends the cookie.
 - [ ] Verify server components (`apiServerFetch`) still call `API_URL` directly and forward browser cookies.
 - [ ] Update `proxy.ts` to use `AUTH_SESSION_COOKIE`; do not decode JWT or query MySQL/Redis.
 - [ ] Document production edge routing.
@@ -128,7 +128,7 @@ pnpm --filter web dev
 pnpm exec playwright test apps/web/e2e/auth-proxy.spec.ts
 ```
 
-Expected: login response sets both cookies for the web origin; `/auth/me` returns the user; no CORS error; no token in JavaScript storage.
+Expected: login response sets both cookies for the web origin; `/users/me` returns the user; no CORS error; no token in JavaScript storage.
 
 ### Commit
 
@@ -461,7 +461,7 @@ Avatar:
 - Client validation: 2 MB, image types; server remains authoritative.
 - Preview before upload.
 - Upload/remove through multipart FormData.
-- Avatar URL `/api/v1/auth/avatar` with cache bust after update.
+- Avatar URL `/api/v1/users/me/avatar` with cache bust after update.
 - Fallback initials when no avatar.
 - Keyboard-accessible controls and labels.
 

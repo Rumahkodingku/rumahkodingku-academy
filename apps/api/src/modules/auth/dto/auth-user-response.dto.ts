@@ -19,7 +19,7 @@ export class AuthUserProfileResponseDto {
   @ApiProperty({ nullable: true, required: false, example: null })
   headline!: string | null;
 
-  @ApiProperty({ nullable: true, required: false, example: "/api/v1/auth/avatar" })
+  @ApiProperty({ nullable: true, required: false, example: "/api/v1/users/me/avatar" })
   avatarUrl!: string | null;
 
   @ApiProperty({ nullable: true, required: false, example: null })

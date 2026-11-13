@@ -391,7 +391,7 @@ All limits are configurable and stored in Redis. Keys include the action and rel
 | `POST /auth/reset-password`      | 5     | 15 minutes | IP                           |
 | `POST /auth/verify-email`        | 10    | 15 minutes | IP                           |
 | `POST /auth/resend-verification` | 3     | 15 minutes | IP + normalized email        |
-| `POST /auth/avatar`              | 10    | 15 minutes | authenticated user           |
+| `POST /users/me/avatar`          | 10    | 15 minutes | authenticated user           |
 
 Exceeded limits return `429` Problem Details and `Retry-After`.
 
@@ -405,11 +405,11 @@ All responses use the existing envelope and Problem Details conventions.
 | POST   | `/auth/login`               | Public        | Yes  | `{ email, password }`       | `200 { data: { user } }` + cookies         |
 | POST   | `/auth/refresh`             | Public        | Yes  | refresh cookie              | `200 { data: { user } }` + rotated cookies |
 | POST   | `/auth/logout`              | Authenticated | Yes  | refresh cookie              | `204`                                      |
-| GET    | `/auth/me`                  | Authenticated | No   | —                           | `200 { data: { user } }`                   |
-| PATCH  | `/auth/me`                  | Authenticated | Yes  | profile fields              | `200 { data: { user } }`                   |
-| POST   | `/auth/avatar`              | Authenticated | Yes  | multipart `file`            | `200 { data: { avatarUrl } }`              |
-| GET    | `/auth/avatar`              | Authenticated | No   | —                           | image stream or `404`                      |
-| DELETE | `/auth/avatar`              | Authenticated | Yes  | —                           | `204`                                      |
+| GET    | `/users/me`                 | Authenticated | No   | —                           | `200 { data: { user } }`                   |
+| PATCH  | `/users/me`                 | Authenticated | Yes  | profile fields              | `200 { data: { user } }`                   |
+| POST   | `/users/me/avatar`          | Authenticated | Yes  | multipart `file`            | `200 { data: { avatarUrl } }`              |
+| GET    | `/users/me/avatar`          | Authenticated | No   | —                           | image stream or `404`                      |
+| DELETE | `/users/me/avatar`          | Authenticated | Yes  | —                           | `204`                                      |
 | POST   | `/auth/forgot-password`     | Public        | Yes  | `{ email }`                 | `202 { data: { accepted: true } }`         |
 | POST   | `/auth/reset-password`      | Public        | Yes  | `{ token, password }`       | `200 { data: { reset: true } }`            |
 | POST   | `/auth/verify-email`        | Public        | Yes  | `{ token }`                 | `200 { data: { email } }`                  |
@@ -431,7 +431,7 @@ type AuthUser = {
     username: string | null;
     bio: string | null;
     headline: string | null;
-    avatarUrl: string | null; // "/api/v1/auth/avatar"
+    avatarUrl: string | null; // "/api/v1/users/me/avatar"
     phone: string | null;
     countryCode: string | null;
     city: string | null;

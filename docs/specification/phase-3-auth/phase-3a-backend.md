@@ -646,15 +646,15 @@ pnpm --filter api test:integration -- security
 ### Avatar
 
 - Store in `users_profile.avatar_storage_key`.
-- `POST /auth/avatar`:
+- `POST /users/me/avatar`:
   - `FileInterceptor("file", { storage: uploadToDisk({ contentTypes: ["image/jpeg","image/png","image/webp"], limits: { fileSize: 2_000_000, files: 1 }, key: ... }) })`.
   - Key: `avatars/<uuid><extension>`; never use original filename.
   - Update profile; delete old key after successful update. If DB update fails, delete the newly stored key.
-  - Return `{ avatarUrl: "/api/v1/auth/avatar" }`.
-- `GET /auth/avatar`:
+  - Return `{ avatarUrl: "/api/v1/users/me/avatar" }`.
+- `GET /users/me/avatar`:
   - Authenticated; `serveFile(disk, key, { req, res, disposition: "inline", cacheControl: "private, max-age=0, must-revalidate" })`.
   - Missing avatar -> 404.
-- `DELETE /auth/avatar`: delete file and null the column; 204.
+- `DELETE /users/me/avatar`: delete file and null the column; 204.
 
 ### Steps
 

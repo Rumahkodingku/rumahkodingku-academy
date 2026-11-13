@@ -20,7 +20,7 @@ export function toAuthUser(user: User, access: AccessSnapshot): AuthUser | null 
       username: user.profile.username ?? null,
       bio: user.profile.bio ?? null,
       headline: user.profile.headline ?? null,
-      avatarUrl: user.profile.avatarStorageKey ? "/api/v1/auth/avatar" : null,
+      avatarUrl: user.profile.avatarStorageKey ? "/api/v1/users/me/avatar" : null,
       phone: user.profile.phone ?? null,
       countryCode: user.profile.countryCode ?? null,
       city: user.profile.city ?? null,

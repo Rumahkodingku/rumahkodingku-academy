@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { ApiMetaResponseDto } from "../../../common/swagger/dto/api-meta-response.dto";
 
 export class AvatarUploadDataResponseDto {
-  @ApiProperty({ example: "/api/v1/auth/avatar" })
+  @ApiProperty({ example: "/api/v1/users/me/avatar" })
   avatarUrl!: string;
 }
 

@@ -59,11 +59,6 @@ All non-GET auth endpoints require `x-csrf-token`. Login, refresh, logout, forgo
 | POST   | `/auth/login`               | Public        | `{ email, password }`       | `200 { data: { user } }` + cookies         |
 | POST   | `/auth/refresh`             | Public        | refresh cookie              | `200 { data: { user } }` + rotated cookies |
 | POST   | `/auth/logout`              | Authenticated | refresh cookie              | `204`                                      |
-| GET    | `/auth/me`                  | Authenticated | —                           | `200 { data: { user } }`                   |
-| PATCH  | `/auth/me`                  | Authenticated | profile fields              | `200 { data: { user } }`                   |
-| POST   | `/auth/avatar`              | Authenticated | multipart `file`            | `200 { data: { avatarUrl } }`              |
-| GET    | `/auth/avatar`              | Authenticated | —                           | image stream or `404`                      |
-| DELETE | `/auth/avatar`              | Authenticated | —                           | `204`                                      |
 | POST   | `/auth/forgot-password`     | Public        | `{ email }`                 | `202 { data: { accepted: true } }`         |
 | POST   | `/auth/reset-password`      | Public        | `{ token, password }`       | `200 { data: { reset: true } }`            |
 | POST   | `/auth/verify-email`        | Public        | `{ token }`                 | `200 { data: { email } }`                  |
@@ -87,7 +82,7 @@ All non-GET auth endpoints require `x-csrf-token`. Login, refresh, logout, forgo
         "username": "phase_three",
         "bio": "Belajar backend",
         "headline": null,
-        "avatarUrl": "/api/v1/auth/avatar",
+        "avatarUrl": "/api/v1/users/me/avatar",
         "phone": null,
         "countryCode": "ID",
         "city": null,
@@ -108,6 +103,18 @@ All non-GET auth endpoints require `x-csrf-token`. Login, refresh, logout, forgo
 ```
 
 Password policy: 12–128 characters. Registration creates account + profile + default RBAC role. Email verification is required before learner/admin access. Login remains possible while unverified so the user can resend verification. Avatar uploads accept JPEG, PNG, or WebP up to 2 MB and are served privately to the owner. Set/clear host-only HttpOnly cookies; apply Redis-backed rate limits and CSRF/origin protections. Production auth cookies are host-only (no `Domain` attribute), `Secure`, and `SameSite=Lax`; staging and production cookies are isolated.
+
+## Profile
+
+| Method | Path               | Access        | Request          | Success                       |
+| ------ | ------------------ | ------------- | ---------------- | ----------------------------- |
+| GET    | `/users/me`        | Authenticated | —                | `200 { data: { user } }`      |
+| PATCH  | `/users/me`        | Authenticated | profile fields   | `200 { data: { user } }`      |
+| POST   | `/users/me/avatar` | Authenticated | multipart `file` | `200 { data: { avatarUrl } }` |
+| GET    | `/users/me/avatar` | Authenticated | —                | image stream or `404`         |
+| DELETE | `/users/me/avatar` | Authenticated | —                | `204`                         |
+
+`PATCH /users/me` updates `users_profile` only. Avatar uploads accept JPEG, PNG, or WebP up to 2 MB and are served privately to the owner.
 
 ## Public catalog
 

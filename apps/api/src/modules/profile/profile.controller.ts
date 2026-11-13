@@ -34,7 +34,7 @@ import { AvatarUploadEnvelopeResponseDto } from "./dto/profile-response.dto";
 import { AuthUserEnvelopeResponseDto } from "../auth/dto/auth-user-response.dto";
 
 @ApiDocs({ tags: ["Profile"] })
-@Controller("auth")
+@Controller("users")
 @UseGuards(AuthRateLimitGuard)
 export class ProfileController {
   constructor(
@@ -84,7 +84,7 @@ export class ProfileController {
   @Can.Anyone()
   @RequireVerifiedEmail()
   @AuthRateLimit("avatar")
-  @Post("avatar")
+  @Post("me/avatar")
   @HttpCode(200)
   @UseInterceptors(
     FileInterceptor("file", {
@@ -116,7 +116,7 @@ export class ProfileController {
       await this.avatars.remove(previous);
     }
 
-    return ApiResponse.ok({ avatarUrl: "/api/v1/auth/avatar" });
+    return ApiResponse.ok({ avatarUrl: "/api/v1/users/me/avatar" });
   }
 
   @ApiDocs({
@@ -130,7 +130,7 @@ export class ProfileController {
   })
   @Can.Anyone()
   @RequireVerifiedEmail()
-  @Get("avatar")
+  @Get("me/avatar")
   async getAvatar(
     @CurrentUser() user: AuthUser,
     @Req() request: Request,
@@ -158,7 +158,7 @@ export class ProfileController {
   })
   @Can.Anyone()
   @RequireVerifiedEmail()
-  @Delete("avatar")
+  @Delete("me/avatar")
   @HttpCode(204)
   @SkipEnvelope()
   async deleteAvatar(@CurrentUser() user: AuthUser): Promise<void> {
