@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
+import { Field, FieldControl, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useRegister, useResendVerification } from "@/features/auth/api/auth";
 import { localizedPath } from "@/lib/i18n/routing";
@@ -96,48 +96,32 @@ export function RegisterForm({ locale }: { locale: Locale }) {
     <form className="grid gap-5" onSubmit={handleSubmit} noValidate>
       <FormError error={register.error} />
 
-      <Field.Root invalid={Boolean(errors.name)}>
-        <Field.Label>{t("auth.fields.name")}</Field.Label>
-        <Field.Control
-          render={
-            <Input
-              id="register-name"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              autoComplete="name"
-              placeholder="Nama lengkap"
-              aria-describedby={errors.name ? "register-name-error" : undefined}
-            />
-          }
-        />
-        {errors.name ? (
-          <Field.Error id="register-name-error" match>
-            {t(errors.name)}
-          </Field.Error>
-        ) : null}
-      </Field.Root>
+      <Field id="register-name" invalid={Boolean(errors.name)}>
+        <FieldLabel>{t("auth.fields.name")}</FieldLabel>
+        <FieldControl>
+          <Input
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            autoComplete="name"
+            placeholder="Nama lengkap"
+          />
+        </FieldControl>
+        {errors.name ? <FieldError>{t(errors.name)}</FieldError> : null}
+      </Field>
 
-      <Field.Root invalid={Boolean(errors.email)}>
-        <Field.Label>{t("auth.fields.email")}</Field.Label>
-        <Field.Control
-          render={
-            <Input
-              id="register-email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              autoComplete="email"
-              placeholder="nama@email.com"
-              aria-describedby={errors.email ? "register-email-error" : undefined}
-            />
-          }
-        />
-        {errors.email ? (
-          <Field.Error id="register-email-error" match>
-            {t(errors.email)}
-          </Field.Error>
-        ) : null}
-      </Field.Root>
+      <Field id="register-email" invalid={Boolean(errors.email)}>
+        <FieldLabel>{t("auth.fields.email")}</FieldLabel>
+        <FieldControl>
+          <Input
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            autoComplete="email"
+            placeholder="nama@email.com"
+          />
+        </FieldControl>
+        {errors.email ? <FieldError>{t(errors.email)}</FieldError> : null}
+      </Field>
 
       <PasswordField
         id="register-password"

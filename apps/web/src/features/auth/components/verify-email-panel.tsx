@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
+import { Field, FieldControl, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useResendVerification, useVerifyEmail } from "@/features/auth/api/auth";
 import { localizedPath } from "@/lib/i18n/routing";
@@ -41,27 +41,19 @@ function ResendForm({ defaultEmail }: { defaultEmail?: string }) {
 
   return (
     <form className="grid gap-3" onSubmit={handleSubmit} noValidate>
-      <Field.Root invalid={Boolean(error)}>
-        <Field.Label>{t("auth.fields.email")}</Field.Label>
-        <Field.Control
-          render={
-            <Input
-              id="resend-email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              autoComplete="email"
-              placeholder="nama@email.com"
-              aria-describedby={error ? "resend-email-error" : undefined}
-            />
-          }
-        />
-        {error ? (
-          <Field.Error id="resend-email-error" match>
-            {t(error)}
-          </Field.Error>
-        ) : null}
-      </Field.Root>
+      <Field id="resend-email" invalid={Boolean(error)}>
+        <FieldLabel>{t("auth.fields.email")}</FieldLabel>
+        <FieldControl>
+          <Input
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            autoComplete="email"
+            placeholder="nama@email.com"
+          />
+        </FieldControl>
+        {error ? <FieldError>{t(error)}</FieldError> : null}
+      </Field>
       <Button type="submit" variant="secondary" loading={resend.isPending}>
         {resend.isPending ? t("auth.actions.resending") : t("auth.actions.resendVerification")}
       </Button>

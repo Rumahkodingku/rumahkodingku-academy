@@ -9,7 +9,13 @@ import { useTranslation } from "react-i18next";
 
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
+import {
+  Field,
+  FieldControl,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useForgotPassword } from "@/features/auth/api/auth";
 import { localizedPath } from "@/lib/i18n/routing";
@@ -57,28 +63,20 @@ export function ForgotPasswordForm({ locale }: { locale: Locale }) {
     <form className="grid gap-5" onSubmit={handleSubmit} noValidate>
       <FormError error={forgot.error} />
 
-      <Field.Root invalid={Boolean(errors.email)}>
-        <Field.Label>{t("auth.fields.email")}</Field.Label>
-        <Field.Control
-          render={
-            <Input
-              id="forgot-email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              autoComplete="email"
-              placeholder="nama@email.com"
-              aria-describedby={errors.email ? "forgot-email-error" : undefined}
-            />
-          }
-        />
-        <Field.Description>{t("auth.forgot.description")}</Field.Description>
-        {errors.email ? (
-          <Field.Error id="forgot-email-error" match>
-            {t(errors.email)}
-          </Field.Error>
-        ) : null}
-      </Field.Root>
+      <Field id="forgot-email" invalid={Boolean(errors.email)}>
+        <FieldLabel>{t("auth.fields.email")}</FieldLabel>
+        <FieldControl>
+          <Input
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            autoComplete="email"
+            placeholder="nama@email.com"
+          />
+        </FieldControl>
+        <FieldDescription>{t("auth.forgot.description")}</FieldDescription>
+        {errors.email ? <FieldError>{t(errors.email)}</FieldError> : null}
+      </Field>
 
       <Button type="submit" size="lg" loading={forgot.isPending} className="w-full">
         {forgot.isPending ? t("auth.actions.sending") : t("auth.actions.sendResetLink")}

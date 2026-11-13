@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
+import { Field, FieldControl, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useLogin } from "@/features/auth/api/auth";
 import { safeNextPath } from "@/lib/auth/redirect";
@@ -49,27 +49,19 @@ export function LoginForm({ locale, next }: { locale: Locale; next?: string }) {
     <form className="grid gap-5" onSubmit={handleSubmit} noValidate>
       <FormError error={login.error} />
 
-      <Field.Root invalid={Boolean(errors.email)}>
-        <Field.Label>{t("auth.fields.email")}</Field.Label>
-        <Field.Control
-          render={
-            <Input
-              id="login-email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              autoComplete="email"
-              placeholder="nama@email.com"
-              aria-describedby={errors.email ? "login-email-error" : undefined}
-            />
-          }
-        />
-        {errors.email ? (
-          <Field.Error id="login-email-error" match>
-            {t(errors.email)}
-          </Field.Error>
-        ) : null}
-      </Field.Root>
+      <Field id="login-email" invalid={Boolean(errors.email)}>
+        <FieldLabel>{t("auth.fields.email")}</FieldLabel>
+        <FieldControl>
+          <Input
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            autoComplete="email"
+            placeholder="nama@email.com"
+          />
+        </FieldControl>
+        {errors.email ? <FieldError>{t(errors.email)}</FieldError> : null}
+      </Field>
 
       <div className="grid gap-2">
         <PasswordField

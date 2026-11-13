@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field } from "@/components/ui/field";
+import { Field, FieldControl, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
@@ -71,28 +71,20 @@ function TextField({
   const { t } = useTranslation();
 
   return (
-    <Field.Root invalid={Boolean(error)}>
-      <Field.Label>{label}</Field.Label>
-      <Field.Control
-        render={
-          <Input
-            id={id}
-            type={type}
-            value={value}
-            onChange={(event) => onChange(event.target.value)}
-            autoComplete={autoComplete}
-            placeholder={placeholder}
-            disabled={disabled}
-            aria-describedby={error ? `${id}-error` : undefined}
-          />
-        }
-      />
-      {error ? (
-        <Field.Error id={`${id}-error`} match>
-          {t(error)}
-        </Field.Error>
-      ) : null}
-    </Field.Root>
+    <Field id={id} invalid={Boolean(error)}>
+      <FieldLabel>{label}</FieldLabel>
+      <FieldControl>
+        <Input
+          type={type}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          autoComplete={autoComplete}
+          placeholder={placeholder}
+          disabled={disabled}
+        />
+      </FieldControl>
+      {error ? <FieldError>{t(error)}</FieldError> : null}
+    </Field>
   );
 }
 
@@ -227,24 +219,17 @@ export function ProfileForm({ user, disabled = false }: { user: AuthUser; disabl
           <CardTitle>{t("profile.sections.about")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <Field.Root invalid={Boolean(errors.bio)}>
-            <Field.Label>{t("profile.fields.bio")}</Field.Label>
-            <Field.Control
-              render={
-                <Textarea
-                  value={values.bio ?? ""}
-                  onChange={(event) => setValue("bio", event.target.value)}
-                  placeholder={t("profile.placeholders.bio")}
-                  aria-describedby={errors.bio ? "profile-bio-error" : undefined}
-                />
-              }
-            />
-            {errors.bio ? (
-              <Field.Error id="profile-bio-error" match>
-                {t(errors.bio)}
-              </Field.Error>
-            ) : null}
-          </Field.Root>
+          <Field id="profile-bio" invalid={Boolean(errors.bio)}>
+            <FieldLabel>{t("profile.fields.bio")}</FieldLabel>
+            <FieldControl>
+              <Textarea
+                value={values.bio ?? ""}
+                onChange={(event) => setValue("bio", event.target.value)}
+                placeholder={t("profile.placeholders.bio")}
+              />
+            </FieldControl>
+            {errors.bio ? <FieldError>{t(errors.bio)}</FieldError> : null}
+          </Field>
         </CardContent>
       </Card>
 

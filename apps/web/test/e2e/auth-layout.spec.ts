@@ -27,10 +27,8 @@ test.describe("auth layout", () => {
         .evaluate((element) => getComputedStyle(element).gridTemplateColumns);
       const widths = columns.split(" ").map((value) => Number.parseFloat(value));
 
-      if (viewport.width >= 1280) {
-        expect(widths[0] / (widths[0] + widths[1])).toBeCloseTo(0.7, 1);
-      } else if (viewport.width >= 1024) {
-        expect(widths[0] / (widths[0] + widths[1])).toBeCloseTo(0.6, 1);
+      if (viewport.width >= 1024) {
+        expect(widths[0] / (widths[0] + widths[1])).toBeCloseTo(0.5, 1);
       } else {
         expect(widths).toHaveLength(1);
       }

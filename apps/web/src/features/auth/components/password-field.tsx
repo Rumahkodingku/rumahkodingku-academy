@@ -4,7 +4,13 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Field } from "@/components/ui/field";
+import {
+  Field,
+  FieldControl,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -31,22 +37,18 @@ export function PasswordField({
   const [visible, setVisible] = useState(false);
 
   return (
-    <Field.Root invalid={Boolean(error)}>
-      <Field.Label>{label}</Field.Label>
+    <Field id={id} invalid={Boolean(error)}>
+      <FieldLabel>{label}</FieldLabel>
       <div className="relative">
-        <Field.Control
-          render={
-            <Input
-              id={id}
-              type={visible ? "text" : "password"}
-              value={value}
-              onChange={(event) => onChange(event.target.value)}
-              autoComplete={autoComplete}
-              className="pr-12"
-              aria-describedby={error ? `${id}-error` : undefined}
-            />
-          }
-        />
+        <FieldControl>
+          <Input
+            type={visible ? "text" : "password"}
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+            autoComplete={autoComplete}
+            className="pr-12"
+          />
+        </FieldControl>
         <Button
           type="button"
           variant="ghost"
@@ -62,12 +64,8 @@ export function PasswordField({
           )}
         </Button>
       </div>
-      {description ? <Field.Description>{description}</Field.Description> : null}
-      {error ? (
-        <Field.Error id={`${id}-error`} match>
-          {t(error)}
-        </Field.Error>
-      ) : null}
-    </Field.Root>
+      {description ? <FieldDescription>{description}</FieldDescription> : null}
+      {error ? <FieldError>{t(error)}</FieldError> : null}
+    </Field>
   );
 }
