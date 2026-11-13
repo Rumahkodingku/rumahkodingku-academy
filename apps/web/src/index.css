@@ -21,6 +21,9 @@
   --danger: #a33a2b;
   --info: #2563eb;
   --overlay: rgb(20 19 17 / 0.55);
+  --deep: #141311;
+  --deep-foreground: #f6f1e7;
+  --deep-muted: #b9b1a4;
   --ink-hover: #2a2722;
   --ink-active: #000000;
 
@@ -89,6 +92,9 @@
   --danger: #f09a88;
   --info: #7fb0ff;
   --overlay: rgb(0 0 0 / 0.72);
+  --deep: #0b0a09;
+  --deep-foreground: #f4eee3;
+  --deep-muted: #b9b1a4;
   --ink-hover: #ffffff;
   --ink-active: #e8e0d3;
 
@@ -112,6 +118,9 @@
   --color-warning: var(--warning);
   --color-danger: var(--danger);
   --color-info: var(--info);
+  --color-deep: var(--deep);
+  --color-deep-foreground: var(--deep-foreground);
+  --color-deep-muted: var(--deep-muted);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);

@@ -33,7 +33,11 @@
   "footer": {
     "description": "Belajar, bangun, dan tumbuhkan kemampuan teknologi Anda melalui kursus terstruktur dan proyek nyata.",
     "navLabel": "Navigasi footer",
-    "rights": "© {{year}} RumahKodingku Academy."
+    "rights": "© {{year}} RumahKodingku Academy.",
+    "statement": "Belajar, bangun, dan buktikan kemampuan Anda.",
+    "note": "Kursus, proyek, dan sertifikat untuk kemampuan yang bisa dibuktikan.",
+    "navigation": "Navigasi",
+    "academy": "Academy"
   },
   "auth": {
     "login": {

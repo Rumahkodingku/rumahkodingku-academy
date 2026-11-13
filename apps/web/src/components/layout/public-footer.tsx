@@ -20,29 +20,36 @@ export function PublicFooter({ locale }: { locale: Locale }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-surface-subtle">
-      <Container className="grid gap-10 py-12 md:grid-cols-[1.5fr_1fr] md:py-16">
-        <div className="grid max-w-md gap-4">
-          <BrandLogo size="sm" />
-          <p className="text-body-sm text-muted-foreground">{t("footer.description")}</p>
-          <p className="text-caption uppercase tracking-[0.18em] text-muted-foreground">
-            {t("brand.tagline")}
-          </p>
+    <footer className="border-t border-deep-muted/20 bg-deep text-deep-foreground">
+      <Container className="grid gap-12 py-16 md:py-20 lg:grid-cols-12 lg:gap-8">
+        <div className="grid content-start gap-6 lg:col-span-6">
+          <BrandLogo size="sm" tone="inverse" />
+          <p className="max-w-[26ch] text-h2 text-deep-foreground">{t("footer.statement")}</p>
+          <p className="max-w-[38ch] text-body-sm text-deep-muted">{t("footer.description")}</p>
         </div>
-        <nav aria-label={t("footer.navLabel")} className="grid content-start gap-2">
+
+        <nav aria-label={t("footer.navLabel")} className="grid content-start gap-3 lg:col-span-3">
+          <p className="text-eyebrow uppercase text-deep-muted">{t("footer.navigation")}</p>
           {footerLinks.map((item) => (
             <Link
               key={item.href}
               href={localizedPath(locale, item.href) as Route}
-              className="w-fit rounded-md py-1 text-body-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="w-fit text-body-sm text-deep-foreground transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               {t(item.key)}
             </Link>
           ))}
         </nav>
+
+        <div className="grid content-start gap-3 lg:col-span-3">
+          <p className="text-eyebrow uppercase text-deep-muted">{t("footer.academy")}</p>
+          <p className="text-body-sm text-deep-muted">{t("brand.tagline")}</p>
+          <p className="text-body-sm text-deep-muted">{t("footer.note")}</p>
+        </div>
       </Container>
-      <Container className="border-t border-border py-6 text-caption text-muted-foreground">
-        {t("footer.rights", { year })}
+      <Container className="flex flex-col gap-2 border-t border-deep-muted/20 py-6 text-caption text-deep-muted sm:flex-row sm:items-center sm:justify-between">
+        <p>{t("footer.rights", { year })}</p>
+        <p>RumahKodingku Academy</p>
       </Container>
     </footer>
   );

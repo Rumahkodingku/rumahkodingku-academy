@@ -47,6 +47,10 @@ describe("PublicHeader", () => {
 
     render(<PublicHeader locale="id" user={null} />);
 
+    const header = screen.getByRole("banner");
+    expect(header).toHaveClass("bg-canvas");
+    expect(header).not.toHaveClass("backdrop-blur");
+
     expect(screen.getByRole("link", { name: "RumahKodingku Academy" })).toHaveAttribute(
       "href",
       "/",

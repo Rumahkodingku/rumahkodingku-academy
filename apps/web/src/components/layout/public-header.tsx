@@ -20,9 +20,9 @@ import {
 } from "@/components/ui/dialog";
 import { LanguageSwitch } from "@/components/language-switch";
 import { ModeToggle } from "@/components/mode-toggle";
-import { cn } from "@/lib/utils";
 import type { AuthUser } from "@/features/auth/types";
 import { localizedPath, type Locale } from "@/lib/i18n/routing";
+import { cn } from "@/lib/utils";
 
 const navItems = [
   { key: "nav.home", href: "/" },
@@ -34,6 +34,7 @@ export function PublicHeader({ locale, user }: { locale: Locale; user: AuthUser 
   const { t } = useTranslation();
   const pathname = usePathname();
   const homeHref = localizedPath(locale, "/");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const navLinks = navItems.map((item) => {
     const href = localizedPath(locale, item.href);
@@ -42,34 +43,33 @@ export function PublicHeader({ locale, user }: { locale: Locale; user: AuthUser 
     return { ...item, href, active };
   });
 
-  const [menuOpen, setMenuOpen] = useState(false);
-
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-line bg-canvas">
       <a
         href="#main"
-        className="sr-only rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50"
+        className="sr-only bg-ink px-4 py-2 text-canvas focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50"
       >
         {t("nav.skipToContent")}
       </a>
-      <Container className="flex h-16 items-center justify-between gap-4">
+      <Container className="flex h-[72px] items-center justify-between gap-4">
         <Link
           href={homeHref as Route}
           aria-label="RumahKodingku Academy"
-          className="rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           <BrandLogo size="sm" />
         </Link>
 
-        <nav aria-label={t("nav.label")} className="hidden items-center gap-1 md:flex">
+        <nav aria-label={t("nav.label")} className="hidden items-center gap-6 md:flex">
           {navLinks.map((item) => (
             <Link
               key={item.href}
               href={item.href as Route}
               aria-current={item.active ? "page" : undefined}
               className={cn(
-                "rounded-md px-3 py-2 text-body-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                item.active && "bg-muted text-foreground",
+                "relative rounded-sm py-2 text-body-sm font-medium text-ink-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                item.active &&
+                  "text-ink after:absolute after:inset-x-0 after:-bottom-px after:h-px after:bg-accent",
               )}
             >
               {t(item.key)}
@@ -94,36 +94,40 @@ export function PublicHeader({ locale, user }: { locale: Locale; user: AuthUser 
                 <span className="h-0.5 w-5 rounded-full bg-current" />
               </span>
             </DialogTrigger>
-            <DialogContent variant="sheet" closeLabel={t("actions.closeMenu")}>
+            <DialogContent
+              variant="sheet"
+              className="border-0 bg-canvas"
+              closeLabel={t("actions.closeMenu")}
+            >
               <DialogHeader>
-                <DialogTitle>{t("menu.title")}</DialogTitle>
+                <DialogTitle className="text-h2">{t("menu.title")}</DialogTitle>
                 <DialogDescription>{t("menu.description")}</DialogDescription>
               </DialogHeader>
-              <nav aria-label={t("nav.label")} className="mt-4 grid gap-1">
+              <nav aria-label={t("nav.label")} className="mt-10 grid gap-1">
                 {navLinks.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href as Route}
                     onClick={() => setMenuOpen(false)}
-                    className="rounded-md px-3 py-3 text-body font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="border-b border-line py-4 text-h3 text-ink transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   >
                     {t(item.key)}
                   </Link>
                 ))}
               </nav>
               {!user ? (
-                <div className="mt-4 grid gap-2 border-t border-border pt-4">
+                <div className="mt-8 grid gap-2">
                   <Link
                     href={localizedPath(locale, "/login") as Route}
                     onClick={() => setMenuOpen(false)}
-                    className="rounded-md border border-border px-3 py-3 text-center text-body font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="border border-line-strong px-4 py-3 text-center text-body font-medium text-ink transition-colors hover:border-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   >
                     {t("auth.links.signIn")}
                   </Link>
                   <Link
                     href={localizedPath(locale, "/register") as Route}
                     onClick={() => setMenuOpen(false)}
-                    className="rounded-md bg-primary px-3 py-3 text-center text-body font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="bg-ink px-4 py-3 text-center text-body font-medium text-canvas transition-colors hover:bg-ink-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   >
                     {t("auth.links.register")}
                   </Link>

@@ -33,7 +33,11 @@
   "footer": {
     "description": "Learn, build, and grow your technology skills through structured courses and real projects.",
     "navLabel": "Footer navigation",
-    "rights": "© {{year}} RumahKodingku Academy."
+    "rights": "© {{year}} RumahKodingku Academy.",
+    "statement": "Learn, build, and prove what you can do.",
+    "note": "Courses, projects, and certificates for skills you can prove.",
+    "navigation": "Navigation",
+    "academy": "Academy"
   },
   "auth": {
     "login": {

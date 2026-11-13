@@ -3,8 +3,13 @@ import { expect, test } from "@playwright/test";
 test("public shell renders and stays usable on mobile", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("banner")).toBeVisible();
-  await expect(page.getByRole("contentinfo")).toBeVisible();
+  const header = page.getByRole("banner");
+  const footer = page.getByRole("contentinfo");
+  await expect(header).toBeVisible();
+  await expect(header).toHaveClass(/bg-canvas/);
+  await expect(header).not.toHaveClass(/backdrop-blur/);
+  await expect(footer).toBeVisible();
+  await expect(footer).toHaveClass(/bg-deep/);
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "Belajar teknologi dengan praktik nyata.",
   );
