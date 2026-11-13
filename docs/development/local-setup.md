@@ -77,7 +77,7 @@ Expected: `Ran 0 migration(s)` on an up-to-date database. The migration seeds th
 Seed RBAC idempotently when needed:
 
 ```sh
-pnpm --filter api db:seed:rbac
+pnpm --filter @rumahkodingku-academy/db db:seed:rbac
 ```
 
 ## 6. Create the first admin
@@ -87,7 +87,7 @@ DATABASE_URL=mysql://academy_user:academy_password@localhost:3308/rumahkodingku_
 ADMIN_EMAIL=admin@example.com \
 ADMIN_NAME="Academy Admin" \
 ADMIN_PASSWORD="replace-with-a-long-password" \
-pnpm --filter api auth:create-admin
+pnpm --filter @rumahkodingku-academy/db auth:create-admin
 ```
 
 The command is idempotent and does not run automatically at API boot. Use a strong password and do not commit it.
