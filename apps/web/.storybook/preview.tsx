@@ -9,7 +9,7 @@ const preview: Preview = {
 
       return (
         <div className={theme === "dark" ? "dark" : undefined}>
-          <div className="min-h-screen bg-background p-6 text-foreground">
+          <div className="min-h-screen bg-canvas p-6 text-ink">
             <Story />
           </div>
         </div>
