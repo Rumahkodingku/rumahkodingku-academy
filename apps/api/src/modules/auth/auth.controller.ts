@@ -3,6 +3,7 @@ import { Public } from "@nestjs/authentication";
 import { Can } from "@nestjs/authorization";
 import type { Request, Response } from "express";
 
+import { ApiDocs } from "../../common/swagger/api-docs.decorator";
 import { ApiError, ApiResponse, SkipEnvelope } from "../../common/http/api-response";
 import { AuthRateLimit } from "./auth-rate-limit.decorator";
 import { AuthRateLimitGuard } from "./auth-rate-limit.guard";
@@ -16,12 +17,28 @@ import {
   ResetPasswordDto,
   VerifyEmailDto,
 } from "./dto/auth.dto";
+import {
+  AcceptedEnvelopeResponseDto,
+  AuthUserEnvelopeResponseDto,
+  ResetPasswordEnvelopeResponseDto,
+  VerifyEmailEnvelopeResponseDto,
+} from "./dto/auth-user-response.dto";
 
+@ApiDocs({ tags: ["Authentication"], auth: false })
 @Controller("auth")
 @UseGuards(AuthRateLimitGuard)
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
+  @ApiDocs({
+    summary: "Register a learner account",
+    description:
+      "Creates the account, profile, and default learner role, then sends verification email.",
+    body: RegisterDto,
+    success: AuthUserEnvelopeResponseDto,
+    successStatus: 201,
+    errorResponses: [400, 409, 429],
+  })
   @Public()
   @AuthRateLimit("register")
   @Post("register")
@@ -31,6 +48,13 @@ export class AuthController {
     return ApiResponse.created({ user });
   }
 
+  @ApiDocs({
+    summary: "Sign in",
+    description: "Verifies credentials and sets access and refresh cookies.",
+    body: LoginDto,
+    success: AuthUserEnvelopeResponseDto,
+    errorResponses: [400, 401, 429],
+  })
   @Public()
   @AuthRateLimit("login")
   @Post("login")
@@ -45,6 +69,12 @@ export class AuthController {
     }
   }
 
+  @ApiDocs({
+    summary: "Rotate the session",
+    description: "Rotates the refresh token and replaces the auth cookies.",
+    success: AuthUserEnvelopeResponseDto,
+    errorResponses: [401, 429],
+  })
   @Public()
   @AuthRateLimit("refresh")
   @Post("refresh")
@@ -67,6 +97,13 @@ export class AuthController {
     }
   }
 
+  @ApiDocs({
+    summary: "Sign out",
+    description: "Revokes the current refresh-token family and clears auth cookies.",
+    auth: true,
+    responses: { 204: { description: "Signed out" } },
+    errorResponses: [401],
+  })
   @Can.Anyone()
   @Post("logout")
   @HttpCode(204)
@@ -80,6 +117,13 @@ export class AuthController {
     clearAuthCookies(response);
   }
 
+  @ApiDocs({
+    summary: "Request a password reset",
+    body: ForgotPasswordDto,
+    success: AcceptedEnvelopeResponseDto,
+    successStatus: 202,
+    errorResponses: [400, 429],
+  })
   @Public()
   @AuthRateLimit("forgot")
   @Post("forgot-password")
@@ -89,6 +133,12 @@ export class AuthController {
     return ApiResponse.ok({ accepted: true });
   }
 
+  @ApiDocs({
+    summary: "Reset a password",
+    body: ResetPasswordDto,
+    success: ResetPasswordEnvelopeResponseDto,
+    errorResponses: [400, 429],
+  })
   @Public()
   @AuthRateLimit("reset")
   @Post("reset-password")
@@ -102,6 +152,12 @@ export class AuthController {
     return ApiResponse.ok({ reset: true });
   }
 
+  @ApiDocs({
+    summary: "Verify an email address",
+    body: VerifyEmailDto,
+    success: VerifyEmailEnvelopeResponseDto,
+    errorResponses: [400, 429],
+  })
   @Public()
   @AuthRateLimit("verify")
   @Post("verify-email")
@@ -111,6 +167,13 @@ export class AuthController {
     return ApiResponse.ok({ email });
   }
 
+  @ApiDocs({
+    summary: "Resend a verification email",
+    body: ResendVerificationDto,
+    success: AcceptedEnvelopeResponseDto,
+    successStatus: 202,
+    errorResponses: [400, 429],
+  })
   @Public()
   @AuthRateLimit("resend")
   @Post("resend-verification")
