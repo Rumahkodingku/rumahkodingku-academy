@@ -11,6 +11,8 @@ export const homepageFixtures = {
         "Kursus terstruktur, proyek nyata, dan sertifikat untuk membantu Anda membangun kemampuan yang bisa dibuktikan.",
       primaryCta: { label: "Lihat program", href: "#program" },
       secondaryCta: { label: "Cara belajar", href: "#cara-belajar" },
+      note: "Kursus dibeli satu per satu. Akses belajar seumur hidup.",
+      artifact: undefined,
     },
     features: [
       {
@@ -46,6 +48,27 @@ export const homepageFixtures = {
         description: "Selesaikan syarat belajar dan dapatkan sertifikat yang bisa diverifikasi.",
       },
     ],
+    statement: {
+      title: "Belajar yang berujung pada bukti.",
+      body: "Academy menyusun materi, latihan, dan proyek dalam satu alur. Anda selalu tahu apa yang sedang dipelajari, apa yang sedang dibangun, dan bukti apa yang akan dihasilkan.",
+    },
+    proof: {
+      eyebrow: "Bukti kemampuan",
+      title: "Sertifikat bukan klaim kosong.",
+      description:
+        "Sertifikat diterbitkan setelah syarat belajar dan proyek terpenuhi, lalu dapat diverifikasi melalui halaman publik.",
+      points: [
+        "Kursus terstruktur dengan progres yang terlihat.",
+        "Proyek nyata sebagai bagian dari penilaian.",
+        "Sertifikat dengan halaman verifikasi.",
+      ],
+    },
+    cta: {
+      title: "Mulai dari satu langkah yang bisa Anda lihat hasilnya.",
+      description: "Pilih program, kerjakan proyek pertama, lalu buktikan kemampuan Anda.",
+      primaryCta: { label: "Jelajahi program", href: "#program" },
+      secondaryCta: { label: "Cara belajar", href: "#cara-belajar" },
+    },
   },
   en: {
     hero: {
@@ -55,6 +78,8 @@ export const homepageFixtures = {
         "Structured courses, real projects, and certificates that help you build skills you can prove.",
       primaryCta: { label: "View programs", href: "#program" },
       secondaryCta: { label: "How it works", href: "#cara-belajar" },
+      note: "Courses are bought one at a time. Learning access is lifelong.",
+      artifact: undefined,
     },
     features: [
       {
@@ -90,6 +115,27 @@ export const homepageFixtures = {
         description: "Complete the requirements and earn a verifiable certificate.",
       },
     ],
+    statement: {
+      title: "Learning that ends in proof.",
+      body: "Academy connects lessons, practice, and projects into one path. You always know what you are learning, what you are building, and what evidence you will produce.",
+    },
+    proof: {
+      eyebrow: "Proof of skill",
+      title: "A certificate is not an empty claim.",
+      description:
+        "Certificates are issued after the learning and project requirements are met, then verified on a public page.",
+      points: [
+        "Structured courses with visible progress.",
+        "Real projects as part of assessment.",
+        "Certificates with a verification page.",
+      ],
+    },
+    cta: {
+      title: "Start with one step whose result you can see.",
+      description: "Choose a program, build your first project, and prove what you can do.",
+      primaryCta: { label: "Explore programs", href: "#program" },
+      secondaryCta: { label: "How it works", href: "#cara-belajar" },
+    },
   },
 } satisfies Record<Locale, HomepageContent>;
 

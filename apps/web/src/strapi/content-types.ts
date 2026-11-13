@@ -19,6 +19,32 @@ export type MarketingStep = {
   description: string;
 };
 
+export type MarketingArtifact = {
+  media: StrapiMedia;
+  caption?: string;
+};
+
+export type MarketingStatement = {
+  eyebrow?: string;
+  title: string;
+  body: string;
+};
+
+export type MarketingProof = {
+  eyebrow?: string;
+  title: string;
+  description: string;
+  points: string[];
+};
+
+export type MarketingCta = {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  primaryCta: MarketingLink;
+  secondaryCta?: MarketingLink;
+};
+
 export type HomepageContent = {
   hero: {
     eyebrow: string;
@@ -26,9 +52,14 @@ export type HomepageContent = {
     description: string;
     primaryCta: MarketingLink;
     secondaryCta?: MarketingLink;
+    note?: string;
+    artifact?: MarketingArtifact;
   };
   features: MarketingFeature[];
   steps: MarketingStep[];
+  statement?: MarketingStatement;
+  proof?: MarketingProof;
+  cta?: MarketingCta;
   seo?: StrapiSEO;
 };
 

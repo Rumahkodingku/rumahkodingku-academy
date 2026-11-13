@@ -105,6 +105,40 @@ Allowed dynamic-zone components:
 | `title`       | string | yes      |
 | `description` | text   | yes      |
 
+### `shared.artifact`
+
+| Field     | Type   | Required |
+| --------- | ------ | -------- |
+| `media`   | media  | yes      |
+| `caption` | string | no       |
+
+### `shared.statement`
+
+| Field     | Type   | Required |
+| --------- | ------ | -------- |
+| `eyebrow` | string | no       |
+| `title`   | string | yes      |
+| `body`    | text   | yes      |
+
+### `shared.proof`
+
+| Field         | Type                | Required |
+| ------------- | ------------------- | -------- |
+| `eyebrow`     | string              | no       |
+| `title`       | string              | yes      |
+| `description` | text                | yes      |
+| `points`      | string (repeatable) | yes      |
+
+### `shared.cta`
+
+| Field          | Type                    | Required |
+| -------------- | ----------------------- | -------- |
+| `eyebrow`      | string                  | no       |
+| `title`        | string                  | yes      |
+| `description`  | text                    | no       |
+| `primaryCta`   | component `shared.link` | yes      |
+| `secondaryCta` | component `shared.link` | no       |
+
 ### `blocks.faq`
 
 | Field      | Type   | Required |
