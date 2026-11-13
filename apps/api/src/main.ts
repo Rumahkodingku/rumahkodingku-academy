@@ -18,7 +18,9 @@ import { cookieToBearer } from "./modules/auth/auth.middleware";
 import { csrfProtection, ensureCsrfSession } from "./modules/csrf/csrf";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { logger: new WinstonLoggerService() });
+  const app = await NestFactory.create(AppModule, {
+    logger: new WinstonLoggerService(),
+  });
 
   app.setGlobalPrefix("api/v1");
   app.useGlobalFilters(new ProblemDetailsFilter());
