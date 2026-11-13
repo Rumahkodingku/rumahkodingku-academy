@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldControl, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -88,6 +87,15 @@ function TextField({
   );
 }
 
+function FormSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="grid gap-6 border-t border-line pt-8">
+      <h2 className="text-h3 text-ink">{title}</h2>
+      {children}
+    </section>
+  );
+}
+
 function SwitchField({
   id,
   label,
@@ -102,12 +110,12 @@ function SwitchField({
   onCheckedChange: (checked: boolean) => void;
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-xl border border-border bg-surface-subtle p-4">
+    <div className="flex items-start justify-between gap-4 border-b border-line py-4">
       <div className="grid gap-1">
-        <label htmlFor={id} className="text-body-sm font-medium text-foreground">
+        <label htmlFor={id} className="text-body-sm font-medium text-ink">
           {label}
         </label>
-        <p className="text-caption text-muted-foreground">{description}</p>
+        <p className="text-caption text-ink-muted">{description}</p>
       </div>
       <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} />
     </div>
@@ -161,24 +169,18 @@ export function ProfileForm({ user, disabled = false }: { user: AuthUser; disabl
   }
 
   return (
-    <form className="grid gap-6" onSubmit={handleSubmit} noValidate>
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("profile.avatar.title")}</CardTitle>
-        </CardHeader>
-        <CardContent>
+    <form className="grid gap-10" onSubmit={handleSubmit} noValidate>
+      <FormSection title={t("profile.avatar.title")}>
+        <div className="">
           <AvatarUpload user={user} disabled={disabled} />
-        </CardContent>
-      </Card>
+        </div>
+      </FormSection>
 
       {success ? <Alert tone="success">{t("profile.saved")}</Alert> : null}
       <FormError error={update.error} />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("profile.sections.identity")}</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4 sm:grid-cols-2">
+      <FormSection title={t("profile.sections.identity")}>
+        <div className="grid gap-4 sm:grid-cols-2">
           <TextField
             id="profile-display-name"
             label={t("profile.fields.displayName")}
@@ -211,14 +213,11 @@ export function ProfileForm({ user, disabled = false }: { user: AuthUser; disabl
             onChange={(value) => setValue("headline", value)}
             error={errors.headline}
           />
-        </CardContent>
-      </Card>
+        </div>
+      </FormSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("profile.sections.about")}</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <FormSection title={t("profile.sections.about")}>
+        <div className="">
           <Field id="profile-bio" invalid={Boolean(errors.bio)}>
             <FieldLabel>{t("profile.fields.bio")}</FieldLabel>
             <FieldControl>
@@ -230,14 +229,11 @@ export function ProfileForm({ user, disabled = false }: { user: AuthUser; disabl
             </FieldControl>
             {errors.bio ? <FieldError>{t(errors.bio)}</FieldError> : null}
           </Field>
-        </CardContent>
-      </Card>
+        </div>
+      </FormSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("profile.sections.contact")}</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4 sm:grid-cols-2">
+      <FormSection title={t("profile.sections.contact")}>
+        <div className="grid gap-4 sm:grid-cols-2">
           <TextField
             id="profile-phone"
             label={t("profile.fields.phone")}
@@ -284,14 +280,11 @@ export function ProfileForm({ user, disabled = false }: { user: AuthUser; disabl
               ]}
             />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </FormSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("profile.sections.links")}</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4 sm:grid-cols-2">
+      <FormSection title={t("profile.sections.links")}>
+        <div className="grid gap-4 sm:grid-cols-2">
           {(
             [
               ["websiteUrl", "profile.fields.websiteUrl", "https://"],
@@ -312,14 +305,11 @@ export function ProfileForm({ user, disabled = false }: { user: AuthUser; disabl
               placeholder={placeholder}
             />
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </FormSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("profile.sections.preferences")}</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-3 sm:grid-cols-2">
+      <FormSection title={t("profile.sections.preferences")}>
+        <div className="grid gap-3 sm:grid-cols-2">
           <SwitchField
             id="profile-email-notifications"
             label={t("profile.fields.emailNotifications")}
@@ -334,14 +324,14 @@ export function ProfileForm({ user, disabled = false }: { user: AuthUser; disabl
             checked={values.inAppNotifications}
             onCheckedChange={(checked) => setValue("inAppNotifications", checked)}
           />
-        </CardContent>
-      </Card>
+        </div>
+      </FormSection>
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3 border-t border-line pt-8">
         <Button type="submit" size="lg" loading={update.isPending} disabled={disabled}>
           {update.isPending ? t("profile.saving") : t("profile.save")}
         </Button>
-        <p className="text-caption text-muted-foreground">{t("profile.readOnlyHint")}</p>
+        <p className="text-caption text-ink-muted">{t("profile.readOnlyHint")}</p>
       </div>
     </form>
   );

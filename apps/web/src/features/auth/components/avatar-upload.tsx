@@ -80,14 +80,14 @@ export function AvatarUpload({ user, disabled = false }: { user: AuthUser; disab
             <img
               src={source}
               alt={t("profile.avatar.currentAlt")}
-              className="size-20 rounded-2xl border border-border object-cover shadow-2"
+              className="size-24 rounded-lg border border-line object-cover"
             />
           ) : (
-            <span className="flex size-20 items-center justify-center rounded-2xl border border-border bg-accent text-h3 font-semibold text-primary">
+            <span className="flex size-24 items-center justify-center rounded-lg border border-line bg-surface-sunken text-h3 font-semibold text-accent">
               {initials(user.profile.displayName || user.email)}
             </span>
           )}
-          <span className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full border border-border bg-surface-default text-muted-foreground">
+          <span className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full border border-line bg-canvas text-ink-muted">
             <UserRound aria-hidden="true" className="size-3.5" />
           </span>
         </div>
@@ -103,7 +103,7 @@ export function AvatarUpload({ user, disabled = false }: { user: AuthUser; disab
           <div className="flex flex-wrap gap-2">
             <Button
               type="button"
-              variant="secondary"
+              variant="primary"
               loading={upload.isPending}
               disabled={disabled}
               onClick={() => inputRef.current?.click()}
@@ -124,7 +124,7 @@ export function AvatarUpload({ user, disabled = false }: { user: AuthUser; disab
               </Button>
             ) : null}
           </div>
-          <p className="text-caption text-muted-foreground">{t("profile.avatar.hint")}</p>
+          <p className="text-caption text-ink-muted">{t("profile.avatar.hint")}</p>
         </div>
       </div>
 

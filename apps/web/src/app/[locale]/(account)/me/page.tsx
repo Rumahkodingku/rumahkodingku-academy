@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 
 import { Container } from "@/components/layout/container";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProfileForm } from "@/features/auth/components/profile-form";
 import { VerificationBanner } from "@/features/auth/components/verification-banner";
+import { hasPermission, PERMISSIONS } from "@/features/auth/permissions";
 import { requireUser } from "@/lib/auth/session";
 import { isLocale } from "@/lib/i18n/routing";
 
@@ -16,65 +16,62 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
   }
 
   const user = await requireUser(locale);
+  const access = hasPermission(user, PERMISSIONS.ADMIN_ACCESS) ? "Admin" : "Learner";
 
   return (
-    <Container className="grid gap-8 py-10 md:py-14">
-      <div className="grid gap-3">
-        <Badge tone="accent" className="w-fit">
-          Profil
-        </Badge>
-        <h1 className="text-h1 text-foreground">Kenali diri Anda di Academy.</h1>
-        <p className="max-w-2xl text-body-lg text-muted-foreground">
+    <Container className="grid gap-10 py-20 md:py-28">
+      <header className="grid max-w-[52ch] gap-4">
+        <p className="text-eyebrow uppercase text-accent">Profil</p>
+        <h1 className="text-h1 text-ink">Kenali diri Anda di Academy.</h1>
+        <p className="text-body-lg text-ink-muted">
           Atur identitas publik, kontak, tautan, dan preferensi notifikasi. Email dan status akun
           tidak dapat diubah dari sini.
         </p>
-      </div>
+      </header>
 
       {!user.emailVerified ? <VerificationBanner email={user.email} /> : null}
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_280px]">
         <ProfileForm user={user} disabled={!user.emailVerified} />
 
-        <aside className="grid content-start gap-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Status akun</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-3 text-body-sm">
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-muted-foreground">Email</span>
-                <span className="max-w-48 truncate font-medium text-foreground">{user.email}</span>
+        <aside className="grid content-start gap-8 lg:sticky lg:top-28">
+          <section className="grid gap-4">
+            <h2 className="text-eyebrow uppercase text-ink-muted">Status akun</h2>
+            <dl className="border-y border-line">
+              <div className="flex items-start justify-between gap-4 border-b border-line py-3 text-body-sm">
+                <dt className="text-ink-muted">Email</dt>
+                <dd className="max-w-40 truncate text-right font-medium text-ink">{user.email}</dd>
               </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-muted-foreground">Status</span>
-                <Badge tone={user.status === "ACTIVE" ? "success" : "warning"}>{user.status}</Badge>
+              <div className="flex items-center justify-between gap-4 border-b border-line py-3 text-body-sm">
+                <dt className="text-ink-muted">Status</dt>
+                <dd>
+                  <Badge tone={user.status === "ACTIVE" ? "success" : "warning"}>
+                    {user.status}
+                  </Badge>
+                </dd>
               </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-muted-foreground">Verifikasi</span>
-                <Badge tone={user.emailVerified ? "success" : "warning"}>
-                  {user.emailVerified ? "Terverifikasi" : "Belum"}
-                </Badge>
+              <div className="flex items-center justify-between gap-4 border-b border-line py-3 text-body-sm">
+                <dt className="text-ink-muted">Verifikasi</dt>
+                <dd>
+                  <Badge tone={user.emailVerified ? "success" : "warning"}>
+                    {user.emailVerified ? "Terverifikasi" : "Belum"}
+                  </Badge>
+                </dd>
               </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-muted-foreground">Akses</span>
-                <span className="text-right font-medium text-foreground">
-                  {user.permissions.length > 0 ? user.permissions.join(", ") : "Learner"}
-                </span>
+              <div className="flex items-center justify-between gap-4 py-3 text-body-sm">
+                <dt className="text-ink-muted">Akses</dt>
+                <dd className="font-medium text-ink">{access}</dd>
               </div>
-            </CardContent>
-          </Card>
+            </dl>
+          </section>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Catatan</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-body-sm text-muted-foreground">
-                Perubahan profil hanya berlaku pada data profil. Peran dan izin dikelola oleh
-                administrator.
-              </p>
-            </CardContent>
-          </Card>
+          <section className="grid gap-3 border-t border-line pt-6">
+            <h2 className="text-eyebrow uppercase text-ink-muted">Catatan</h2>
+            <p className="text-body-sm text-ink-muted">
+              Perubahan profil hanya berlaku pada data profil. Peran dan izin dikelola oleh
+              administrator.
+            </p>
+          </section>
         </aside>
       </div>
     </Container>
