@@ -86,6 +86,19 @@ async function bootstrap() {
     "/reference",
     apiReference({
       spec: { url: "/swagger-json" },
+      onBeforeRequest: async ({ requestBuilder }) => {
+        if (requestBuilder.method !== "GET") {
+          const response = await fetch("/api/v1/csrf/token", {
+            credentials: "include",
+          });
+          const payload = (await response.json()) as { data?: { csrfToken?: string } };
+          const token = payload?.data?.csrfToken;
+
+          if (typeof token === "string") {
+            requestBuilder.headers.set("x-csrf-token", token);
+          }
+        }
+      },
     }),
   );
 
