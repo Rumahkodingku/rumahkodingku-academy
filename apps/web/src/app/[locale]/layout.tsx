@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Manrope, Space_Grotesk } from "next/font/google";
 
 import "../../index.css";
 import Providers from "@/components/providers";
 import { getServerI18n } from "@/lib/i18n/server";
 import { isLocale, LOCALES } from "@/lib/i18n/routing";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -58,7 +65,9 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${spaceGrotesk.variable} ${manrope.variable} ${geistMono.variable} antialiased`}
+      >
         <Providers locale={locale}>{children}</Providers>
       </body>
     </html>

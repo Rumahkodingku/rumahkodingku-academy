@@ -8,6 +8,7 @@ import { I18nProvider } from "@/lib/i18n/provider";
 import type { Locale } from "@/lib/i18n/routing";
 import { PostHogProvider } from "@/lib/posthog";
 
+import { MotionProvider } from "./motion/motion-provider";
 import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "./ui/sonner";
 
@@ -24,7 +25,9 @@ export default function Providers({
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <QueryClientProvider client={queryClient}>
         <I18nProvider locale={locale}>
-          <PostHogProvider>{children}</PostHogProvider>
+          <MotionProvider>
+            <PostHogProvider>{children}</PostHogProvider>
+          </MotionProvider>
           <Toaster richColors />
         </I18nProvider>
       </QueryClientProvider>
