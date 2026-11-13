@@ -8,7 +8,7 @@ import { randomUUID } from "node:crypto";
 import request from "supertest";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { PERMISSIONS } from "../../src/modules/rbac/rbac.constants";
+import { PERMISSIONS } from "@rumahkodingku-academy/db";
 import {
   RequireOwnership,
   RequirePermission,
@@ -192,6 +192,7 @@ describe("Phase 3.A auth API", () => {
     const email = `profile-${randomUUID()}@example.com`;
     await register(client, email);
     await login(client, email);
+    await markVerified(email);
     const csrfToken = await csrf(client);
 
     const update = await client
@@ -250,6 +251,7 @@ describe("Phase 3.A auth API", () => {
     const otherEmail = `profile-other-${randomUUID()}@example.com`;
     await register(other, otherEmail);
     await login(other, otherEmail);
+    await markVerified(otherEmail);
     const otherCsrf = await csrf(other);
     await other
       .patch("/api/v1/auth/me")
@@ -263,6 +265,7 @@ describe("Phase 3.A auth API", () => {
     const email = `avatar-${randomUUID()}@example.com`;
     await register(client, email);
     await login(client, email);
+    await markVerified(email);
     const csrfToken = await csrf(client);
 
     await client
@@ -524,6 +527,7 @@ describe("Phase 3.A auth API", () => {
     const email = `avatar-files-${randomUUID()}@example.com`;
     await register(client, email);
     await login(client, email);
+    await markVerified(email);
     const csrfToken = await csrf(client);
     const uploadRoot = process.env.UPLOAD_ROOT ?? "/tmp/opencode/phase-3-uploads";
 
@@ -582,6 +586,7 @@ describe("Phase 3.A auth API", () => {
     const avatarClient = agent(app);
     await register(avatarClient, avatarEmail);
     await login(avatarClient, avatarEmail);
+    await markVerified(avatarEmail);
     const avatarCsrf = await csrf(avatarClient);
 
     for (let attempt = 1; attempt <= 10; attempt += 1) {

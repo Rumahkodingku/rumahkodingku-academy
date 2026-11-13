@@ -4,7 +4,7 @@ import { AppDataSource } from "@rumahkodingku-academy/db";
 import { execFileSync } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { RBAC_MODEL_TYPE } from "../../src/modules/rbac/rbac.constants";
+import { RBAC_MODEL_TYPE } from "@rumahkodingku-academy/db";
 import { setupDatabase, truncateAuthTables } from "./setup";
 
 describe("auth schema migration", () => {

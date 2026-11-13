@@ -1,13 +1,16 @@
 import { createHash, randomBytes } from "node:crypto";
 
-export const PASSWORD_MIN_LENGTH = 12;
-export const PASSWORD_MAX_LENGTH = 128;
+import {
+  normalizeEmail as normalizeEmailFromDb,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+} from "@rumahkodingku-academy/db";
+
+export { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH };
 export const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
 export const PASSWORD_RESET_TTL_MS = 30 * 60 * 1000;
 
-export function normalizeEmail(email: string): string {
-  return email.trim().toLowerCase().normalize("NFC");
-}
+export const normalizeEmail = normalizeEmailFromDb;
 
 export function randomToken(): string {
   return randomBytes(32).toString("base64url");

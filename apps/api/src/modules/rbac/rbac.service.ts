@@ -2,7 +2,7 @@ import { Inject, Injectable, type OnModuleInit } from "@nestjs/common";
 import type { EntityManager } from "typeorm";
 
 import { DATA_SOURCE } from "../../infrastructure/database/database.module";
-import { PERMISSIONS, RBAC_GUARD, RBAC_MODEL_TYPE } from "./rbac.constants";
+import { PERMISSIONS, RBAC_GUARD, RBAC_MODEL_TYPE } from "@rumahkodingku-academy/db";
 import type { AccessSnapshot, RoleRecord } from "./rbac.types";
 
 type RoleRow = {

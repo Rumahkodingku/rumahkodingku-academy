@@ -24,8 +24,9 @@ import { RedisModule } from "../../src/infrastructure/redis/redis.module";
 import { RedisService } from "../../src/infrastructure/redis/redis.service";
 import { SecurityModule } from "../../src/infrastructure/security/security.module";
 import { AuthModule } from "../../src/modules/auth/auth.module";
+import { ProfileModule } from "../../src/modules/profile/profile.module";
 import { cookieToBearer } from "../../src/modules/auth/auth.middleware";
-import { DEFAULT_ROLES, RBAC_GUARD, RBAC_MODEL_TYPE } from "../../src/modules/rbac/rbac.constants";
+import { DEFAULT_ROLES, RBAC_GUARD, RBAC_MODEL_TYPE } from "@rumahkodingku-academy/db";
 import { csrfProtection, ensureCsrfSession } from "../../src/modules/csrf/csrf";
 import { CsrfModule } from "../../src/modules/csrf/csrf.module";
 import { ZodValidationPipe } from "nestjs-zod";
@@ -90,7 +91,7 @@ export async function clearRateLimits(app: INestApplication): Promise<void> {
 
 export async function createTestApp(controllers: Type<unknown>[] = []): Promise<INestApplication> {
   const moduleRef = await Test.createTestingModule({
-    imports: [SecurityModule, DatabaseModule, RedisModule, CsrfModule, AuthModule],
+    imports: [SecurityModule, DatabaseModule, RedisModule, CsrfModule, AuthModule, ProfileModule],
     controllers,
   })
     .overrideProvider(Mailer)

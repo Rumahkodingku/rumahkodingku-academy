@@ -18,6 +18,7 @@ import { RedisThrottlerStorage } from "./infrastructure/redis/redis-throttler.st
 import { AppStorageModule } from "./infrastructure/storage/storage.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { CsrfModule } from "./modules/csrf/csrf.module";
+import { ProfileModule } from "./modules/profile/profile.module";
 import { HealthModule } from "./modules/health/health.module";
 
 @Module({
@@ -44,6 +45,7 @@ import { HealthModule } from "./modules/health/health.module";
     CsrfModule,
     HealthModule,
     AuthModule,
+    ProfileModule,
   ],
   providers: [
     NotificationsGateway,

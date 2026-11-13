@@ -13,14 +13,8 @@ import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { v7 as uuidv7 } from "uuid";
 
-import { ensureAdmin } from "../../src/cli/create-admin";
-import { seedRbac } from "../../src/cli/seed-rbac";
-import {
-  DEFAULT_ROLES,
-  PERMISSIONS,
-  RBAC_GUARD,
-  RBAC_MODEL_TYPE,
-} from "../../src/modules/rbac/rbac.constants";
+import { ensureAdmin, seedRbac } from "@rumahkodingku-academy/db";
+import { DEFAULT_ROLES, PERMISSIONS, RBAC_GUARD, RBAC_MODEL_TYPE } from "@rumahkodingku-academy/db";
 import { RbacService } from "../../src/modules/rbac/rbac.service";
 import { setupDatabase, truncateAuthTables } from "./setup";
 

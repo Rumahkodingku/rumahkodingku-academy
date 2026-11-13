@@ -18,9 +18,9 @@ import { DATA_SOURCE } from "../../infrastructure/database/database.module";
 import { RbacService } from "../rbac/rbac.service";
 import { PASSWORD_RESET_TTL_MS, hashToken, normalizeEmail, randomToken } from "./auth.constants";
 import { AuthMailService } from "./auth-mail.service";
-import { toAuthUser } from "./auth.mapper";
+import { toAuthUser } from "../../common/auth/auth-user.mapper";
 import type { AuthUser } from "./auth.types";
-import type { RegisterDto, UpdateProfileInput } from "./dto/auth.dto";
+import type { RegisterDto } from "./dto/auth.dto";
 import { AuthUsersRepository } from "./repositories/auth-users.repository";
 import { UserProfileRepository } from "./repositories/user-profile.repository";
 
@@ -231,44 +231,6 @@ export class AuthService {
     }
 
     return result.email;
-  }
-
-  async updateProfile(userId: string, dto: UpdateProfileInput): Promise<AuthUser> {
-    if (dto.username) {
-      const existing = await this.profiles.findByUsername(dto.username);
-
-      if (existing && existing.userId !== userId) {
-        throw new ApiError(409, "AUTH_USERNAME_TAKEN", "Username sudah digunakan.");
-      }
-    }
-
-    try {
-      await this.profiles.update(userId, dto);
-    } catch (error) {
-      if (isDuplicateEntry(error)) {
-        throw new ApiError(409, "AUTH_USERNAME_TAKEN", "Username sudah digunakan.");
-      }
-
-      throw error;
-    }
-
-    return this.requireAuthUser(userId);
-  }
-
-  async getAvatarKey(userId: string): Promise<string | null> {
-    const user = await this.users.findById(userId);
-    return user?.profile?.avatarStorageKey ?? null;
-  }
-
-  async updateAvatar(userId: string, storageKey: string): Promise<void> {
-    await this.profiles.updateAvatar(userId, storageKey);
-  }
-
-  async removeAvatar(userId: string): Promise<string | null> {
-    const user = await this.users.findById(userId);
-    const key = user?.profile?.avatarStorageKey ?? null;
-    await this.profiles.updateAvatar(userId, null);
-    return key;
   }
 
   private async requireAuthUser(userId: string): Promise<AuthUser> {

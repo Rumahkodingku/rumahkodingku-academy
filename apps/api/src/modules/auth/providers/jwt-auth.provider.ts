@@ -4,7 +4,7 @@ import { UserStatus } from "@rumahkodingku-academy/db";
 
 import { RbacService } from "../../rbac/rbac.service";
 import { AuthUsersRepository } from "../repositories/auth-users.repository";
-import { toAuthUser } from "../auth.mapper";
+import { toAuthUser } from "../../../common/auth/auth-user.mapper";
 import type { AuthUser } from "../auth.types";
 
 @Injectable()
