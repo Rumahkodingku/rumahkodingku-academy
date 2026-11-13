@@ -1,7 +1,14 @@
-import { User, UserRole, UserStatus } from "./user.entity";
+import { User, UserStatus } from "./user.entity";
+import { UserProfile } from "./user-profile.entity";
 import { RefreshSession } from "./refresh-session.entity";
+import { RefreshTokenFamily } from "./refresh-token-family.entity";
 import { EmailVerificationToken } from "./email-verification-token.entity";
 import { PasswordResetToken } from "./password-reset-token.entity";
+import { Role } from "./role.entity";
+import { Permission } from "./permission.entity";
+import { RoleHasPermission } from "./role-has-permission.entity";
+import { ModelHasRole } from "./model-has-role.entity";
+import { ModelHasPermission } from "./model-has-permission.entity";
 
 import { Category } from "./category.entity";
 import { Course, CourseDifficulty, CourseStatus } from "./course.entity";
@@ -49,10 +56,17 @@ import { Announcement, AnnouncementAudience, AnnouncementStatus } from "./announ
 import { PlatformSetting } from "./platform-setting.entity";
 import { AuditLog } from "./audit-log.entity";
 
-export { User, UserRole, UserStatus };
+export { User, UserStatus };
+export { UserProfile };
 export { RefreshSession };
+export { RefreshTokenFamily };
 export { EmailVerificationToken };
 export { PasswordResetToken };
+export { Role };
+export { Permission };
+export { RoleHasPermission };
+export { ModelHasRole };
+export { ModelHasPermission };
 
 export { Category };
 export { Course, CourseDifficulty, CourseStatus };
@@ -102,9 +116,16 @@ export { AuditLog };
 
 export const entities: Function[] = [
   User,
+  UserProfile,
   RefreshSession,
+  RefreshTokenFamily,
   EmailVerificationToken,
   PasswordResetToken,
+  Role,
+  Permission,
+  RoleHasPermission,
+  ModelHasRole,
+  ModelHasPermission,
   Category,
   Course,
   CourseSection,

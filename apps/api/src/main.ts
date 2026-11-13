@@ -14,7 +14,8 @@ import { REQUEST_ID_HEADER, requestIdMiddleware } from "./common/http/request-id
 import { ProblemDetailsFilter } from "./common/http/problem-details.filter";
 import { logger } from "./common/logging/logger";
 import { WinstonLoggerService } from "./common/logging/winston-logger.service";
-import { csrfProtection } from "./modules/csrf/csrf";
+import { cookieToBearer } from "./modules/auth/auth.middleware";
+import { csrfProtection, ensureCsrfSession } from "./modules/csrf/csrf";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { logger: new WinstonLoggerService() });
@@ -26,7 +27,14 @@ async function bootstrap() {
   app.use(helmet());
   app.use(compression());
   app.use(cookieParser());
+  app.use(cookieToBearer);
+  app.use(ensureCsrfSession);
   app.use(csrfProtection);
+
+  const expressApp = app.getHttpAdapter().getInstance() as {
+    set: (key: string, value: unknown) => void;
+  };
+  expressApp.set("trust proxy", env.TRUST_PROXY);
   app.enableCors({
     origin: env.CORS_ORIGIN,
     credentials: true,

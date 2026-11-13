@@ -16,6 +16,7 @@ import { NotificationsGateway } from "./infrastructure/realtime/notifications.ga
 import { RedisModule } from "./infrastructure/redis/redis.module";
 import { RedisThrottlerStorage } from "./infrastructure/redis/redis-throttler.storage";
 import { AppStorageModule } from "./infrastructure/storage/storage.module";
+import { AuthModule } from "./modules/auth/auth.module";
 import { CsrfModule } from "./modules/csrf/csrf.module";
 import { HealthModule } from "./modules/health/health.module";
 
@@ -42,6 +43,7 @@ import { HealthModule } from "./modules/health/health.module";
     AppStorageModule,
     CsrfModule,
     HealthModule,
+    AuthModule,
   ],
   providers: [
     NotificationsGateway,

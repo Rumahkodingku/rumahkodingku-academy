@@ -51,19 +51,27 @@ Never expose stack traces, SQL, secrets, or internal file paths.
 
 ## Authentication
 
-- `POST /auth/register`
-- `POST /auth/login`
-- `POST /auth/refresh`
-- `POST /auth/logout`
-- `GET /auth/me`
-- `PATCH /auth/me`
-- `POST /auth/avatar`
-- `POST /auth/forgot-password`
-- `POST /auth/reset-password`
-- `POST /auth/verify-email`
-- `POST /auth/resend-verification`
+All non-GET auth endpoints require `x-csrf-token`. Login, refresh, logout, forgot/reset, verify/resend, and avatar mutations are included.
 
-Set/clear HttpOnly cookies; apply Redis-backed rate limits and CSRF/origin protections. Production auth cookies are host-only (no `Domain` attribute), `Secure`, and `SameSite=Lax`; staging and production cookies are isolated.
+| Method | Path                        | Access        | Request                     | Success                                    |
+| ------ | --------------------------- | ------------- | --------------------------- | ------------------------------------------ |
+| POST   | `/auth/register`            | Public        | `{ name, email, password }` | `201 { data: { user } }`                   |
+| POST   | `/auth/login`               | Public        | `{ email, password }`       | `200 { data: { user } }` + cookies         |
+| POST   | `/auth/refresh`             | Public        | refresh cookie              | `200 { data: { user } }` + rotated cookies |
+| POST   | `/auth/logout`              | Authenticated | refresh cookie              | `204`                                      |
+| GET    | `/auth/me`                  | Authenticated | —                           | `200 { data: { user } }`                   |
+| PATCH  | `/auth/me`                  | Authenticated | profile fields              | `200 { data: { user } }`                   |
+| POST   | `/auth/avatar`              | Authenticated | multipart `file`            | `200 { data: { avatarUrl } }`              |
+| GET    | `/auth/avatar`              | Authenticated | —                           | image stream or `404`                      |
+| DELETE | `/auth/avatar`              | Authenticated | —                           | `204`                                      |
+| POST   | `/auth/forgot-password`     | Public        | `{ email }`                 | `202 { data: { accepted: true } }`         |
+| POST   | `/auth/reset-password`      | Public        | `{ token, password }`       | `200 { data: { reset: true } }`            |
+| POST   | `/auth/verify-email`        | Public        | `{ token }`                 | `200 { data: { email } }`                  |
+| POST   | `/auth/resend-verification` | Public        | `{ email }`                 | `202 { data: { accepted: true } }`         |
+
+`user` includes `id`, `email`, `emailVerified`, `status`, `roles`, `permissions`, and a private `profile` object (`displayName`, `fullName`, `username`, `bio`, `headline`, `avatarUrl`, `phone`, `countryCode`, `city`, `timezone`, `locale`, social URLs, notification preferences).
+
+Password policy: 12–128 characters. Registration creates account + profile + default RBAC role. Email verification is required before learner/admin access. Login remains possible while unverified so the user can resend verification. Set/clear host-only HttpOnly cookies; apply Redis-backed rate limits and CSRF/origin protections. Production auth cookies are host-only (no `Domain` attribute), `Secure`, and `SameSite=Lax`; staging and production cookies are isolated.
 
 ## Public catalog
 

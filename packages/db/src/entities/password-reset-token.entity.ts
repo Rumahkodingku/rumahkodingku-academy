@@ -13,6 +13,12 @@ export class PasswordResetToken extends BaseEntity {
   @Column({ name: "token_hash", type: "varchar", length: 255 })
   tokenHash!: string;
 
+  @Column({ type: "varchar", length: 255, nullable: true })
+  email?: string | null;
+
+  @Column({ type: "varchar", length: 128, nullable: true })
+  fingerprint?: string | null;
+
   @Column({ name: "expires_at", type: "datetime" })
   expiresAt!: Date;
 

@@ -132,6 +132,8 @@ Tasks:
 
 Exit gate: USER cannot access ADMIN APIs or other users' private resources; refresh rotation, logout, CSRF, and Redis rate-limit protections pass tests.
 
+Status: Phase 3.A backend implemented. Adds a five-table RBAC schema (`roles`, `permissions`, `role_has_permissions`, `model_has_roles`, `model_has_permissions`, `guard_name=api`), `users_profile`, refresh-token families, and hashed email/reset tokens through migration `1794530367494-AddRbacAndUserProfiles`. Auth endpoints cover register, login, refresh rotation with reuse revocation, logout, session read/update, private avatar, email verification, resend, forgot, and reset. All non-GET auth endpoints require CSRF; auth routes use Redis rate limits with `Retry-After`. Authorization checks use `PermissionPolicy`, `EmailVerifiedPolicy`, and `OwnershipPolicy` helpers; role names are seed data only. Bootstrap CLIs `db:seed:rbac` and `auth:create-admin` are idempotent. Verification: `pnpm check-types`, `pnpm lint`, `pnpm format:check`, `pnpm test` (web 31, API 29), store contract tests (3), auth API integration tests (9), `pnpm build`, and API boot health checks (`/health/live`, `/health`) all pass locally. Phase 3.B frontend integration remains pending; `apps/web` still reads a local `role` field.
+
 ## 7. Phase 4 — Public site, catalog, and course authoring
 
 Tasks:

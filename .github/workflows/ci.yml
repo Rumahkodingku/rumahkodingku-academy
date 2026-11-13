@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: ["main", "master"]
+    branches: ["dev", "main", "master"]
   pull_request:
-    branches: ["main", "master"]
+    branches: ["dev", "main", "master"]
 
 jobs:
   ci:
@@ -23,6 +23,15 @@ jobs:
           - 3306:3306
         options: >-
           --health-cmd "mysqladmin ping -h localhost"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 10
@@ -70,3 +79,15 @@ jobs:
 
       - name: Test
         run: pnpm run test
+
+      - name: Store contract tests
+        env:
+          DATABASE_URL: mysql://academy_user:academy_password@127.0.0.1:3306/rumahkodingku_academy
+          REDIS_URL: redis://127.0.0.1:6379
+        run: pnpm --filter api test:contract
+
+      - name: Auth API integration tests
+        env:
+          DATABASE_URL: mysql://academy_user:academy_password@127.0.0.1:3306/rumahkodingku_academy
+          REDIS_URL: redis://127.0.0.1:6379
+        run: pnpm --filter api test:integration

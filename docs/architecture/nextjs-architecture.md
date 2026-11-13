@@ -193,12 +193,13 @@ Strapi
 
 ### 5.2 Direct API Decision
 
-The browser and the Next.js server call NestJS directly.
+The browser and the Next.js server reach NestJS through a same-origin `/api/v1` reverse proxy.
 
-- Browser calls use `NEXT_PUBLIC_SERVER_URL` + `/api/v1`, `withCredentials: true`, the CSRF header, and RFC 9457 error handling.
-- Server calls use a server-only `API_URL` (internal Docker/Coolify hostname allowed) and forward the incoming session cookie.
-- A catch-all BFF proxy is NOT the default. It adds a second contract, latency, and a place for authorization drift.
-- A narrow Route Handler MAY be added later for a concrete reason: third-party webhook verification, an endpoint that must hide a server-only token, or a same-origin upload bridge. It MUST use a fixed endpoint allowlist and MUST NOT become a general proxy.
+- Browser calls use the web origin (`NEXT_PUBLIC_SERVER_URL` + `/api/v1`), `withCredentials: true`, the CSRF header, and RFC 9457 error handling.
+- Local development uses a Next.js rewrite from `/api/v1/:path*` to `${API_URL}/api/v1/:path*`. Production routes `/api/v1/*` at the edge (Coolify/Traefik) to the API service.
+- Server calls use the server-only `API_URL` and forward the incoming session cookie.
+- This is a transparent network reverse proxy, not an application BFF. It preserves the single API contract and host-only cookies.
+- A catch-all Next Route Handler BFF is prohibited. A narrow Route Handler MAY be added later for a concrete reason: third-party webhook verification, an endpoint that must hide a server-only token, or a same-origin upload bridge. It MUST use a fixed endpoint allowlist.
 
 ### 5.3 Cookie and Origin Topology
 
@@ -206,7 +207,8 @@ The browser and the Next.js server call NestJS directly.
 - Staging uses isolated hosts: `staging-academy.rumahkodingku.com` and `staging-api.rumahkodingku.com`.
 - Auth cookies are host-only (no `Domain` attribute), `HttpOnly`, `Secure` in production, and `SameSite=Lax`. Staging and production cookies MUST NOT be shared.
 - CORS MUST allow only the configured web origin and MUST allow credentials.
-- The web app MUST NOT set or read authentication cookies directly; the API owns them.
+- The web app MUST NOT set or read authentication cookies in JavaScript; the API owns them. Server-side session reads forward the incoming cookie.
+- `NEXT_PUBLIC_SERVER_URL` is the web origin; `API_URL` is the internal API origin.
 - CSRF tokens are fetched from `GET /api/v1/csrf/token` and sent as `x-csrf-token` on cookie-authenticated mutations.
 
 ## 6. Rendering Model
