@@ -1,5 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
+  AuthenticationEvents,
   AuthenticationStorage,
   EmailVerificationService,
   PasswordHasher,
@@ -37,6 +38,7 @@ export class AuthService {
     private readonly emailVerification: EmailVerificationService,
     private readonly storage: AuthenticationStorage,
     private readonly mail: AuthMailService,
+    private readonly events: AuthenticationEvents,
   ) {}
 
   async register(dto: RegisterDto): Promise<AuthUser> {
@@ -128,8 +130,11 @@ export class AuthService {
     const user = await this.users.findByEmail(email);
 
     if (!user || user.status !== UserStatus.Active) {
+      this.events.emit({ type: "password-reset-requested", email });
       return;
     }
+
+    this.events.emit({ type: "password-reset-requested", email: user.email, userId: user.id });
 
     const token = randomToken();
     const now = new Date();
@@ -194,6 +199,7 @@ export class AuthService {
     await this.users.markEmailVerified(user.id, user.email);
     await this.tokenService.revokeAll(user.id);
     await this.storage.emailTokens.deleteUserEmailTokens(user.id, "password-reset");
+    this.events.emit({ type: "password-reset", userId: user.id });
   }
 
   async resendVerification(emailInput: string): Promise<void> {

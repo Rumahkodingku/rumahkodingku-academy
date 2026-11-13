@@ -42,9 +42,10 @@ export class TypeOrmEmailTokenStore implements EmailTokenStore {
       }
 
       await manager.query(
-        `INSERT INTO \`${table}\` (\`id\`, \`user_id\`, \`token_hash\`, \`email\`, \`fingerprint\`, \`expires_at\`) VALUES (?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO \`${table}\` (\`id\`, \`created_at\`, \`user_id\`, \`token_hash\`, \`email\`, \`fingerprint\`, \`expires_at\`) VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
           uuidv7(),
+          record.createdAt,
           record.userId,
           record.id,
           record.email,

@@ -71,7 +71,43 @@ All non-GET auth endpoints require `x-csrf-token`. Login, refresh, logout, forgo
 
 `user` includes `id`, `email`, `emailVerified`, `status`, `roles`, `permissions`, and a private `profile` object (`displayName`, `fullName`, `username`, `bio`, `headline`, `avatarUrl`, `phone`, `countryCode`, `city`, `timezone`, `locale`, social URLs, notification preferences).
 
-Password policy: 12–128 characters. Registration creates account + profile + default RBAC role. Email verification is required before learner/admin access. Login remains possible while unverified so the user can resend verification. Set/clear host-only HttpOnly cookies; apply Redis-backed rate limits and CSRF/origin protections. Production auth cookies are host-only (no `Domain` attribute), `Secure`, and `SameSite=Lax`; staging and production cookies are isolated.
+```json
+{
+  "data": {
+    "user": {
+      "id": "01a1d278-95d7-72ba-aff9-93927d0f23c7",
+      "email": "learner@example.com",
+      "emailVerified": true,
+      "status": "ACTIVE",
+      "roles": ["user"],
+      "permissions": [],
+      "profile": {
+        "displayName": "Nama Baru",
+        "fullName": null,
+        "username": "phase_three",
+        "bio": "Belajar backend",
+        "headline": null,
+        "avatarUrl": "/api/v1/auth/avatar",
+        "phone": null,
+        "countryCode": "ID",
+        "city": null,
+        "timezone": "Asia/Jakarta",
+        "locale": "id",
+        "websiteUrl": null,
+        "githubUrl": "https://github.com/example",
+        "linkedinUrl": null,
+        "xUrl": null,
+        "instagramUrl": null,
+        "emailNotifications": true,
+        "inAppNotifications": true
+      }
+    }
+  },
+  "meta": { "requestId": "..." }
+}
+```
+
+Password policy: 12–128 characters. Registration creates account + profile + default RBAC role. Email verification is required before learner/admin access. Login remains possible while unverified so the user can resend verification. Avatar uploads accept JPEG, PNG, or WebP up to 2 MB and are served privately to the owner. Set/clear host-only HttpOnly cookies; apply Redis-backed rate limits and CSRF/origin protections. Production auth cookies are host-only (no `Domain` attribute), `Secure`, and `SameSite=Lax`; staging and production cookies are isolated.
 
 ## Public catalog
 

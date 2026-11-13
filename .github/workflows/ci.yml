@@ -57,6 +57,19 @@ jobs:
           DATABASE_URL: mysql://academy_user:academy_password@127.0.0.1:3306/rumahkodingku_academy
         run: pnpm --filter @rumahkodingku-academy/db db:migrate
 
+      - name: Create test database
+        env:
+          MYSQL_PWD: rootpassword
+        run: |
+          mysql -h 127.0.0.1 -uroot -e "CREATE DATABASE IF NOT EXISTS rumahkodingku_academy_test"
+          mysql -h 127.0.0.1 -uroot -e "GRANT ALL PRIVILEGES ON rumahkodingku_academy_test.* TO 'academy_user'@'%'"
+          mysql -h 127.0.0.1 -uroot -e "FLUSH PRIVILEGES"
+
+      - name: Migrate test database
+        env:
+          DATABASE_URL: mysql://academy_user:academy_password@127.0.0.1:3306/rumahkodingku_academy_test
+        run: pnpm --filter @rumahkodingku-academy/db db:migrate
+
       - name: Generate API types
         run: pnpm --filter web generate:api
 
@@ -71,6 +84,13 @@ jobs:
       - name: Lint
         run: pnpm run lint
 
+      - name: Check for role-name authorization
+        run: |
+          if grep -RInE 'role(Name)?[[:space:]]*===|\.role[[:space:]]*===|=== *["'"'"'`](admin|user)["'"'"'`]' apps/api/src --include='*.ts'; then
+            echo "Role-name comparison found. Check permissions instead."
+            exit 1
+          fi
+
       - name: Type check
         run: pnpm run check-types
 
@@ -82,12 +102,12 @@ jobs:
 
       - name: Store contract tests
         env:
-          DATABASE_URL: mysql://academy_user:academy_password@127.0.0.1:3306/rumahkodingku_academy
+          DATABASE_URL: mysql://academy_user:academy_password@127.0.0.1:3306/rumahkodingku_academy_test
           REDIS_URL: redis://127.0.0.1:6379
         run: pnpm --filter api test:contract
 
       - name: Auth API integration tests
         env:
-          DATABASE_URL: mysql://academy_user:academy_password@127.0.0.1:3306/rumahkodingku_academy
+          DATABASE_URL: mysql://academy_user:academy_password@127.0.0.1:3306/rumahkodingku_academy_test
           REDIS_URL: redis://127.0.0.1:6379
         run: pnpm --filter api test:integration

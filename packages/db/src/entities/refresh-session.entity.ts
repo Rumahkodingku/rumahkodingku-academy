@@ -18,19 +18,19 @@ export class RefreshSession extends BaseEntity {
   @Column({ name: "family_id", type: "char", length: 36, nullable: true })
   familyId?: string | null;
 
-  @Column({ name: "expires_at", type: "datetime" })
+  @Column({ name: "expires_at", type: "datetime", precision: 3 })
   expiresAt!: Date;
 
-  @Column({ name: "family_expires_at", type: "datetime", nullable: true })
+  @Column({ name: "family_expires_at", type: "datetime", precision: 3, nullable: true })
   familyExpiresAt?: Date | null;
 
-  @Column({ name: "used_at", type: "datetime", nullable: true })
+  @Column({ name: "used_at", type: "datetime", precision: 3, nullable: true })
   usedAt?: Date | null;
 
   @Column({ type: "json", nullable: true })
   claims?: Record<string, unknown> | null;
 
-  @Column({ name: "revoked_at", type: "datetime", nullable: true })
+  @Column({ name: "revoked_at", type: "datetime", precision: 3, nullable: true })
   revokedAt?: Date | null;
 
   @Column({ name: "device_name", type: "varchar", length: 255, nullable: true })

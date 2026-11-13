@@ -19,10 +19,10 @@ export class EmailVerificationToken extends BaseEntity {
   @Column({ type: "varchar", length: 128, nullable: true })
   fingerprint?: string | null;
 
-  @Column({ name: "expires_at", type: "datetime" })
+  @Column({ name: "expires_at", type: "datetime", precision: 3 })
   expiresAt!: Date;
 
-  @Column({ name: "consumed_at", type: "datetime", nullable: true })
+  @Column({ name: "consumed_at", type: "datetime", precision: 3, nullable: true })
   consumedAt?: Date | null;
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })

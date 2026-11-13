@@ -1,6 +1,6 @@
 # Phase 3.A — Backend Authentication, RBAC & Profiles
 
-**Status:** Final implementation plan  
+**Status:** Implemented locally; first CI run on `dev` pending  
 **Depends on:** Phase 2 schema, same-origin proxy decision  
 **Produces:** Stable auth/RBAC/profile API for Phase 3.B
 
@@ -53,12 +53,12 @@ Deliverables:
 
 ### Steps
 
-- [ ] Add decision-log entries for auth transport, token lifetimes, password/verification, CSRF, rate limits, avatar, RBAC, profile, split UI, MFA deferral.
-- [ ] Update docs to same-origin `/api/v1` topology. State no catch-all BFF.
-- [ ] Add CI triggers for `dev` push and PRs to `dev`, `main`, `master`.
-- [ ] Add MySQL test database step and `test:integration`/`test:contract` scripts.
-- [ ] Add `supertest` and `@types/supertest` as API dev dependencies.
-- [ ] Verify YAML and scripts with `pnpm check-types`, `pnpm lint`, `pnpm format:check`.
+- [x] Add decision-log entries for auth transport, token lifetimes, password/verification, CSRF, rate limits, avatar, RBAC, profile, split UI, MFA deferral.
+- [x] Update docs to same-origin `/api/v1` topology. State no catch-all BFF.
+- [x] Add CI triggers for `dev` push and PRs to `dev`, `main`, `master`.
+- [x] Add MySQL test database step and `test:integration`/`test:contract` scripts.
+- [x] Add `supertest` and `@types/supertest` as API dev dependencies.
+- [x] Verify YAML and scripts with `pnpm check-types`, `pnpm lint`, `pnpm format:check`.
 
 ### Verification
 
@@ -233,15 +233,15 @@ Rules:
 
 ### Steps
 
-- [ ] Write failing metadata tests for RBAC entities, profile relation, and dropped user fields.
-- [ ] Add entities/exports.
-- [ ] Generate migration.
-- [ ] Review and edit migration SQL for composite keys/FKs/backfill order.
-- [ ] Run migration on local MySQL.
-- [ ] Run migration on fresh test DB.
-- [ ] Run upgrade test from a Phase 2 schema dump.
-- [ ] Revert/up on local DB.
-- [ ] Verify no `UserRole` export remains.
+- [x] Write failing metadata tests for RBAC entities, profile relation, and dropped user fields.
+- [x] Add entities/exports.
+- [x] Generate migration.
+- [x] Review and edit migration SQL for composite keys/FKs/backfill order.
+- [x] Run migration on local MySQL.
+- [x] Run migration on fresh test DB.
+- [x] Run upgrade test from a Phase 2 schema dump.
+- [x] Revert/up on local DB.
+- [x] Verify no `UserRole` export remains.
 
 ### Verification
 
@@ -349,13 +349,13 @@ RBAC repository:
 
 ### Steps
 
-- [ ] Write failing store contract tests with `authenticationStoreContract`, `contracts: ["refreshTokens"]`/`["emailTokens"]`, `concurrent: true`.
-- [ ] Write failing RBAC tests: default role, direct permission, role permission, merge, removal.
-- [ ] Implement stores with `DataSource` transactions.
-- [ ] Implement RBAC repository/service.
-- [ ] Run contract and integration tests.
-- [ ] Test concurrent email-token consumption: exactly one succeeds.
-- [ ] Test refresh family revocation for a token saved after revocation.
+- [x] Write failing store contract tests with `authenticationStoreContract`, `contracts: ["refreshTokens"]`/`["emailTokens"]`, `concurrent: true`.
+- [x] Write failing RBAC tests: default role, direct permission, role permission, merge, removal.
+- [x] Implement stores with `DataSource` transactions.
+- [x] Implement RBAC repository/service.
+- [x] Run contract and integration tests.
+- [x] Test concurrent email-token consumption: exactly one succeeds.
+- [x] Test refresh family revocation for a token saved after revocation.
 
 ### Verification
 
@@ -460,15 +460,15 @@ Password reset uses a small app-owned service over `EmailTokenStore` instead of 
 
 ### Steps
 
-- [ ] Write failing API integration tests for register, login, me, refresh, logout.
-- [ ] Implement `AuthService` and DTOs.
-- [ ] Implement registration transaction: account + profile + default role.
-- [ ] Implement providers, module wiring, middleware.
-- [ ] Add cookie helper tests: flags, Max-Age, clearing, production Secure.
-- [ ] Add integration tests for unverified login allowed but verified policy denied.
-- [ ] Add integration tests for duplicate email, invalid credentials, suspended user, deleted user.
-- [ ] Add integration test for refresh reuse and logout revocation.
-- [ ] Add audit tests: sign-in/sign-out/reset/verify events without secrets.
+- [x] Write failing API integration tests for register, login, me, refresh, logout.
+- [x] Implement `AuthService` and DTOs.
+- [x] Implement registration transaction: account + profile + default role.
+- [x] Implement providers, module wiring, middleware.
+- [x] Add cookie helper tests: flags, Max-Age, clearing, production Secure.
+- [x] Add integration tests for unverified login allowed but verified policy denied.
+- [x] Add integration tests for duplicate email, invalid credentials, suspended user, deleted user.
+- [x] Add integration test for refresh reuse and logout revocation.
+- [x] Add audit tests: sign-in/sign-out/reset/verify events without secrets.
 
 ### Verification
 
@@ -524,13 +524,13 @@ Usage:
 
 ### Steps
 
-- [ ] Write failing unit tests for guest, USER, unverified USER, verified USER, admin.
-- [ ] Write a failing integration test with a test-only controller using `@Can(PermissionPolicy, "has")`, `@Can(EmailVerifiedPolicy, "verified")`, and `@Can(OwnershipPolicy, "owns")`.
-- [ ] Implement policies.
-- [ ] Enable global authorization guard and add `@Can.Anyone()` to authenticated routes without policy.
-- [ ] Ensure `@Public` is present on health and CSRF; public auth routes still require CSRF for POST.
-- [ ] Test: user without `admin.access` receives 403; unverified receives 403; wrong owner receives 403.
-- [ ] Add a grep-based test/CI check that application code does not compare `role ===`, `roleName`, or hardcoded role names.
+- [x] Write failing unit tests for guest, USER, unverified USER, verified USER, admin.
+- [x] Write a failing integration test with a test-only controller using `@Can(PermissionPolicy, "has")`, `@Can(EmailVerifiedPolicy, "verified")`, and `@Can(OwnershipPolicy, "owns")`.
+- [x] Implement policies.
+- [x] Enable global authorization guard and add `@Can.Anyone()` to authenticated routes without policy.
+- [x] Ensure `@Public` is present on health and CSRF; public auth routes still require CSRF for POST.
+- [x] Test: user without `admin.access` receives 403; unverified receives 403; wrong owner receives 403.
+- [x] Add a grep-based test/CI check that application code does not compare `role ===`, `roleName`, or hardcoded role names.
 
 ### Verification
 
@@ -594,12 +594,12 @@ Never store raw email or refresh token in Redis keys; use SHA-256.
 
 ### Steps
 
-- [ ] Write failing CSRF tests: missing session, wrong session, valid token, invalid token.
-- [ ] Write failing rate-limit tests with fake Redis: first N pass, N+1 returns 429; key does not contain raw email.
-- [ ] Implement session cookie and guard.
-- [ ] Add integration tests for each auth endpoint limit.
-- [ ] Test 429 Problem Details and `Retry-After`.
-- [ ] Test rate-limit isolation between two IPs and two emails.
+- [x] Write failing CSRF tests: missing session, wrong session, valid token, invalid token.
+- [x] Write failing rate-limit tests with fake Redis: first N pass, N+1 returns 429; key does not contain raw email.
+- [x] Implement session cookie and guard.
+- [x] Add integration tests for each auth endpoint limit.
+- [x] Test 429 Problem Details and `Retry-After`.
+- [x] Test rate-limit isolation between two IPs and two emails.
 
 ### Verification
 
@@ -658,12 +658,12 @@ pnpm --filter api test:integration -- security
 
 ### Steps
 
-- [ ] Write failing tests for verification email link and reset email link.
-- [ ] Write failing profile tests: allowed fields, rejected role/status/email, URL/timezone/username validation.
-- [ ] Write failing avatar tests: valid JPEG/PNG/WebP, oversized, spoofed type, unauthorized, private read, old file deletion.
-- [ ] Implement mail service, templates, profile update, avatar storage.
-- [ ] Test Mailpit delivery locally; assert subject/link presence.
-- [ ] Test invalid/expired/used verification and reset tokens.
+- [x] Write failing tests for verification email link and reset email link.
+- [x] Write failing profile tests: allowed fields, rejected role/status/email, URL/timezone/username validation.
+- [x] Write failing avatar tests: valid JPEG/PNG/WebP, oversized, spoofed type, unauthorized, private read, old file deletion.
+- [x] Implement mail service, templates, profile update, avatar storage.
+- [x] Test Mailpit delivery locally; assert subject/link presence.
+- [x] Test invalid/expired/used verification and reset tokens.
 
 ### Verification
 
@@ -723,11 +723,11 @@ No role-name checks in application code.
 
 ### Steps
 
-- [ ] Write failing seed tests: run twice, one default role, permission attached.
-- [ ] Write failing startup test: missing default role fails boot.
-- [ ] Write failing admin CLI test: creates user/profile/role; second run is idempotent.
-- [ ] Implement seed/CLI/validation.
-- [ ] Document CLI usage and security note.
+- [x] Write failing seed tests: run twice, one default role, permission attached.
+- [x] Write failing startup test: missing default role fails boot.
+- [x] Write failing admin CLI test: creates user/profile/role; second run is idempotent.
+- [x] Implement seed/CLI/validation.
+- [x] Document CLI usage and security note.
 
 ### Verification
 
@@ -776,9 +776,9 @@ pnpm --filter api auth:create-admin
 
 ### Steps
 
-- [ ] Generate OpenAPI and inspect auth/RBAC/profile schemas.
+- [x] Generate OpenAPI and inspect auth/RBAC/profile schemas.
 - [ ] Regenerate `apps/web/src/lib/api/schema.d.ts` in Phase 3.B after contract freeze.
-- [ ] Add CI steps:
+- [x] Add CI steps:
   - create test database
   - run migrations
   - seed RBAC
@@ -786,8 +786,8 @@ pnpm --filter api auth:create-admin
   - run store contract tests
   - run API integration tests
   - build
-- [ ] Run full suite locally.
-- [ ] Update docs with actual response examples.
+- [x] Run full suite locally.
+- [x] Update docs with actual response examples.
 
 ### Verification
 
@@ -807,12 +807,12 @@ pnpm build
 
 ## 12. Phase 3.A Exit Checklist
 
-- [ ] Migration fresh and upgrade pass.
-- [ ] RBAC seed idempotent; exactly one default role; `admin.access` exists.
-- [ ] Admin CLI idempotent.
-- [ ] Store contracts pass with concurrency.
-- [ ] Auth, RBAC, profile, avatar, CSRF, rate limit tests pass.
-- [ ] No application role-name comparison.
-- [ ] OpenAPI and docs synchronized.
+- [x] Migration fresh and upgrade pass.
+- [x] RBAC seed idempotent; exactly one default role; `admin.access` exists.
+- [x] Admin CLI idempotent.
+- [x] Store contracts pass with concurrency.
+- [x] Auth, RBAC, profile, avatar, CSRF, rate limit tests pass.
+- [x] No application role-name comparison.
+- [x] OpenAPI and docs synchronized.
 - [ ] CI green on `dev`.
-- [ ] No secrets in logs or client bundle.
+- [x] No secrets in logs or client bundle.

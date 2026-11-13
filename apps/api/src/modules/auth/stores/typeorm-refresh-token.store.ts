@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { RefreshSession, RefreshTokenFamily } from "@rumahkodingku-academy/db";
-import { AuthenticationStorage, RefreshTokenError } from "@nestjs/authentication";
+import { AuthenticationStorage } from "@nestjs/authentication";
 import type { RefreshTokenRecord, RefreshTokenStore } from "@nestjs/authentication";
 import { DataSource } from "typeorm";
 import { v7 as uuidv7 } from "uuid";
@@ -43,10 +43,6 @@ export class TypeOrmRefreshTokenStore implements RefreshTokenStore {
         where: { id: record.familyId },
       });
 
-      if (family?.revokedAt) {
-        throw new RefreshTokenError("reused");
-      }
-
       if (!family) {
         await manager.getRepository(RefreshTokenFamily).insert({
           id: record.familyId,
@@ -57,12 +53,15 @@ export class TypeOrmRefreshTokenStore implements RefreshTokenStore {
 
       await manager.getRepository(RefreshSession).insert({
         id: uuidv7(),
+        createdAt: record.createdAt,
         userId: record.userId,
         tokenHash: record.id,
         familyId: record.familyId,
         expiresAt: record.expiresAt,
         familyExpiresAt: record.familyExpiresAt,
         usedAt: record.usedAt ?? null,
+        // A successor saved into a revoked family must not become usable.
+        revokedAt: family?.revokedAt ?? null,
         claims: (record.claims ?? null) as never,
       });
     });

@@ -11,10 +11,10 @@ export class RefreshTokenFamily extends BaseEntity {
   @Column({ name: "user_id", type: "char", length: 36 })
   userId!: string;
 
-  @Column({ name: "expires_at", type: "datetime" })
+  @Column({ name: "expires_at", type: "datetime", precision: 3 })
   expiresAt!: Date;
 
-  @Column({ name: "revoked_at", type: "datetime", nullable: true })
+  @Column({ name: "revoked_at", type: "datetime", precision: 3, nullable: true })
   revokedAt?: Date | null;
 
   @ManyToOne(() => User, { onDelete: "RESTRICT" })

@@ -137,6 +137,24 @@ pnpm --filter web test -- <file>
 pnpm --filter api test -- <file>
 ```
 
+API storage contract and integration tests need a migrated test database and Redis:
+
+```sh
+docker compose exec -T mysql mysql -uroot -prootpassword -e "CREATE DATABASE IF NOT EXISTS rumahkodingku_academy_test"
+docker compose exec -T mysql mysql -uroot -prootpassword -e "GRANT ALL PRIVILEGES ON rumahkodingku_academy_test.* TO 'academy_user'@'%'; FLUSH PRIVILEGES"
+
+DATABASE_URL=mysql://academy_user:academy_password@localhost:3308/rumahkodingku_academy_test \
+  pnpm --filter @rumahkodingku-academy/db db:migrate
+DATABASE_URL=mysql://academy_user:academy_password@localhost:3308/rumahkodingku_academy_test \
+REDIS_URL=redis://localhost:6380 \
+  pnpm --filter api test:contract
+DATABASE_URL=mysql://academy_user:academy_password@localhost:3308/rumahkodingku_academy_test \
+REDIS_URL=redis://localhost:6380 \
+  pnpm --filter api test:integration
+```
+
+Run contract tests and integration tests sequentially. Both truncate shared auth tables.
+
 ## 10. Database workflow
 
 ```sh

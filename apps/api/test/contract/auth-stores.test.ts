@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import { AuthenticationStorage, PasswordHasher, RefreshTokenError } from "@nestjs/authentication";
+import { AuthenticationStorage, PasswordHasher } from "@nestjs/authentication";
 import { AppDataSource, User, UserStatus } from "@rumahkodingku-academy/db";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { v7 as uuidv7 } from "uuid";
@@ -72,16 +72,21 @@ describe("auth store contracts", () => {
     await refreshStore.revokeRefreshTokenFamily(familyId);
     expect(await refreshStore.isRefreshTokenFamilyRevoked(familyId)).toBe(true);
 
-    await expect(
-      refreshStore.saveRefreshToken({
-        id: uuidv7(),
-        familyId,
-        userId,
-        createdAt: now,
-        expiresAt: new Date(Math.floor((now.getTime() + 30 * 86_400_000) / 1000) * 1000),
-        familyExpiresAt,
-      }),
-    ).rejects.toBeInstanceOf(RefreshTokenError);
+    const successorId = uuidv7();
+    await refreshStore.saveRefreshToken({
+      id: successorId,
+      familyId,
+      userId,
+      createdAt: now,
+      expiresAt: new Date(Math.floor((now.getTime() + 30 * 86_400_000) / 1000) * 1000),
+      familyExpiresAt,
+    });
+    const successorRows = (await AppDataSource.query(
+      "SELECT revoked_at FROM refresh_sessions WHERE token_hash = ?",
+      [successorId],
+    )) as Array<{ revoked_at: Date | null }>;
+    expect(successorRows[0]?.revoked_at).toBeInstanceOf(Date);
+    expect(await refreshStore.isRefreshTokenFamilyRevoked(familyId)).toBe(true);
 
     await refreshStore.revokeUserRefreshTokens(userId);
   });

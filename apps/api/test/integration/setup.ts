@@ -107,6 +107,12 @@ export async function createTestApp(controllers: Type<unknown>[] = []): Promise<
   app.use(cookieToBearer);
   app.use(ensureCsrfSession);
   app.use(csrfProtection);
+
+  const expressApp = app.getHttpAdapter().getInstance() as {
+    set: (key: string, value: unknown) => void;
+  };
+  expressApp.set("trust proxy", true);
+
   await app.init();
 
   return app;
