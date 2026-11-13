@@ -7,7 +7,7 @@
 **Audience:** Frontend developers, technical leads, reviewers, and AI coding agents  
 **Framework:** Next.js 16 (App Router)  
 **UI runtime:** React 19  
-**Styling:** Tailwind CSS 4 + Base UI  
+**Styling:** Tailwind CSS 4 + custom native-first primitives + Motion  
 **API:** NestJS REST under `/api/v1`  
 **Marketing content:** Strapi (marketing only)  
 **Monorepo:** pnpm Workspaces + Turborepo
@@ -119,7 +119,7 @@ Any change to an accepted decision MUST be recorded as an Architecture Decision 
 | Auth              | No session DAL or route guard                                    | Session DAL, protected layouts, optimistic `proxy.ts`          | Auth shell      |
 | Marketing         | Strapi helpers are generic                                       | Server-only Strapi adapter with cache tags and SEO mapping     | Marketing       |
 | Caching           | No explicit strategy                                             | Cache matrix in Section 12                                     | Marketing       |
-| UI system         | Base UI primitives and Tailwind exist                            | Tokenized UI primitives and feature-level composition          | Hardening       |
+| UI system         | Custom native-first primitives and Tailwind exist                | Editorial tokenized UI primitives and feature-level composition | Hardening       |
 | Security          | No CSP/security headers                                          | CSP, `server-only`, sanitized rich text, image allowlist       | Hardening       |
 | Testing           | Vitest configured; no web tests                                  | Unit, component, E2E, accessibility coverage                   | Per phase       |
 | Storybook         | Storybook 10 and addons 8 are inconsistent                       | One aligned major version before UI expansion                  | Hardening       |

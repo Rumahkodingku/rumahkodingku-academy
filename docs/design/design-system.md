@@ -10,6 +10,19 @@
 
 ---
 
+## 0. Current Implementation — Editorial Academy v2
+
+The implementation source of truth is `apps/web/src/index.css`. The v2 system replaces the original Modern SaaS token baseline:
+
+- Canvas: paper `#F6F1E7`, surface `#FBF8F2`, sunken `#EFE9DD`, ink `#141311`, muted `#5C564D`, line `#DCD4C6`.
+- Accent: Academy Blue `#2563EB`; dark accent `#7FB0FF`.
+- Deep surfaces: `#141311` light, `#0B0A09` dark.
+- Type: Space Grotesk display, Manrope body, Geist Mono code.
+- Actions: pill buttons with ink fill; blue is reserved for links, focus, active, and selected states.
+- Surfaces: 6–8 px radius, hairline borders, minimal shadow.
+- Motion: 180–260 ms UI, 600–800 ms editorial reveal, reduced-motion respected.
+- No Base UI or other component library. See `docs/refactor/web-ui-overhaul-plan.md`.
+
 ## 1. Purpose
 
 Dokumen ini mendefinisikan fondasi visual dan aturan komponen agar implementasi UI RumahKodingku Academy konsisten. Nilai di bawah merupakan baseline desain yang dapat disesuaikan setelah validasi kontras, usability testing, dan implementasi frontend.

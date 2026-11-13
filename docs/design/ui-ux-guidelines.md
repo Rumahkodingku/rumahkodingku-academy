@@ -159,6 +159,8 @@ Rules:
 
 ### 4.4 Authentication
 
+- Layout desktop memakai split 1:1 antara panel editorial dan form.
+- Di bawah 1024 px, panel editorial menjadi strip merek ringkas dan form menjadi satu kolom.
 - Sediakan label dan instruksi yang jelas.
 - Bedakan login dan registrasi.
 - Berikan validasi inline.
