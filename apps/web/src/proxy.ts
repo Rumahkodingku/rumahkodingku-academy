@@ -13,6 +13,8 @@ export default function proxy(request: NextRequest) {
   }
 
   const normalizedPath = pathname.replace(/\/+$/, "") || "/";
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", `${normalizedPath}${search}`);
   const segments = normalizedPath.split("/").filter(Boolean);
   const firstSegment = segments[0];
   const hasLocale = firstSegment !== undefined && isLocale(firstSegment);
@@ -31,10 +33,10 @@ export default function proxy(request: NextRequest) {
   if (!hasLocale) {
     const localeUrl = new URL(request.url);
     localeUrl.pathname = `/${DEFAULT_LOCALE}${normalizedPath === "/" ? "" : normalizedPath}`;
-    return NextResponse.rewrite(localeUrl);
+    return NextResponse.rewrite(localeUrl, { request: { headers: requestHeaders } });
   }
 
-  return NextResponse.next();
+  return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 export const config = {

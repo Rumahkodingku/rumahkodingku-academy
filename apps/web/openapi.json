@@ -3,10 +3,22 @@
   "paths": {
     "/api/v1/csrf/token": {
       "get": {
+        "description": "Sets the CSRF session cookie and returns a token for the x-csrf-token header.",
         "operationId": "CsrfController_getToken",
         "parameters": [],
-        "responses": { "200": { "description": "" } },
-        "tags": ["Csrf"]
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CsrfTokenEnvelopeResponseDto" }
+              }
+            }
+          },
+          "500": { "description": "Internal Server Error" }
+        },
+        "summary": "Get a CSRF token",
+        "tags": ["Security"]
       }
     },
     "/api/v1/health": {
@@ -15,70 +27,23 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "The Health Check is successful",
+            "description": "The Health Check is successful\n\nMySQL and Redis are available",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "string", "enum": ["ok", "degraded"], "example": "ok" },
-                    "info": {
-                      "type": "object",
-                      "example": { "database": { "status": "up", "responseTime": 12 } },
-                      "additionalProperties": {
-                        "type": "object",
-                        "required": ["status"],
-                        "properties": {
-                          "status": { "type": "string", "enum": ["up", "degraded", "down"] },
-                          "responseTime": {
-                            "type": "number",
-                            "description": "Time the health indicator took to respond, in ms"
-                          }
-                        },
-                        "additionalProperties": true
-                      },
-                      "nullable": true
-                    },
-                    "error": {
-                      "type": "object",
-                      "example": {},
-                      "additionalProperties": {
-                        "type": "object",
-                        "required": ["status"],
-                        "properties": {
-                          "status": { "type": "string", "enum": ["up", "degraded", "down"] },
-                          "responseTime": {
-                            "type": "number",
-                            "description": "Time the health indicator took to respond, in ms"
-                          }
-                        },
-                        "additionalProperties": true
-                      },
-                      "nullable": true
-                    },
-                    "details": {
-                      "type": "object",
-                      "example": { "database": { "status": "up", "responseTime": 12 } },
-                      "additionalProperties": {
-                        "type": "object",
-                        "required": ["status"],
-                        "properties": {
-                          "status": { "type": "string", "enum": ["up", "degraded", "down"] },
-                          "responseTime": {
-                            "type": "number",
-                            "description": "Time the health indicator took to respond, in ms"
-                          }
-                        },
-                        "additionalProperties": true
-                      }
-                    }
+                    "status": { "type": "string" },
+                    "info": { "type": "object" },
+                    "error": { "type": "object" },
+                    "details": { "type": "object" }
                   }
                 }
               }
             }
           },
           "503": {
-            "description": "The Health Check is not successful",
+            "description": "The Health Check is not successful\n\nService Unavailable",
             "content": {
               "application/json": {
                 "schema": {
@@ -158,6 +123,7 @@
             }
           }
         },
+        "summary": "Readiness check",
         "tags": ["Health"]
       }
     },
@@ -167,70 +133,23 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "The Health Check is successful",
+            "description": "The Health Check is successful\n\nMySQL and Redis are available",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "string", "enum": ["ok", "degraded"], "example": "ok" },
-                    "info": {
-                      "type": "object",
-                      "example": { "database": { "status": "up", "responseTime": 12 } },
-                      "additionalProperties": {
-                        "type": "object",
-                        "required": ["status"],
-                        "properties": {
-                          "status": { "type": "string", "enum": ["up", "degraded", "down"] },
-                          "responseTime": {
-                            "type": "number",
-                            "description": "Time the health indicator took to respond, in ms"
-                          }
-                        },
-                        "additionalProperties": true
-                      },
-                      "nullable": true
-                    },
-                    "error": {
-                      "type": "object",
-                      "example": {},
-                      "additionalProperties": {
-                        "type": "object",
-                        "required": ["status"],
-                        "properties": {
-                          "status": { "type": "string", "enum": ["up", "degraded", "down"] },
-                          "responseTime": {
-                            "type": "number",
-                            "description": "Time the health indicator took to respond, in ms"
-                          }
-                        },
-                        "additionalProperties": true
-                      },
-                      "nullable": true
-                    },
-                    "details": {
-                      "type": "object",
-                      "example": { "database": { "status": "up", "responseTime": 12 } },
-                      "additionalProperties": {
-                        "type": "object",
-                        "required": ["status"],
-                        "properties": {
-                          "status": { "type": "string", "enum": ["up", "degraded", "down"] },
-                          "responseTime": {
-                            "type": "number",
-                            "description": "Time the health indicator took to respond, in ms"
-                          }
-                        },
-                        "additionalProperties": true
-                      }
-                    }
+                    "status": { "type": "string" },
+                    "info": { "type": "object" },
+                    "error": { "type": "object" },
+                    "details": { "type": "object" }
                   }
                 }
               }
             }
           },
           "503": {
-            "description": "The Health Check is not successful",
+            "description": "The Health Check is not successful\n\nService Unavailable",
             "content": {
               "application/json": {
                 "schema": {
@@ -310,6 +229,7 @@
             }
           }
         },
+        "summary": "Readiness check",
         "tags": ["Health"]
       }
     },
@@ -317,8 +237,341 @@
       "get": {
         "operationId": "HealthController_live",
         "parameters": [],
-        "responses": { "200": { "description": "" } },
+        "responses": {
+          "200": {
+            "description": "Process is alive",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "status": { "type": "string", "example": "ok" } }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Liveness check",
         "tags": ["Health"]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "description": "Creates the account, profile, and default learner role, then sends verification email.",
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/RegisterDto" } }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthUserEnvelopeResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "409": { "description": "Conflict" },
+          "429": { "description": "Too Many Requests" }
+        },
+        "summary": "Register a learner account",
+        "tags": ["Authentication"]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "description": "Verifies credentials and sets access and refresh cookies.",
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/LoginDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthUserEnvelopeResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "429": { "description": "Too Many Requests" }
+        },
+        "summary": "Sign in",
+        "tags": ["Authentication"]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "description": "Rotates the refresh token and replaces the auth cookies.",
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthUserEnvelopeResponseDto" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "429": { "description": "Too Many Requests" }
+        },
+        "summary": "Rotate the session",
+        "tags": ["Authentication"]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "description": "Revokes the current refresh-token family and clears auth cookies.",
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "204": { "description": "Signed out" },
+          "401": { "description": "Unauthorized" }
+        },
+        "security": [{ "access_token": [] }],
+        "summary": "Sign out",
+        "tags": ["Authentication"]
+      }
+    },
+    "/api/v1/auth/forgot-password": {
+      "post": {
+        "operationId": "AuthController_forgotPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ForgotPasswordDto" } }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AcceptedEnvelopeResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "429": { "description": "Too Many Requests" }
+        },
+        "summary": "Request a password reset",
+        "tags": ["Authentication"]
+      }
+    },
+    "/api/v1/auth/reset-password": {
+      "post": {
+        "operationId": "AuthController_resetPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ResetPasswordDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ResetPasswordEnvelopeResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "429": { "description": "Too Many Requests" }
+        },
+        "summary": "Reset a password",
+        "tags": ["Authentication"]
+      }
+    },
+    "/api/v1/auth/verify-email": {
+      "post": {
+        "operationId": "AuthController_verifyEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/VerifyEmailDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VerifyEmailEnvelopeResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "429": { "description": "Too Many Requests" }
+        },
+        "summary": "Verify an email address",
+        "tags": ["Authentication"]
+      }
+    },
+    "/api/v1/auth/resend-verification": {
+      "post": {
+        "operationId": "AuthController_resendVerification",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ResendVerificationDto" }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AcceptedEnvelopeResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "429": { "description": "Too Many Requests" }
+        },
+        "summary": "Resend a verification email",
+        "tags": ["Authentication"]
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "operationId": "ProfileController_getMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthUserEnvelopeResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Not Found" },
+          "422": { "description": "Unprocessable Entity" },
+          "429": { "description": "Too Many Requests" },
+          "500": { "description": "Internal Server Error" }
+        },
+        "security": [{ "access_token": [] }],
+        "summary": "Get the current profile",
+        "tags": ["Profile"]
+      },
+      "patch": {
+        "operationId": "ProfileController_updateMe",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdateProfileDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthUserEnvelopeResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "409": { "description": "Conflict" },
+          "422": { "description": "Unprocessable Entity" },
+          "429": { "description": "Too Many Requests" }
+        },
+        "security": [{ "access_token": [] }],
+        "summary": "Update the current profile",
+        "tags": ["Profile"]
+      }
+    },
+    "/api/v1/users/me/avatar": {
+      "post": {
+        "operationId": "ProfileController_uploadAvatar",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "JPEG, PNG, or WebP up to 2 MB",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": { "file": { "type": "string", "format": "binary" } },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AvatarUploadEnvelopeResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "413": { "description": "Payload Too Large" },
+          "415": { "description": "Unsupported Media Type" },
+          "422": { "description": "Unprocessable Entity" },
+          "429": { "description": "Too Many Requests" }
+        },
+        "security": [{ "access_token": [] }],
+        "summary": "Upload a private avatar",
+        "tags": ["Profile"]
+      },
+      "get": {
+        "operationId": "ProfileController_getAvatar",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Avatar image",
+            "content": { "image/*": { "schema": { "type": "string", "format": "binary" } } }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Not Found" }
+        },
+        "security": [{ "access_token": [] }],
+        "summary": "Get the current avatar",
+        "tags": ["Profile"]
+      },
+      "delete": {
+        "operationId": "ProfileController_deleteAvatar",
+        "parameters": [],
+        "responses": {
+          "204": { "description": "Avatar deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "429": { "description": "Too Many Requests" }
+        },
+        "security": [{ "access_token": [] }],
+        "summary": "Delete the current avatar",
+        "tags": ["Profile"]
       }
     }
   },
@@ -332,6 +585,353 @@
   "servers": [],
   "components": {
     "securitySchemes": { "cookie": { "type": "apiKey", "in": "cookie", "name": "access_token" } },
-    "schemas": {}
+    "schemas": {
+      "CsrfTokenDataResponseDto": {
+        "type": "object",
+        "properties": { "csrfToken": { "type": "string", "example": "csrf-token-value" } },
+        "required": ["csrfToken"]
+      },
+      "ApiMetaResponseDto": {
+        "type": "object",
+        "properties": {
+          "requestId": { "type": "string", "example": "01a1d278-95d7-72ba-aff9-93927d0f23c7" }
+        },
+        "required": ["requestId"]
+      },
+      "CsrfTokenEnvelopeResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/CsrfTokenDataResponseDto" },
+          "meta": { "$ref": "#/components/schemas/ApiMetaResponseDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "email": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 128,
+            "x-nestjs_zod-parent-additional-properties": false
+          }
+        },
+        "required": ["name", "email", "password"]
+      },
+      "AuthUserProfileResponseDto": {
+        "type": "object",
+        "properties": {
+          "displayName": { "type": "string", "example": "Nama Baru" },
+          "fullName": { "type": "object", "nullable": true, "example": null },
+          "username": { "type": "object", "nullable": true, "example": "phase_three" },
+          "bio": { "type": "object", "nullable": true, "example": "Belajar backend" },
+          "headline": { "type": "object", "nullable": true, "example": null },
+          "avatarUrl": { "type": "object", "nullable": true, "example": "/api/v1/users/me/avatar" },
+          "phone": { "type": "object", "nullable": true, "example": null },
+          "countryCode": { "type": "object", "nullable": true, "example": "ID" },
+          "city": { "type": "object", "nullable": true, "example": null },
+          "timezone": { "type": "object", "nullable": true, "example": "Asia/Jakarta" },
+          "locale": { "type": "string", "example": "id" },
+          "websiteUrl": { "type": "object", "nullable": true, "example": null },
+          "githubUrl": {
+            "type": "object",
+            "nullable": true,
+            "example": "https://github.com/example"
+          },
+          "linkedinUrl": { "type": "object", "nullable": true, "example": null },
+          "xUrl": { "type": "object", "nullable": true, "example": null },
+          "instagramUrl": { "type": "object", "nullable": true, "example": null },
+          "emailNotifications": { "type": "boolean", "example": true },
+          "inAppNotifications": { "type": "boolean", "example": true }
+        },
+        "required": ["displayName", "locale", "emailNotifications", "inAppNotifications"]
+      },
+      "AuthUserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "01a1d278-95d7-72ba-aff9-93927d0f23c7" },
+          "email": { "type": "string", "example": "learner@example.com" },
+          "emailVerified": { "type": "boolean", "example": true },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVE", "SUSPENDED", "DELETED"],
+            "example": "ACTIVE"
+          },
+          "roles": { "example": ["user"], "type": "array", "items": { "type": "string" } },
+          "permissions": { "example": [], "type": "array", "items": { "type": "string" } },
+          "profile": { "$ref": "#/components/schemas/AuthUserProfileResponseDto" }
+        },
+        "required": ["id", "email", "emailVerified", "status", "roles", "permissions", "profile"]
+      },
+      "AuthUserDataResponseDto": {
+        "type": "object",
+        "properties": { "user": { "$ref": "#/components/schemas/AuthUserResponseDto" } },
+        "required": ["user"]
+      },
+      "AuthUserEnvelopeResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/AuthUserDataResponseDto" },
+          "meta": { "$ref": "#/components/schemas/ApiMetaResponseDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "x-nestjs_zod-parent-additional-properties": false
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "ForgotPasswordDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+            "x-nestjs_zod-parent-additional-properties": false
+          }
+        },
+        "required": ["email"]
+      },
+      "AcceptedResponseDto": {
+        "type": "object",
+        "properties": { "accepted": { "type": "boolean", "example": true } },
+        "required": ["accepted"]
+      },
+      "AcceptedEnvelopeResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/AcceptedResponseDto" },
+          "meta": { "$ref": "#/components/schemas/ApiMetaResponseDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 128,
+            "x-nestjs_zod-parent-additional-properties": false
+          }
+        },
+        "required": ["token", "password"]
+      },
+      "ResetPasswordResponseDto": {
+        "type": "object",
+        "properties": { "reset": { "type": "boolean", "example": true } },
+        "required": ["reset"]
+      },
+      "ResetPasswordEnvelopeResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/ResetPasswordResponseDto" },
+          "meta": { "$ref": "#/components/schemas/ApiMetaResponseDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "VerifyEmailDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "x-nestjs_zod-parent-additional-properties": false
+          }
+        },
+        "required": ["token"]
+      },
+      "VerifyEmailResponseDto": {
+        "type": "object",
+        "properties": { "email": { "type": "string", "example": "learner@example.com" } },
+        "required": ["email"]
+      },
+      "VerifyEmailEnvelopeResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/VerifyEmailResponseDto" },
+          "meta": { "$ref": "#/components/schemas/ApiMetaResponseDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "ResendVerificationDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+            "x-nestjs_zod-parent-additional-properties": false
+          }
+        },
+        "required": ["email"]
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "fullName": {
+            "anyOf": [{ "type": "string", "maxLength": 255 }, { "type": "null" }],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "username": {
+            "anyOf": [
+              { "type": "string", "minLength": 3, "maxLength": 30, "pattern": "^[a-z0-9_]+$" },
+              { "type": "null" }
+            ],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "bio": {
+            "anyOf": [{ "type": "string", "maxLength": 500 }, { "type": "null" }],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "headline": {
+            "anyOf": [{ "type": "string", "maxLength": 120 }, { "type": "null" }],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "phone": {
+            "anyOf": [{ "type": "string", "maxLength": 32 }, { "type": "null" }],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "countryCode": {
+            "anyOf": [
+              { "type": "string", "minLength": 2, "maxLength": 2, "pattern": "^[A-Z]{2}$" },
+              { "type": "null" }
+            ],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "city": {
+            "anyOf": [{ "type": "string", "maxLength": 100 }, { "type": "null" }],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "timezone": {
+            "anyOf": [{ "type": "string", "maxLength": 64 }, { "type": "null" }],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "locale": {
+            "type": "string",
+            "enum": ["id", "en"],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "websiteUrl": {
+            "anyOf": [{ "type": "string", "maxLength": 512 }, { "type": "null" }],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "githubUrl": {
+            "anyOf": [{ "type": "string", "maxLength": 512 }, { "type": "null" }],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "linkedinUrl": {
+            "anyOf": [{ "type": "string", "maxLength": 512 }, { "type": "null" }],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "xUrl": {
+            "anyOf": [{ "type": "string", "maxLength": 512 }, { "type": "null" }],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "instagramUrl": {
+            "anyOf": [{ "type": "string", "maxLength": 512 }, { "type": "null" }],
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-empty-type": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "emailNotifications": {
+            "type": "boolean",
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          },
+          "inAppNotifications": {
+            "type": "boolean",
+            "x-nestjs_zod-uses-3-point-1-syntax": true,
+            "x-nestjs_zod-parent-additional-properties": false
+          }
+        }
+      },
+      "AvatarUploadDataResponseDto": {
+        "type": "object",
+        "properties": { "avatarUrl": { "type": "string", "example": "/api/v1/users/me/avatar" } },
+        "required": ["avatarUrl"]
+      },
+      "AvatarUploadEnvelopeResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/AvatarUploadDataResponseDto" },
+          "meta": { "$ref": "#/components/schemas/ApiMetaResponseDto" }
+        },
+        "required": ["data", "meta"]
+      }
+    }
   }
 }

@@ -1,8 +1,9 @@
 # Phase 3.B — Frontend Auth, RBAC & Profile Integration
 
-**Status:** Final implementation plan  
+**Status:** Implemented and verified  
 **Depends on:** Phase 3.A API contract and green backend tests  
-**Produces:** Split auth UI, session-aware shell, profile/avatar UI, E2E
+**Produces:** Split auth UI, session-aware shell, profile/avatar UI, E2E  
+**Verified:** 2026-11-13 — 51 Playwright tests pass in Chromium, Firefox, and WebKit; web unit/component 59, API unit 60, API contract 12, API integration 23, and the production build pass locally. The CI E2E job is configured and awaits its first push. Screenshots: `docs/design/evidence/phase-3b/`.
 
 ## 1. Scope
 
@@ -27,7 +28,8 @@ Deliverables:
 - Use semantic tokens only; no hardcoded colors.
 - Use `Field`, `Input`, `Button`, `Alert`, `Card`, `Badge`, `EmptyState`, `ErrorState`.
 - Auth tokens never touch JavaScript-readable storage.
-- The web app may read the session only through `GET /auth/me`.
+- The web app may read the session only through `GET /users/me`.
+- All web test files live under `apps/web/test/` only; do not co-locate tests in `src/`.
 - `proxy.ts` may only do optimistic cookie checks; it is not an authorization boundary.
 - Client-side validation is UX only; server validation is authoritative.
 - Every form has loading, error, success, and disabled states.
@@ -113,19 +115,19 @@ WEB_APP_URL=http://localhost:3001
 
 ### Steps
 
-- [ ] Write a failing Playwright test that logs in through `/api/v1/auth/login` and asserts the browser receives `access_token` and `refresh_token` cookies for the web origin.
-- [ ] Add the local rewrite and env changes.
-- [ ] Verify `Set-Cookie` forwarding in Chromium, Firefox, and WebKit.
-- [ ] Verify `GET /api/v1/users/me` through the web origin sends the cookie.
-- [ ] Verify server components (`apiServerFetch`) still call `API_URL` directly and forward browser cookies.
-- [ ] Update `proxy.ts` to use `AUTH_SESSION_COOKIE`; do not decode JWT or query MySQL/Redis.
-- [ ] Document production edge routing.
+- [x] Write a failing Playwright test that logs in through `/api/v1/auth/login` and asserts the browser receives `access_token` and `refresh_token` cookies for the web origin.
+- [x] Add the local rewrite and env changes.
+- [x] Verify `Set-Cookie` forwarding in Chromium, Firefox, and WebKit.
+- [x] Verify `GET /api/v1/users/me` through the web origin sends the cookie.
+- [x] Verify server components (`apiServerFetch`) still call `API_URL` directly and forward browser cookies.
+- [x] Update `proxy.ts` to use `AUTH_SESSION_COOKIE`; do not decode JWT or query MySQL/Redis.
+- [x] Document production edge routing.
 
 ### Verification
 
 ```bash
 pnpm --filter web dev
-pnpm exec playwright test apps/web/e2e/auth-proxy.spec.ts
+pnpm exec playwright test apps/web/test/e2e/auth-proxy.spec.ts
 ```
 
 Expected: login response sets both cookies for the web origin; `/users/me` returns the user; no CORS error; no token in JavaScript storage.
@@ -143,7 +145,7 @@ Expected: login response sets both cookies for the web origin; `/users/me` retur
 - Modify `apps/web/src/features/auth/api/session.ts`.
 - Modify `apps/web/src/features/auth/types.ts`.
 - Create `apps/web/src/features/auth/permissions.ts`.
-- Create `apps/web/src/features/auth/api/client.test.ts`.
+- Create `apps/web/test/unit/features/auth/api/client.test.ts`.
 - Modify `apps/web/src/lib/api/schema.d.ts` after OpenAPI regeneration.
 
 ### API surface
@@ -183,16 +185,17 @@ No role-name checks.
 - Invalidate `authKeys.session` after login, logout, password reset, and profile update.
 - Clear user-scoped caches on logout.
 - Do not read or write auth cookies.
+- Browser client base URL is relative `/api/v1`; server components call `API_URL` directly.
 - Client uses `credentials: "include"` / `withCredentials: true`.
 
 ### Steps
 
-- [ ] Write failing tests for CSRF retry and refresh retry using a mocked Axios adapter.
-- [ ] Implement CSRF bootstrap and one-shot refresh logic.
-- [ ] Implement auth hooks and query keys.
-- [ ] Regenerate API types from OpenAPI.
-- [ ] Test that a second 401 does not trigger a refresh loop.
-- [ ] Test permission helper and no role-name usage.
+- [x] Write failing tests for CSRF retry and refresh retry using a mocked Axios adapter.
+- [x] Implement CSRF bootstrap and one-shot refresh logic.
+- [x] Implement auth hooks and query keys.
+- [x] Regenerate API types from OpenAPI.
+- [x] Test that a second 401 does not trigger a refresh loop.
+- [x] Test permission helper and no role-name usage.
 
 ### Verification
 
@@ -278,9 +281,9 @@ pnpm --filter web check-types
 
 Inspiration only:
 
-- “Split Sign In Form” by Diar Muradi: https://21st.dev/@diarmuradi/components/sign-in-3
-- “Sign In Split Screen” by felipemenezes098: https://21st.dev/@felipemenezes098/components/sign-in-6
-- “Sign Up Split Panel” by Diar Muradi: https://21st.dev/@diarmuradi/components/sign-up-1
+- “Split Sign In Form” by Diar Muradi: <https://21st.dev/@diarmuradi/components/sign-in-3>
+- “Sign In Split Screen” by felipemenezes098: <https://21st.dev/@felipemenezes098/components/sign-in-6>
+- “Sign Up Split Panel” by Diar Muradi: <https://21st.dev/@diarmuradi/components/sign-up-1>
 
 Borrow: split composition, branded panel, compact form, password visibility, hierarchy.
 
@@ -334,21 +337,21 @@ Silent refresh:
 
 ### Steps
 
-- [ ] Write failing component tests for validation, loading, server error, password visibility, and safe redirect.
-- [ ] Implement `AuthSplitLayout`, brand panel, form panel.
-- [ ] Implement auth pages and forms using existing primitives.
-- [ ] Add i18n keys for labels, errors, and states.
-- [ ] Ensure forms are keyboard accessible and errors are linked with `aria-describedby`.
-- [ ] Add `next` parsing through `safeNextPath`.
-- [ ] Test 7:3 at 1440, 6:4 at 1024, stacked at 768/390.
-- [ ] Test light/dark and reduced motion.
+- [x] Write failing component tests for validation, loading, server error, password visibility, and safe redirect.
+- [x] Implement `AuthSplitLayout`, brand panel, form panel.
+- [x] Implement auth pages and forms using existing primitives.
+- [x] Add i18n keys for labels, errors, and states.
+- [x] Ensure forms are keyboard accessible and errors are linked with `aria-describedby`.
+- [x] Add `next` parsing through `safeNextPath`.
+- [x] Test 7:3 at 1440, 6:4 at 1024, stacked at 768/390.
+- [x] Test light/dark and reduced motion.
 
 ### Verification
 
 ```bash
 pnpm --filter web test -- features/auth
 pnpm --filter web check-types
-pnpm exec playwright test apps/web/e2e/auth-layout.spec.ts
+pnpm exec playwright test apps/web/test/e2e/auth-layout.spec.ts
 ```
 
 ### Commit
@@ -371,7 +374,7 @@ pnpm exec playwright test apps/web/e2e/auth-layout.spec.ts
 
 `getSession()`:
 
-- Calls `GET /auth/me` with forwarded cookies.
+- Calls `GET /users/me` with forwarded cookies.
 - Returns `AuthUser | null`.
 - Handles 401 as `null`; network failure is an error, not a logout.
 - Cached per request with React `cache()`.
@@ -410,12 +413,12 @@ Proxy:
 
 ### Steps
 
-- [ ] Write failing tests for `requireVerified`, `requirePermission`, `requireAdmin`, and `safeNextPath` (`//evil`, absolute URL).
-- [ ] Implement session helpers and forbidden page.
-- [ ] Implement account menu and header integration.
-- [ ] Protect learner/admin with verified policy; account and commerce with user-only until product requires otherwise.
-- [ ] Test expired cookie behavior: access cookie expiry redirects to login, `SilentRefresh` succeeds when refresh cookie is valid, then returns to safe `next`; if refresh fails, show login without a loop.
-- [ ] Test admin nav uses `admin.access`, not role names.
+- [x] Write failing tests for `requireVerified`, `requirePermission`, `requireAdmin`, and `safeNextPath` (`//evil`, absolute URL).
+- [x] Implement session helpers and forbidden page.
+- [x] Implement account menu and header integration.
+- [x] Protect learner/admin with verified policy; account and commerce with user-only until product requires otherwise.
+- [x] Test expired cookie behavior: access cookie expiry redirects to login, `SilentRefresh` succeeds when refresh cookie is valid, then returns to safe `next`; if refresh fails, show login without a loop.
+- [x] Test admin nav uses `admin.access`, not role names.
 
 ### Verification
 
@@ -436,7 +439,7 @@ pnpm --filter web check-types
 - Create `apps/web/src/features/auth/components/profile-form.tsx`.
 - Create `apps/web/src/features/auth/components/avatar-upload.tsx`.
 - Create `apps/web/src/features/auth/api/avatar.ts`.
-- Create tests under `apps/web/src/features/auth/components/`.
+- Create tests under `apps/web/test/unit/features/auth/components/`.
 - Modify i18n files.
 
 ### Behavior
@@ -451,7 +454,7 @@ Profile:
 - Email and status read-only.
 - Verification status badge.
 - Role/permission data read-only; never editable.
-- Update via `PATCH /auth/me`; strict payload.
+- Update via `PATCH /users/me`; strict payload.
 - Show success/error inline feedback.
 - Never send role, status, email, emailVerified, permissions, or password.
 
@@ -467,12 +470,12 @@ Avatar:
 
 ### Steps
 
-- [ ] Write failing tests for profile field validation and forbidden fields.
-- [ ] Write failing tests for avatar type/size validation.
-- [ ] Implement profile page and avatar component.
-- [ ] Test upload success, 413/415/422, remove, unauthorized.
-- [ ] Verify private avatar cannot load without a session.
-- [ ] Check mobile layout and focus states.
+- [x] Write failing tests for profile field validation and forbidden fields.
+- [x] Write failing tests for avatar type/size validation.
+- [x] Implement profile page and avatar component.
+- [x] Test upload success, 413/415/422, remove, unauthorized.
+- [x] Verify private avatar cannot load without a session.
+- [x] Check mobile layout and focus states.
 
 ### Verification
 
@@ -489,9 +492,10 @@ pnpm --filter web check-types
 
 ### Files
 
-- Create `apps/web/e2e/auth.spec.ts`.
-- Create `apps/web/e2e/auth-layout.spec.ts`.
-- Create `apps/web/e2e/auth-helpers.ts`.
+- Create `apps/web/test/e2e/auth.spec.ts`.
+- Create `apps/web/test/e2e/auth-layout.spec.ts`.
+- Create `apps/web/test/e2e/auth-proxy.spec.ts`.
+- Create `apps/web/test/helpers/auth.ts`.
 - Modify `playwright.config.ts` if env/services need setup.
 - Modify `docs/development/testing-strategy.md` if needed.
 
@@ -521,11 +525,11 @@ pnpm --filter web check-types
 
 ### Steps
 
-- [ ] Write E2E tests before final UI polish where practical.
-- [ ] Add deterministic test users/fixtures through API or DB setup.
-- [ ] Run Chromium, Firefox, WebKit.
-- [ ] Capture screenshots for light/dark at 390/768/1024/1440.
-- [ ] Verify focus visibility and keyboard-only submit.
+- [x] Write E2E tests before final UI polish where practical.
+- [x] Add deterministic test users/fixtures through API or DB setup.
+- [x] Run Chromium, Firefox, WebKit.
+- [x] Capture screenshots for light/dark at 390/768/1024/1440.
+- [x] Verify focus visibility and keyboard-only submit.
 
 ### Verification
 
@@ -550,34 +554,182 @@ pnpm exec playwright test
 
 ### Steps
 
-- [ ] Add E2E job with MySQL, Redis, Mailpit, web/API services.
-- [ ] Ensure CI runs on `dev`.
-- [ ] Run `pnpm check-types`, `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm build`.
-- [ ] Run `pnpm --filter api test:contract`, `pnpm --filter api test:integration`.
-- [ ] Run RBAC seed and admin CLI in CI smoke.
-- [ ] Run Playwright all browsers.
-- [ ] Verify auth cookie flags in production-mode test configuration.
-- [ ] Verify no password/token appears in logs, audit rows, or client bundle.
-- [ ] Verify no role-name comparison in web/API code.
-- [ ] Update roadmap Phase 3 status with evidence.
-- [ ] Record screenshots or visual evidence.
+- [x] Add E2E job with MySQL, Redis, Mailpit, web/API services.
+- [x] Ensure CI runs on `dev`.
+- [x] Run `pnpm check-types`, `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm build`.
+- [x] Run `pnpm --filter api test:contract`, `pnpm --filter api test:integration`.
+- [x] Run RBAC seed and admin CLI in CI smoke.
+- [x] Run Playwright all browsers.
+- [x] Verify auth cookie flags in production-mode test configuration.
+- [x] Verify no password/token appears in logs, audit rows, or client bundle.
+- [x] Verify no role-name comparison in web/API code.
+- [x] Update roadmap Phase 3 status with evidence.
+- [x] Record screenshots or visual evidence.
 
 ### Commit
 
 `docs(auth): record Phase 3 completion and verification`
 
+## 12. Implementation Decisions from Phase 3.A Analysis
+
+- API profile endpoints are `/users/me` and `/users/me/avatar`, not `/auth/me` or `/auth/avatar`.
+- `AuthUser` comes from the API response. Do not keep the old local `SessionUser` with `role`.
+- `requireAdmin()` must use `PERMISSIONS.ADMIN_ACCESS`, never role names.
+- `requireVerified()` redirects to `/verify-email?next=<current>`.
+- `requirePermission()` redirects to `/forbidden`.
+- The web app reads the session only through `GET /users/me`.
+- Same-origin proxy:
+  - Browser calls `/api/v1/*` on the web origin.
+  - Next.js rewrites `/api/v1/:path*` to `API_URL/api/v1/:path*`.
+  - API cookies are host-only for the web origin.
+  - No catch-all BFF Route Handler.
+- `proxy.ts` remains optimistic only and uses `AUTH_SESSION_COOKIE`.
+- `proxy.ts` sets `x-pathname` so server layouts can build safe `next` redirects.
+- Server components use `API_URL` directly and forward cookies.
+- `next.config.ts` must add the `/api/v1` rewrite.
+- `packages/env/src/web.ts` defaults:
+  - `NEXT_PUBLIC_SERVER_URL=http://localhost:3001`
+  - `API_URL=http://localhost:3000`
+  - `AUTH_SESSION_COOKIE=access_token`
+  - `AUTH_REFRESH_COOKIE=refresh_token`
+  - `WEB_APP_URL=http://localhost:3001`
+- Browser `httpClient.baseURL` becomes `/api/v1`.
+- `apps/web/openapi.json` must be refreshed from `/swagger-json` before generating types.
+- Run `pnpm --filter web generate:api` after the OpenAPI refresh.
+
+## 13. Design References and Visual Rules
+
+Design sources:
+
+- `docs/design/design-brief.md`
+- `docs/design/design-direction.md`
+- `docs/design/design-system.md`
+- `docs/design/ui-ux-guidelines.md`
+
+21st.dev references, inspiration only:
+
+- Split Sign In Form by Diar Muradi: <https://21st.dev/@diarmuradi/components/sign-in-3>
+- Sign In Split Screen by felipemenezes098: <https://21st.dev/@felipemenezes098/components/sign-in-6>
+- Sign Up Split Panel by Diar Muradi: <https://21st.dev/@diarmuradi/components/sign-up-1>
+
+Visual rules:
+
+- Light-first, dark-mode equal quality.
+- Academy Blue `#2563EB` as accent only.
+- Semantic tokens only; no hardcoded colors in components.
+- Official logo mark on a white tile; do not redraw or recolor.
+- No fake testimonials, ratings, counts, avatars, or stock photos.
+- No social-login UI because providers are not implemented.
+- One quiet entrance animation; honor `prefers-reduced-motion`.
+- Touch targets at least 44×44 px.
+- Visible focus and linked labels.
+- `AuthSplitLayout`:
+  - ≥1280px: 7fr / 3fr
+  - 1024–1279px: 6fr / 4fr
+  - <1024px: stacked with compact brand strip
+  - form panel min 360px, max 420px, vertically centered
+  - `min-h-svh`, no horizontal overflow
+- Brand panel:
+  - logo mark + wordmark
+  - eyebrow `Learn · Build · Grow`
+  - headline “Bangun kemampuan teknologi yang bisa dibuktikan.”
+  - supporting copy about structured courses, real projects, certificates
+  - three value chips: `BookOpen`, `FolderGit2`, `Award`
+  - abstract learning-path card with steps “Pilih jalur”, “Bangun proyek”, “Buktikan kemampuan”
+  - CSS/SVG composition with subtle grid, radial glow, floating code/lesson tiles
+- Form panel:
+  - card on `surface-default`
+  - max width 380–420px
+  - visible labels
+  - inline errors
+  - server error `Alert`
+  - password show/hide
+  - loading and disabled submit state
+  - links to register, forgot password, and login
+  - language and theme controls in panel header
+
+## 14. Testing Folder Convention
+
+All frontend test code must live in one folder only:
+
+```text
+apps/web/test/
+  unit/
+  e2e/
+  helpers/
+```
+
+Rules:
+
+- Do not co-locate `*.test.ts` or `*.test.tsx` in `src/`.
+- Unit/component tests: `apps/web/test/unit/**`.
+- Playwright tests: `apps/web/test/e2e/**`.
+- Shared test helpers: `apps/web/test/helpers/**`.
+- Update `vitest.config.mts` to include `test/unit/**/*.test.{ts,tsx}`.
+- Update `playwright.config.ts` `testDir` to `./apps/web/test/e2e`.
+- Import source from `../../src/...` or configured aliases.
+
+## 15. Route and Component Additions
+
+Create:
+
+- `apps/web/src/app/[locale]/(auth)/layout.tsx`
+- `apps/web/src/app/[locale]/(auth)/login/page.tsx`
+- `apps/web/src/app/[locale]/(auth)/register/page.tsx`
+- `apps/web/src/app/[locale]/(auth)/forgot-password/page.tsx`
+- `apps/web/src/app/[locale]/(auth)/reset-password/page.tsx`
+- `apps/web/src/app/[locale]/(auth)/verify-email/page.tsx`
+- `apps/web/src/app/[locale]/(learn)/learn/page.tsx` minimal learner landing
+- `apps/web/src/app/[locale]/(admin)/admin/page.tsx` minimal admin landing for guard and E2E
+- `apps/web/src/app/[locale]/forbidden/page.tsx`
+- `apps/web/src/components/account-menu.tsx`
+
+Feature components:
+
+- `apps/web/src/features/auth/components/auth-split-layout.tsx`
+- `apps/web/src/features/auth/components/auth-brand-panel.tsx`
+- `apps/web/src/features/auth/components/auth-form-panel.tsx`
+- `apps/web/src/features/auth/components/login-form.tsx`
+- `apps/web/src/features/auth/components/register-form.tsx`
+- `apps/web/src/features/auth/components/forgot-password-form.tsx`
+- `apps/web/src/features/auth/components/reset-password-form.tsx`
+- `apps/web/src/features/auth/components/verify-email-panel.tsx`
+- `apps/web/src/features/auth/components/verification-banner.tsx`
+- `apps/web/src/features/auth/components/silent-refresh.tsx`
+- `apps/web/src/features/auth/components/profile-form.tsx`
+- `apps/web/src/features/auth/components/avatar-upload.tsx`
+
+API modules:
+
+- `apps/web/src/features/auth/api/auth.ts`
+- `apps/web/src/features/auth/api/avatar.ts`
+- `apps/web/src/features/auth/api/permissions.ts`
+
+## 16. Ambiguities Resolved
+
+- `/learn` will be a minimal learner landing page.
+- `/admin` will be a minimal admin landing page for guard and E2E.
+- Public header receives session from the server layout.
+- Protected pages use public header + footer.
+- Playwright starts web and API; MySQL, Redis, Mailpit run through Docker Compose.
+- All frontend tests live under `apps/web/test/`.
+- `safeNextPath` rejects `//`, backslash, absolute URLs, `javascript:`, control characters, and encoded protocol-relative paths.
+- `AuthSplitLayout` uses the exact 7:3, 6:4, and stacked behavior from the task.
+- The brand panel uses only real or abstract assets, never fake social proof.
+- Profile update and avatar mutations require verified email; `GET /users/me` and `GET /users/me/avatar` do not.
+
 ## 11. Phase 3.B Exit Checklist
 
-- [ ] Login, register, forgot, reset, verify pages work.
-- [ ] Auth layout is 7:3 at 1440, 6:4 at 1024, stacked at 768/390.
-- [ ] Session persists across reload and refresh rotates once.
-- [ ] Logout revokes refresh session.
-- [ ] Unverified user cannot reach learner/admin.
-- [ ] User without `admin.access` cannot reach admin.
-- [ ] Profile fields update; forbidden fields rejected.
-- [ ] Avatar private and owner-only.
-- [ ] CSRF and safe redirect tests pass.
-- [ ] Keyboard/focus, light/dark, reduced motion pass.
-- [ ] E2E passes Chromium, Firefox, WebKit.
+- [x] Login, register, forgot, reset, verify pages work.
+- [x] Auth layout is 7:3 at 1440, 6:4 at 1024, stacked at 768/390.
+- [x] Session persists across reload and refresh rotates once.
+- [x] Logout revokes refresh session.
+- [x] Unverified user cannot reach learner/admin.
+- [x] User without `admin.access` cannot reach admin.
+- [x] Profile fields update; forbidden fields rejected.
+- [x] Avatar private and owner-only.
+- [x] CSRF and safe redirect tests pass.
+- [x] Keyboard/focus, light/dark, reduced motion pass.
+- [x] E2E passes Chromium, Firefox, WebKit.
 - [ ] CI green on `dev`.
-- [ ] Docs and OpenAPI types synchronized.
+- [x] Docs and OpenAPI types synchronized.

@@ -63,5 +63,8 @@ apps/*/AGENTS.md
 playwright-report
 test-results
 
+# Uploaded media (local dev)
+apps/api/uploads
+
 # Storybook output
 storybook-static

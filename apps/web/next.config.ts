@@ -12,12 +12,22 @@ const turbopackRoot = existsSync(join(workspaceRoot, "packages")) ? workspaceRoo
 const strapiUrl = new URL(env.NEXT_PUBLIC_STRAPI_URL);
 const strapiProtocol = strapiUrl.protocol.replace(":", "") as "http" | "https";
 
+const apiUrl = env.API_URL.replace(/\/$/, "");
+
 const nextConfig: NextConfig = {
   output: "standalone",
   typedRoutes: true,
   reactCompiler: true,
   experimental: {
     globalNotFound: true,
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${apiUrl}/api/v1/:path*`,
+      },
+    ];
   },
   images: {
     remotePatterns: [

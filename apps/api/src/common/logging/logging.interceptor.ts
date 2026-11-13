@@ -8,6 +8,7 @@ import {
 import type { Request, Response } from "express";
 import { catchError, tap, throwError, type Observable } from "rxjs";
 
+import { ApiError } from "../http/api-response";
 import { createChildLogger } from "./logger";
 import { redact } from "./redact";
 
@@ -35,7 +36,12 @@ export class LoggingInterceptor implements NestInterceptor {
       catchError((error: unknown) => {
         child.error("request failed", {
           ...meta,
-          status: error instanceof HttpException ? error.getStatus() : 500,
+          status:
+            error instanceof ApiError
+              ? error.status
+              : error instanceof HttpException
+                ? error.getStatus()
+                : 500,
           durationMs: Date.now() - startedAt,
           error: redact(
             error instanceof Error

@@ -13,7 +13,7 @@ pnpm workspaces + Turborepo. Apps: `apps/web` (Next.js), `apps/api` (NestJS, Nod
 - Build all: `pnpm build`; docs build: `pnpm build:docs` (runs `fumadocs-mdx`).
 - Commit check: `pnpm commitlint --edit <file>`; Husky runs it on `commit-msg`.
 - Unit tests: `pnpm test` = `pnpm --filter web test && pnpm --filter api test`; both use `vitest run --passWithNoTests`. Focused: `pnpm --filter web test -- <file>` or `pnpm --filter api test -- <file>`.
-- E2E: `pnpm exec playwright test` (root config; `testDir` `apps/web/e2e`, baseURL `http://localhost:3001`, auto-starts `pnpm dev`).
+- E2E: `pnpm exec playwright test` (root config; `testDir` `apps/web/test/e2e`, baseURL `http://localhost:3001`, auto-starts API and web).
 - DB: `pnpm db:push` / `pnpm db:studio` are declared but `packages/db` has no scripts, so they currently no-op.
 
 ## Package boundaries
@@ -38,9 +38,9 @@ pnpm workspaces + Turborepo. Apps: `apps/web` (Next.js), `apps/api` (NestJS, Nod
 - Redis is cache/rate-limit only, never source of truth for orders/payments/enrollments/refresh sessions. Socket.io delivers in-app notifications with polling fallback. PostHog is product analytics/flags only; admin reports come from MySQL. Strapi is marketing-only; LMS data stays in MySQL/NestJS.
 - Default UI language is Indonesian (`id`); i18n is ready for English (`en`).
 - TypeORM entity/migration globs are relative to process cwd; run DB work from `packages/db` or adjust globs when adding entities.
-- `pnpm test` currently runs seven API unit tests; Playwright is not part of `pnpm test`.
+- `pnpm test` runs web unit/component tests and API unit tests; Playwright is not part of `pnpm test`. Web tests live under `apps/web/test/unit`; E2E under `apps/web/test/e2e`.
 - Husky pre-commit runs lint-staged: `oxlint` + `oxfmt --write` on staged files.
-- CI (`.github/workflows/ci.yml`): Node 24, frozen lockfile, format check, lint, check-types, build, test on push/PR to `main`/`master`.
+- CI (`.github/workflows/ci.yml`): Node 24, frozen lockfile, format check, lint, check-types, build, test, contract/integration tests, and a Playwright job with MySQL, Redis, and Mailpit on push/PR to `dev`/`main`/`master`.
 - `docker-compose.yml` maps web 3001, API 3000, MySQL 3308, Redis 6380, Strapi 1337, Prometheus 9091, Grafana 3100, Databasus 4005, Garage 3904-3907, Mailpit 8026/1026; Cloudflared is profile `tunnel`. Verify env values before use.
 - Local infra commands: `docker compose config`, `docker compose up -d`, `docker compose --profile tunnel up -d`, `docker compose down`.
 - `bts.jsonc` is generator metadata and may lag after manual migrations. Treat package manifests, lockfile, and `docs/PLAN.md` as authoritative for the current code.

@@ -137,6 +137,23 @@ pnpm --filter web test -- <file>
 pnpm --filter api test -- <file>
 ```
 
+Web unit and component tests live in `apps/web/test/unit/`; Playwright journeys live in `apps/web/test/e2e/`.
+
+End-to-end tests need MySQL, Redis, and Mailpit:
+
+```sh
+docker compose up -d mysql redis mailpit
+pnpm exec playwright install --with-deps chromium firefox webkit
+pnpm exec playwright test
+```
+
+`playwright.config.ts` starts the web and API dev servers automatically, sets high auth rate limits for the test run, and reads Mailpit at `http://localhost:8026`. Run one project or file while iterating:
+
+```sh
+pnpm exec playwright test --project=chromium
+pnpm exec playwright test apps/web/test/e2e/auth.spec.ts --workers=1
+```
+
 API storage contract and integration tests need a migrated test database and Redis:
 
 ```sh

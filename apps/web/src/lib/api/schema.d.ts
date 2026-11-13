@@ -11,6 +11,10 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
+    /**
+     * Get a CSRF token
+     * @description Sets the CSRF session cookie and returns a token for the x-csrf-token header.
+     */
     get: operations["CsrfController_getToken"];
     put?: never;
     post?: never;
@@ -27,6 +31,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
+    /** Readiness check */
     get: operations["HealthController_check"];
     put?: never;
     post?: never;
@@ -43,6 +48,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
+    /** Readiness check */
     get: operations["HealthController_ready"];
     put?: never;
     post?: never;
@@ -59,6 +65,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
+    /** Liveness check */
     get: operations["HealthController_live"];
     put?: never;
     post?: never;
@@ -68,10 +75,353 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/auth/register": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Register a learner account
+     * @description Creates the account, profile, and default learner role, then sends verification email.
+     */
+    post: operations["AuthController_register"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/login": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Sign in
+     * @description Verifies credentials and sets access and refresh cookies.
+     */
+    post: operations["AuthController_login"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/refresh": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Rotate the session
+     * @description Rotates the refresh token and replaces the auth cookies.
+     */
+    post: operations["AuthController_refresh"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/logout": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Sign out
+     * @description Revokes the current refresh-token family and clears auth cookies.
+     */
+    post: operations["AuthController_logout"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/forgot-password": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Request a password reset */
+    post: operations["AuthController_forgotPassword"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/reset-password": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Reset a password */
+    post: operations["AuthController_resetPassword"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/verify-email": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Verify an email address */
+    post: operations["AuthController_verifyEmail"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/resend-verification": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Resend a verification email */
+    post: operations["AuthController_resendVerification"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/users/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get the current profile */
+    get: operations["ProfileController_getMe"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update the current profile */
+    patch: operations["ProfileController_updateMe"];
+    trace?: never;
+  };
+  "/api/v1/users/me/avatar": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get the current avatar */
+    get: operations["ProfileController_getAvatar"];
+    put?: never;
+    /** Upload a private avatar */
+    post: operations["ProfileController_uploadAvatar"];
+    /** Delete the current avatar */
+    delete: operations["ProfileController_deleteAvatar"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: never;
+  schemas: {
+    CsrfTokenDataResponseDto: {
+      /** @example csrf-token-value */
+      csrfToken: string;
+    };
+    ApiMetaResponseDto: {
+      /** @example 01a1d278-95d7-72ba-aff9-93927d0f23c7 */
+      requestId: string;
+    };
+    CsrfTokenEnvelopeResponseDto: {
+      data: components["schemas"]["CsrfTokenDataResponseDto"];
+      meta: components["schemas"]["ApiMetaResponseDto"];
+    };
+    RegisterDto: {
+      name: string;
+      /** Format: email */
+      email: string;
+      password: string;
+    };
+    AuthUserProfileResponseDto: {
+      /** @example Nama Baru */
+      displayName: string;
+      /** @example null */
+      fullName?: Record<string, never> | null;
+      /** @example phase_three */
+      username?: Record<string, never> | null;
+      /** @example Belajar backend */
+      bio?: Record<string, never> | null;
+      /** @example null */
+      headline?: Record<string, never> | null;
+      /** @example /api/v1/users/me/avatar */
+      avatarUrl?: Record<string, never> | null;
+      /** @example null */
+      phone?: Record<string, never> | null;
+      /** @example ID */
+      countryCode?: Record<string, never> | null;
+      /** @example null */
+      city?: Record<string, never> | null;
+      /** @example Asia/Jakarta */
+      timezone?: Record<string, never> | null;
+      /** @example id */
+      locale: string;
+      /** @example null */
+      websiteUrl?: Record<string, never> | null;
+      /** @example https://github.com/example */
+      githubUrl?: Record<string, never> | null;
+      /** @example null */
+      linkedinUrl?: Record<string, never> | null;
+      /** @example null */
+      xUrl?: Record<string, never> | null;
+      /** @example null */
+      instagramUrl?: Record<string, never> | null;
+      /** @example true */
+      emailNotifications: boolean;
+      /** @example true */
+      inAppNotifications: boolean;
+    };
+    AuthUserResponseDto: {
+      /** @example 01a1d278-95d7-72ba-aff9-93927d0f23c7 */
+      id: string;
+      /** @example learner@example.com */
+      email: string;
+      /** @example true */
+      emailVerified: boolean;
+      /**
+       * @example ACTIVE
+       * @enum {string}
+       */
+      status: "ACTIVE" | "SUSPENDED" | "DELETED";
+      /**
+       * @example [
+       *       "user"
+       *     ]
+       */
+      roles: string[];
+      /** @example [] */
+      permissions: string[];
+      profile: components["schemas"]["AuthUserProfileResponseDto"];
+    };
+    AuthUserDataResponseDto: {
+      user: components["schemas"]["AuthUserResponseDto"];
+    };
+    AuthUserEnvelopeResponseDto: {
+      data: components["schemas"]["AuthUserDataResponseDto"];
+      meta: components["schemas"]["ApiMetaResponseDto"];
+    };
+    LoginDto: {
+      /** Format: email */
+      email: string;
+      password: string;
+    };
+    ForgotPasswordDto: {
+      /** Format: email */
+      email: string;
+    };
+    AcceptedResponseDto: {
+      /** @example true */
+      accepted: boolean;
+    };
+    AcceptedEnvelopeResponseDto: {
+      data: components["schemas"]["AcceptedResponseDto"];
+      meta: components["schemas"]["ApiMetaResponseDto"];
+    };
+    ResetPasswordDto: {
+      token: string;
+      password: string;
+    };
+    ResetPasswordResponseDto: {
+      /** @example true */
+      reset: boolean;
+    };
+    ResetPasswordEnvelopeResponseDto: {
+      data: components["schemas"]["ResetPasswordResponseDto"];
+      meta: components["schemas"]["ApiMetaResponseDto"];
+    };
+    VerifyEmailDto: {
+      token: string;
+    };
+    VerifyEmailResponseDto: {
+      /** @example learner@example.com */
+      email: string;
+    };
+    VerifyEmailEnvelopeResponseDto: {
+      data: components["schemas"]["VerifyEmailResponseDto"];
+      meta: components["schemas"]["ApiMetaResponseDto"];
+    };
+    ResendVerificationDto: {
+      /** Format: email */
+      email: string;
+    };
+    UpdateProfileDto: {
+      displayName?: string;
+      fullName?: string | null;
+      username?: string | null;
+      bio?: string | null;
+      headline?: string | null;
+      phone?: string | null;
+      countryCode?: string | null;
+      city?: string | null;
+      timezone?: string | null;
+      /** @enum {string} */
+      locale?: "id" | "en";
+      websiteUrl?: string | null;
+      githubUrl?: string | null;
+      linkedinUrl?: string | null;
+      xUrl?: string | null;
+      instagramUrl?: string | null;
+      emailNotifications?: boolean;
+      inAppNotifications?: boolean;
+    };
+    AvatarUploadDataResponseDto: {
+      /** @example /api/v1/users/me/avatar */
+      avatarUrl: string;
+    };
+    AvatarUploadEnvelopeResponseDto: {
+      data: components["schemas"]["AvatarUploadDataResponseDto"];
+      meta: components["schemas"]["ApiMetaResponseDto"];
+    };
+  };
   responses: never;
   parameters: never;
   requestBodies: never;
@@ -89,7 +439,17 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
+      /** @description Success */
       200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CsrfTokenEnvelopeResponseDto"];
+        };
+      };
+      /** @description Internal Server Error */
+      500: {
         headers: {
           [name: string]: unknown;
         };
@@ -106,69 +466,29 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description The Health Check is successful */
+      /**
+       * @description The Health Check is successful
+       *
+       *     MySQL and Redis are available
+       */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
           "application/json": {
-            /**
-             * @example ok
-             * @enum {string}
-             */
-            status?: "ok" | "degraded";
-            /**
-             * @example {
-             *       "database": {
-             *         "status": "up",
-             *         "responseTime": 12
-             *       }
-             *     }
-             */
-            info?: {
-              [key: string]: {
-                /** @enum {string} */
-                status: "up" | "degraded" | "down";
-                /** @description Time the health indicator took to respond, in ms */
-                responseTime?: number;
-              } & {
-                [key: string]: unknown;
-              };
-            } | null;
-            /** @example {} */
-            error?: {
-              [key: string]: {
-                /** @enum {string} */
-                status: "up" | "degraded" | "down";
-                /** @description Time the health indicator took to respond, in ms */
-                responseTime?: number;
-              } & {
-                [key: string]: unknown;
-              };
-            } | null;
-            /**
-             * @example {
-             *       "database": {
-             *         "status": "up",
-             *         "responseTime": 12
-             *       }
-             *     }
-             */
-            details?: {
-              [key: string]: {
-                /** @enum {string} */
-                status: "up" | "degraded" | "down";
-                /** @description Time the health indicator took to respond, in ms */
-                responseTime?: number;
-              } & {
-                [key: string]: unknown;
-              };
-            };
+            status?: string;
+            info?: Record<string, never>;
+            error?: Record<string, never>;
+            details?: Record<string, never>;
           };
         };
       };
-      /** @description The Health Check is not successful */
+      /**
+       * @description The Health Check is not successful
+       *
+       *     Service Unavailable
+       */
       503: {
         headers: {
           [name: string]: unknown;
@@ -254,69 +574,29 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description The Health Check is successful */
+      /**
+       * @description The Health Check is successful
+       *
+       *     MySQL and Redis are available
+       */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
           "application/json": {
-            /**
-             * @example ok
-             * @enum {string}
-             */
-            status?: "ok" | "degraded";
-            /**
-             * @example {
-             *       "database": {
-             *         "status": "up",
-             *         "responseTime": 12
-             *       }
-             *     }
-             */
-            info?: {
-              [key: string]: {
-                /** @enum {string} */
-                status: "up" | "degraded" | "down";
-                /** @description Time the health indicator took to respond, in ms */
-                responseTime?: number;
-              } & {
-                [key: string]: unknown;
-              };
-            } | null;
-            /** @example {} */
-            error?: {
-              [key: string]: {
-                /** @enum {string} */
-                status: "up" | "degraded" | "down";
-                /** @description Time the health indicator took to respond, in ms */
-                responseTime?: number;
-              } & {
-                [key: string]: unknown;
-              };
-            } | null;
-            /**
-             * @example {
-             *       "database": {
-             *         "status": "up",
-             *         "responseTime": 12
-             *       }
-             *     }
-             */
-            details?: {
-              [key: string]: {
-                /** @enum {string} */
-                status: "up" | "degraded" | "down";
-                /** @description Time the health indicator took to respond, in ms */
-                responseTime?: number;
-              } & {
-                [key: string]: unknown;
-              };
-            };
+            status?: string;
+            info?: Record<string, never>;
+            error?: Record<string, never>;
+            details?: Record<string, never>;
           };
         };
       };
-      /** @description The Health Check is not successful */
+      /**
+       * @description The Health Check is not successful
+       *
+       *     Service Unavailable
+       */
       503: {
         headers: {
           [name: string]: unknown;
@@ -402,7 +682,606 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
+      /** @description Process is alive */
       200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** @example ok */
+            status?: string;
+          };
+        };
+      };
+    };
+  };
+  AuthController_register: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RegisterDto"];
+      };
+    };
+    responses: {
+      /** @description Success */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AuthUserEnvelopeResponseDto"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Conflict */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_login: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LoginDto"];
+      };
+    };
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AuthUserEnvelopeResponseDto"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_refresh: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AuthUserEnvelopeResponseDto"];
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_logout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Signed out */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_forgotPassword: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ForgotPasswordDto"];
+      };
+    };
+    responses: {
+      /** @description Success */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AcceptedEnvelopeResponseDto"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_resetPassword: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ResetPasswordDto"];
+      };
+    };
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ResetPasswordEnvelopeResponseDto"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_verifyEmail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["VerifyEmailDto"];
+      };
+    };
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["VerifyEmailEnvelopeResponseDto"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_resendVerification: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ResendVerificationDto"];
+      };
+    };
+    responses: {
+      /** @description Success */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AcceptedEnvelopeResponseDto"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ProfileController_getMe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AuthUserEnvelopeResponseDto"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unprocessable Entity */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ProfileController_updateMe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateProfileDto"];
+      };
+    };
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AuthUserEnvelopeResponseDto"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Conflict */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unprocessable Entity */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ProfileController_getAvatar: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Avatar image */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "image/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ProfileController_uploadAvatar: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description JPEG, PNG, or WebP up to 2 MB */
+    requestBody: {
+      content: {
+        "multipart/form-data": {
+          /** Format: binary */
+          file: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AvatarUploadEnvelopeResponseDto"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Payload Too Large */
+      413: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unsupported Media Type */
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unprocessable Entity */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Too Many Requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ProfileController_deleteAvatar: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Avatar deleted */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Too Many Requests */
+      429: {
         headers: {
           [name: string]: unknown;
         };
