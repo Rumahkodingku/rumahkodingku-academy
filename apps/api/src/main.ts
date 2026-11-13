@@ -5,6 +5,7 @@ import { apiReference } from "@scalar/nestjs-api-reference";
 import { env } from "@rumahkodingku-academy/env/server";
 import compression from "compression";
 import cookieParser from "cookie-parser";
+import type { NextFunction, Request, Response } from "express";
 import helmet from "helmet";
 import { IoAdapter } from "@nestjs/platform-socket.io";
 import { ZodValidationPipe } from "nestjs-zod";
@@ -26,7 +27,34 @@ async function bootstrap() {
   app.useGlobalFilters(new ProblemDetailsFilter());
   app.useGlobalPipes(new ZodValidationPipe());
   app.use(requestIdMiddleware);
-  app.use(helmet());
+
+  const defaultHelmet = helmet();
+  // Scalar loads its UI from jsDelivr and uses an inline module bootstrap.
+  const scalarHelmet = helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https:"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'", "https://cdn.jsdelivr.net"],
+        fontSrc: ["'self'", "https:", "data:"],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'self'"],
+        upgradeInsecureRequests: null,
+      },
+    },
+  });
+
+  app.use((request: Request, response: Response, next: NextFunction) => {
+    if (request.path === "/reference" || request.path.startsWith("/reference/")) {
+      scalarHelmet(request, response, next);
+      return;
+    }
+
+    defaultHelmet(request, response, next);
+  });
+
   app.use(compression());
   app.use(cookieParser());
   app.use(cookieToBearer);
