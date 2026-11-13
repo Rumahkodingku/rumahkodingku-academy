@@ -29,8 +29,8 @@ import { RequireVerifiedEmail } from "../rbac/policies/policy.decorators";
 import { ProfileService } from "./profile.service";
 import { AvatarService } from "./avatar.service";
 import type { AuthUser } from "../auth/auth.types";
-import { UpdateProfileDto } from "./profile.dto";
-import { AvatarUploadEnvelopeResponseDto } from "./profile-response.dto";
+import { UpdateProfileDto } from "./dto/profile.dto";
+import { AvatarUploadEnvelopeResponseDto } from "./dto/profile-response.dto";
 import { AuthUserEnvelopeResponseDto } from "../auth/dto/auth-user-response.dto";
 
 @ApiDocs({ tags: ["Profile"] })

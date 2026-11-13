@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { updateProfileSchema } from "../../../src/modules/profile/profile.dto";
+import { updateProfileSchema } from "../../../src/modules/profile/dto/profile.dto";
 
 describe("profile DTO", () => {
   it("accepts profile fields and normalizes them", () => {

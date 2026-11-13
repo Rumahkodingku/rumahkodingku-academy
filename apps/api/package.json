@@ -31,6 +31,7 @@
     "@nestjs/websockets": "^12.4.2",
     "@rumahkodingku-academy/db": "workspace:*",
     "@rumahkodingku-academy/env": "workspace:*",
+    "@rumahkodingku-academy/helpers": "workspace:*",
     "@scalar/nestjs-api-reference": "^1.2.36",
     "bullmq": "^6.7.5",
     "compression": "^1.8.2",

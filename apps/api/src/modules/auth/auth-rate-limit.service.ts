@@ -3,7 +3,8 @@ import { env } from "@rumahkodingku-academy/env/server";
 import type { Request } from "express";
 
 import { RedisService } from "../../infrastructure/redis/redis.service";
-import { hashToken, normalizeEmail } from "./auth.constants";
+import { hashToken } from "./auth.constants";
+import { normalizeEmail } from "@rumahkodingku-academy/helpers";
 import { getRefreshCookie } from "./auth-cookies";
 import type { AuthRateLimitAction } from "./auth-rate-limit.decorator";
 

@@ -168,6 +168,9 @@ importers:
       '@rumahkodingku-academy/env':
         specifier: workspace:*
         version: link:../../packages/env
+      '@rumahkodingku-academy/helpers':
+        specifier: workspace:*
+        version: link:../../packages/helpers
       '@scalar/nestjs-api-reference':
         specifier: ^1.2.36
         version: 1.2.36
@@ -530,6 +533,9 @@ importers:
       '@rumahkodingku-academy/env':
         specifier: workspace:*
         version: link:../env
+      '@rumahkodingku-academy/helpers':
+        specifier: workspace:*
+        version: link:../helpers
       dotenv:
         specifier: 'catalog:'
         version: 18.0.10
@@ -583,6 +589,15 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.6
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  packages/helpers:
+    devDependencies:
+      '@rumahkodingku-academy/config':
+        specifier: workspace:*
+        version: link:../config
       typescript:
         specifier: ^6.0.3
         version: 6.0.3

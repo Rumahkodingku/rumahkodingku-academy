@@ -1,0 +1,10 @@
+{
+  "extends": "@rumahkodingku-academy/config/tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist"
+  }
+}

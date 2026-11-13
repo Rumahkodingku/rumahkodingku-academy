@@ -6,7 +6,7 @@ import { RbacService } from "../rbac/rbac.service";
 import { AuthUsersRepository } from "../auth/repositories/auth-users.repository";
 import { UserProfileRepository } from "../auth/repositories/user-profile.repository";
 import type { AuthUser } from "../auth/auth.types";
-import type { UpdateProfileInput } from "./profile.dto";
+import type { UpdateProfileInput } from "./dto/profile.dto";
 
 function isDuplicateEntry(error: unknown): boolean {
   return (

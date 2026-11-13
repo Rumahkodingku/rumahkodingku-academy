@@ -24,7 +24,10 @@ import {
   VerifyEmailEnvelopeResponseDto,
 } from "./dto/auth-user-response.dto";
 
-@ApiDocs({ tags: ["Authentication"], auth: false })
+@ApiDocs({
+  tags: ["Authentication"],
+  auth: false,
+})
 @Controller("auth")
 @UseGuards(AuthRateLimitGuard)
 export class AuthController {

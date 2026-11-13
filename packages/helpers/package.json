@@ -1,0 +1,23 @@
+{
+  "name": "@rumahkodingku-academy/helpers",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@rumahkodingku-academy/config": "workspace:*",
+    "typescript": "^6.0.3"
+  }
+}

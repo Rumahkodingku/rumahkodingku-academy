@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { ApiMetaResponseDto } from "../../common/swagger/dto/api-meta-response.dto";
+import { ApiMetaResponseDto } from "../../../common/swagger/dto/api-meta-response.dto";
 
 export class AvatarUploadDataResponseDto {
   @ApiProperty({ example: "/api/v1/auth/avatar" })

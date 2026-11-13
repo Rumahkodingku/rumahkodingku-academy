@@ -38,8 +38,3 @@ export function getRefreshCookie(request: Request): string | undefined {
   const value: unknown = request.cookies?.[env.AUTH_REFRESH_COOKIE];
   return typeof value === "string" && value.length > 0 ? value : undefined;
 }
-
-export function getAccessCookie(request: Request): string | undefined {
-  const value: unknown = request.cookies?.[env.AUTH_SESSION_COOKIE];
-  return typeof value === "string" && value.length > 0 ? value : undefined;
-}
