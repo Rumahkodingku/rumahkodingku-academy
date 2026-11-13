@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import { AccountMenu } from "@/components/account-menu";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { Container } from "@/components/layout/container";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -84,14 +83,10 @@ export function PublicHeader({ locale, user }: { locale: Locale; user: AuthUser 
           <AccountMenu user={user} locale={locale} />
           <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
             <DialogTrigger
-              render={
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:hidden"
-                  aria-label={t("actions.openMenu")}
-                />
-              }
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              aria-label={t("actions.openMenu")}
             >
               <span aria-hidden="true" className="grid gap-1">
                 <span className="h-0.5 w-5 rounded-full bg-current" />
@@ -99,7 +94,7 @@ export function PublicHeader({ locale, user }: { locale: Locale; user: AuthUser 
                 <span className="h-0.5 w-5 rounded-full bg-current" />
               </span>
             </DialogTrigger>
-            <DialogContent className="max-w-sm" closeLabel={t("actions.closeMenu")}>
+            <DialogContent variant="sheet" closeLabel={t("actions.closeMenu")}>
               <DialogHeader>
                 <DialogTitle>{t("menu.title")}</DialogTitle>
                 <DialogDescription>{t("menu.description")}</DialogDescription>

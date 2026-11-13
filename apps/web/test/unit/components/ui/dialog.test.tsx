@@ -2,7 +2,6 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import { Button } from "../../../../src/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -18,11 +17,11 @@ describe("Dialog", () => {
 
     render(
       <Dialog>
-        <DialogTrigger render={<Button>Buka dialog</Button>} />
+        <DialogTrigger>Buka dialog</DialogTrigger>
         <DialogContent>
           <DialogTitle>Konfirmasi</DialogTitle>
           <DialogDescription>Periksa data sebelum melanjutkan.</DialogDescription>
-          <DialogClose render={<Button variant="secondary">Tutup</Button>} />
+          <DialogClose>Tutup</DialogClose>
         </DialogContent>
       </Dialog>,
     );

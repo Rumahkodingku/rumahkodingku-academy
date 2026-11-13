@@ -7,14 +7,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { buttonVariants } from "@/components/ui/button";
+import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from "@/components/ui/menu";
 import { useLogout } from "@/features/auth/api/auth";
 import { hasPermission, PERMISSIONS } from "@/features/auth/permissions";
 import type { AuthUser } from "@/features/auth/types";
@@ -67,48 +61,42 @@ function SignedInMenu({ user, locale }: { user: AuthUser; locale: Locale }) {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-10 gap-2 px-2"
-            aria-label={t("account.menuLabel", { name: user.profile.displayName })}
-          />
-        }
+    <Menu>
+      <MenuTrigger
+        variant="ghost"
+        size="sm"
+        className="h-10 gap-2 px-2"
+        aria-label={t("account.menuLabel", { name: user.profile.displayName })}
       >
         <UserAvatar user={user} />
         <span className="hidden max-w-32 truncate text-body-sm font-medium lg:block">
           {user.profile.displayName}
         </span>
         <ChevronDown aria-hidden="true" className="size-4 text-muted-foreground" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={8} className="w-56">
+      </MenuTrigger>
+      <MenuContent align="end" className="w-56">
         <div className="px-2.5 py-2">
-          <p className="truncate text-body-sm font-medium text-foreground">
-            {user.profile.displayName}
-          </p>
-          <p className="truncate text-caption text-muted-foreground">{user.email}</p>
+          <p className="truncate text-body-sm font-medium text-ink">{user.profile.displayName}</p>
+          <p className="truncate text-caption text-ink-muted">{user.email}</p>
         </div>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem render={<Link href={localizedPath(locale, "/me") as Route} />}>
+        <MenuSeparator />
+        <MenuItem href={localizedPath(locale, "/me")}>
           <UserRound aria-hidden="true" />
           {t("account.profile")}
-        </DropdownMenuItem>
+        </MenuItem>
         {admin ? (
-          <DropdownMenuItem render={<Link href={localizedPath(locale, "/admin") as Route} />}>
+          <MenuItem href={localizedPath(locale, "/admin")}>
             <Shield aria-hidden="true" />
             {t("account.admin")}
-          </DropdownMenuItem>
+          </MenuItem>
         ) : null}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" disabled={logout.isPending} onClick={handleLogout}>
+        <MenuSeparator />
+        <MenuItem variant="danger" disabled={logout.isPending} onSelect={handleLogout}>
           <LogOut aria-hidden="true" />
           {logout.isPending ? t("account.signingOut") : t("account.signOut")}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </MenuItem>
+      </MenuContent>
+    </Menu>
   );
 }
 

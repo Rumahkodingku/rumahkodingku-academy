@@ -10,7 +10,6 @@ import { PostHogProvider } from "@/lib/posthog";
 
 import { MotionProvider } from "./motion/motion-provider";
 import { ThemeProvider } from "./theme-provider";
-import { Toaster } from "./ui/sonner";
 
 export default function Providers({
   children,
@@ -28,7 +27,6 @@ export default function Providers({
           <MotionProvider>
             <PostHogProvider>{children}</PostHogProvider>
           </MotionProvider>
-          <Toaster richColors />
         </I18nProvider>
       </QueryClientProvider>
     </ThemeProvider>
