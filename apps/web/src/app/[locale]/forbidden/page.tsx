@@ -21,7 +21,7 @@ export default async function ForbiddenPage({ params }: { params: Promise<{ loca
   }
 
   return (
-    <Container className="py-16">
+    <Container className="py-20 md:py-28">
       <ForbiddenState
         title="Akses ditolak"
         description="Akun Anda tidak memiliki izin untuk membuka halaman ini. Kembali ke beranda atau masuk dengan akun yang sesuai."

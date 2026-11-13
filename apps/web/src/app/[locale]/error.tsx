@@ -10,7 +10,7 @@ export default function LocaleError({
   reset: () => void;
 }) {
   return (
-    <main className="mx-auto w-full max-w-page px-4 py-16 sm:px-5 md:px-6 lg:px-8 xl:px-12">
+    <main className="mx-auto w-full max-w-page px-5 py-20 md:px-7 md:py-28 xl:px-10">
       <ErrorState
         title="Terjadi kesalahan"
         description="Permintaan tidak dapat diproses. Silakan coba lagi."

@@ -16,10 +16,11 @@ export default function GlobalNotFound() {
   return (
     <html lang="id">
       <body>
-        <main className="mx-auto flex min-h-svh w-full max-w-page items-center px-4 py-16 sm:px-5 md:px-6 lg:px-8 xl:px-12">
+        <main className="mx-auto flex min-h-svh w-full max-w-page items-center px-5 py-20 md:px-7 xl:px-10">
           <EmptyState
             className="w-full"
             icon={FileQuestion}
+            code="404"
             title="Halaman tidak ditemukan"
             description="Halaman yang Anda cari tidak tersedia atau sudah dipindahkan."
             action={<ButtonLink href="/">Kembali ke beranda</ButtonLink>}
