@@ -103,7 +103,7 @@ export function AvatarUpload({ user, disabled = false }: { user: AuthUser; disab
           <div className="flex flex-wrap gap-2">
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               loading={upload.isPending}
               disabled={disabled}
               onClick={() => inputRef.current?.click()}

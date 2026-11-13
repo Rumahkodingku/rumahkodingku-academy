@@ -71,7 +71,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
 
         <Button
           type="button"
-          variant="outline"
+          variant="secondary"
           size="lg"
           loading={resend.isPending}
           onClick={() => resend.mutate({ email: registeredEmail })}

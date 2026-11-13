@@ -23,7 +23,7 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
   return (
     <Container className="grid gap-8 py-10 md:py-14">
       <div className="grid gap-3">
-        <Badge variant="info" className="w-fit">
+        <Badge tone="accent" className="w-fit">
           Ruang belajar
         </Badge>
         <h1 className="text-h1 text-foreground">Selamat datang, {user?.profile.displayName}.</h1>
@@ -63,7 +63,7 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
               Tambahkan nama tampilan dan informasi lain agar pengalaman belajar lebih personal.
             </p>
             <ButtonLink
-              variant="outline"
+              variant="secondary"
               href={localizedPath(locale, "/me") as Route}
               className="w-fit"
             >

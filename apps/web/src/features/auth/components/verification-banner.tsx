@@ -23,7 +23,7 @@ export function VerificationBanner({ email }: { email: string }) {
       <div className="flex flex-wrap items-center gap-3">
         <Button
           type="button"
-          variant="outline"
+          variant="secondary"
           size="sm"
           loading={resend.isPending}
           onClick={() => {

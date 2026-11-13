@@ -111,7 +111,7 @@ export function AuthBrandPanel() {
         </div>
 
         <div className="relative z-10 grid max-w-xl gap-7 py-10 animate-auth-rise">
-          <Badge variant="info" className="w-fit">
+          <Badge tone="accent" className="w-fit">
             Learn · Build · Grow
           </Badge>
           <div className="grid gap-4">
@@ -151,7 +151,7 @@ export function AuthBrandPanel() {
       <section className="border-b border-border bg-surface-subtle px-4 py-5 lg:hidden">
         <div className="mx-auto flex max-w-[420px] items-center justify-between gap-4">
           <BrandLogo size="sm" />
-          <Badge variant="info">Learn · Build · Grow</Badge>
+          <Badge tone="accent">Learn · Build · Grow</Badge>
         </div>
       </section>
     </>

@@ -35,7 +35,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       >
         <Container className="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="grid gap-6">
-            <Badge variant="info" className="w-fit">
+            <Badge tone="accent" className="w-fit">
               {homepage.hero.eyebrow}
             </Badge>
             <h1 className="max-w-2xl text-display text-foreground">{homepage.hero.title}</h1>
@@ -50,7 +50,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               {homepage.hero.secondaryCta ? (
                 <ButtonLink
                   size="lg"
-                  variant="outline"
+                  variant="secondary"
                   href={homepage.hero.secondaryCta.href as Route}
                 >
                   {homepage.hero.secondaryCta.label}

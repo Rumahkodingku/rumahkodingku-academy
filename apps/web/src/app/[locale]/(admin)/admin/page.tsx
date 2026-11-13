@@ -19,7 +19,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
   return (
     <Container className="grid gap-8 py-10 md:py-14">
       <div className="grid gap-3">
-        <Badge variant="warning" className="w-fit">
+        <Badge tone="warning" className="w-fit">
           Area admin
         </Badge>
         <h1 className="text-h1 text-foreground">Panel pengelolaan Academy.</h1>
@@ -60,7 +60,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
         })}
       </div>
 
-      <ButtonLink href={localizedPath(locale, "/") as Route} variant="outline" className="w-fit">
+      <ButtonLink href={localizedPath(locale, "/") as Route} variant="secondary" className="w-fit">
         Kembali ke beranda
       </ButtonLink>
     </Container>

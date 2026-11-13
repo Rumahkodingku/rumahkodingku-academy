@@ -20,7 +20,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
   return (
     <Container className="grid gap-8 py-10 md:py-14">
       <div className="grid gap-3">
-        <Badge variant="info" className="w-fit">
+        <Badge tone="accent" className="w-fit">
           Profil
         </Badge>
         <h1 className="text-h1 text-foreground">Kenali diri Anda di Academy.</h1>
@@ -47,13 +47,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
               </div>
               <div className="flex items-center justify-between gap-4">
                 <span className="text-muted-foreground">Status</span>
-                <Badge variant={user.status === "ACTIVE" ? "success" : "warning"}>
-                  {user.status}
-                </Badge>
+                <Badge tone={user.status === "ACTIVE" ? "success" : "warning"}>{user.status}</Badge>
               </div>
               <div className="flex items-center justify-between gap-4">
                 <span className="text-muted-foreground">Verifikasi</span>
-                <Badge variant={user.emailVerified ? "success" : "warning"}>
+                <Badge tone={user.emailVerified ? "success" : "warning"}>
                   {user.emailVerified ? "Terverifikasi" : "Belum"}
                 </Badge>
               </div>

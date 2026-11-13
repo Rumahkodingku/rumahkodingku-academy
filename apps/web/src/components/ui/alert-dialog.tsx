@@ -78,7 +78,7 @@ function AlertDialogAction({ className, ...props }: AlertDialogPrimitive.Close.P
   return (
     <AlertDialogPrimitive.Close
       data-slot="alert-dialog-action"
-      className={cn(buttonVariants({ variant: "destructive" }), className)}
+      className={cn(buttonVariants({ variant: "danger" }), className)}
       {...props}
     />
   );

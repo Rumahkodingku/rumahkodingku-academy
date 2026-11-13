@@ -8,12 +8,12 @@ const meta = {
   tags: ["autodocs"],
   args: {
     children: "Draft",
-    variant: "neutral",
+    tone: "neutral",
   },
   argTypes: {
-    variant: {
+    tone: {
       control: "select",
-      options: ["neutral", "info", "success", "warning", "danger", "outline"],
+      options: ["neutral", "accent", "success", "warning", "danger"],
     },
   },
 } satisfies Meta<typeof Badge>;
@@ -27,11 +27,11 @@ export const Statuses: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Badge>Draft</Badge>
-      <Badge variant="info">In progress</Badge>
-      <Badge variant="success">Approved</Badge>
-      <Badge variant="warning">Needs revision</Badge>
-      <Badge variant="danger">Failed</Badge>
-      <Badge variant="outline">Published</Badge>
+      <Badge tone="accent">In progress</Badge>
+      <Badge tone="success">Approved</Badge>
+      <Badge tone="warning">Needs revision</Badge>
+      <Badge tone="danger">Failed</Badge>
+      <Badge tone="neutral">Published</Badge>
     </div>
   ),
 };

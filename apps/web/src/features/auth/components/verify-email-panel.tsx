@@ -62,7 +62,7 @@ function ResendForm({ defaultEmail }: { defaultEmail?: string }) {
           </Field.Error>
         ) : null}
       </Field.Root>
-      <Button type="submit" variant="outline" loading={resend.isPending}>
+      <Button type="submit" variant="secondary" loading={resend.isPending}>
         {resend.isPending ? t("auth.actions.resending") : t("auth.actions.resendVerification")}
       </Button>
       <FormError error={resend.error} />
