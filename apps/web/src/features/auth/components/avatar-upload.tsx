@@ -128,8 +128,8 @@ export function AvatarUpload({ user, disabled = false }: { user: AuthUser; disab
         </div>
       </div>
 
-      {error ? <Alert variant="warning">{error}</Alert> : null}
-      {success ? <Alert variant="success">{t("profile.avatar.success")}</Alert> : null}
+      {error ? <Alert tone="warning">{error}</Alert> : null}
+      {success ? <Alert tone="success">{t("profile.avatar.success")}</Alert> : null}
       <FormError error={upload.error ?? remove.error} />
     </div>
   );

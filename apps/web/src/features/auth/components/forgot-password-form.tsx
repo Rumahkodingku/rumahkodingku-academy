@@ -40,7 +40,7 @@ export function ForgotPasswordForm({ locale }: { locale: Locale }) {
   if (sent) {
     return (
       <div className="grid gap-5">
-        <Alert variant="success" title={t("auth.forgot.successTitle")}>
+        <Alert tone="success" title={t("auth.forgot.successTitle")}>
           {t("auth.forgot.successDescription")}
         </Alert>
         <Link

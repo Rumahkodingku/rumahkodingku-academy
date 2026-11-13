@@ -45,7 +45,7 @@ export function ResetPasswordForm({ locale, token }: { locale: Locale; token: st
   if (!token) {
     return (
       <div className="grid gap-5">
-        <Alert variant="warning" title={t("auth.reset.missingTokenTitle")}>
+        <Alert tone="warning" title={t("auth.reset.missingTokenTitle")}>
           {t("auth.reset.missingTokenDescription")}
         </Alert>
         <Link
@@ -61,7 +61,7 @@ export function ResetPasswordForm({ locale, token }: { locale: Locale; token: st
   if (done) {
     return (
       <div className="grid gap-5">
-        <Alert variant="success" title={t("auth.reset.successTitle")}>
+        <Alert tone="success" title={t("auth.reset.successTitle")}>
           {t("auth.reset.successDescription")}
         </Alert>
         <Link

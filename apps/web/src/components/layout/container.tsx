@@ -16,11 +16,7 @@ function Container({ className, size = "default", ...props }: ContainerProps) {
   return (
     <div
       data-slot="container"
-      className={cn(
-        "mx-auto w-full px-4 sm:px-5 md:px-6 lg:px-8 xl:px-12",
-        containerSizes[size],
-        className,
-      )}
+      className={cn("mx-auto w-full px-5 md:px-7 xl:px-10", containerSizes[size], className)}
       {...props}
     />
   );

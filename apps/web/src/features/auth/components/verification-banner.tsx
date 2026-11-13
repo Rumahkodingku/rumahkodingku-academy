@@ -17,7 +17,7 @@ export function VerificationBanner({ email }: { email: string }) {
 
   return (
     <div className="grid gap-3">
-      <Alert variant="warning" title={t("auth.verificationBanner.title")}>
+      <Alert tone="warning" title={t("auth.verificationBanner.title")}>
         {t("auth.verificationBanner.description")}
       </Alert>
       <div className="flex flex-wrap items-center gap-3">

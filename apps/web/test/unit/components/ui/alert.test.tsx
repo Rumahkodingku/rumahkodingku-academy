@@ -6,7 +6,7 @@ import { Alert } from "../../../../src/components/ui/alert";
 describe("Alert", () => {
   it("announces a successful result without color alone", () => {
     render(
-      <Alert title="Berhasil" variant="success">
+      <Alert title="Berhasil" tone="success">
         Perubahan sudah disimpan.
       </Alert>,
     );
@@ -19,7 +19,7 @@ describe("Alert", () => {
 
   it("uses alert semantics for destructive feedback", () => {
     render(
-      <Alert title="Gagal" variant="danger">
+      <Alert title="Gagal" tone="danger">
         Pembayaran tidak dapat diproses.
       </Alert>,
     );

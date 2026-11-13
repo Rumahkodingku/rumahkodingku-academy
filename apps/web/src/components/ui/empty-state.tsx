@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 type EmptyStateProps = Omit<React.ComponentProps<"div">, "title"> & {
   icon?: LucideIcon;
+  code?: React.ReactNode;
   title: React.ReactNode;
   description?: React.ReactNode;
   action?: React.ReactNode;
@@ -15,6 +16,7 @@ type EmptyStateProps = Omit<React.ComponentProps<"div">, "title"> & {
 function EmptyState({
   className,
   icon: Icon = Inbox,
+  code,
   title,
   description,
   action,
@@ -23,20 +25,20 @@ function EmptyState({
   return (
     <div
       data-slot="empty-state"
-      className={cn(
-        "flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-surface-subtle px-6 py-12 text-center",
-        className,
-      )}
+      className={cn("grid gap-6 border-t border-line pt-10", className)}
       {...props}
     >
-      <span className="flex size-11 items-center justify-center rounded-full bg-muted text-muted-foreground">
-        <Icon aria-hidden="true" className="size-5" />
-      </span>
-      <div className="grid max-w-md gap-1.5">
-        <h3 className="text-h4 text-foreground">{title}</h3>
-        {description ? <p className="text-body-sm text-muted-foreground">{description}</p> : null}
+      <div className="flex items-center gap-3">
+        <Icon aria-hidden="true" className="size-5 text-accent" />
+        {code ? (
+          <p className="font-mono text-eyebrow uppercase tracking-[0.16em] text-accent">{code}</p>
+        ) : null}
       </div>
-      {action ? <div className="mt-1">{action}</div> : null}
+      <div className="grid max-w-[52ch] gap-3">
+        <h2 className="text-h2 text-ink">{title}</h2>
+        {description ? <p className="text-body-lg text-ink-muted">{description}</p> : null}
+      </div>
+      {action ? <div>{action}</div> : null}
     </div>
   );
 }

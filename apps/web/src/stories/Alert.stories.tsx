@@ -9,10 +9,10 @@ const meta = {
   args: {
     title: "Informasi",
     children: "Periksa kembali data sebelum melanjutkan.",
-    variant: "info",
+    tone: "info",
   },
   argTypes: {
-    variant: {
+    tone: {
       control: "select",
       options: ["info", "success", "warning", "danger"],
     },
@@ -26,7 +26,7 @@ export const Info: Story = {};
 
 export const Success: Story = {
   args: {
-    variant: "success",
+    tone: "success",
     title: "Berhasil",
     children: "Perubahan sudah disimpan.",
   },
@@ -34,7 +34,7 @@ export const Success: Story = {
 
 export const Warning: Story = {
   args: {
-    variant: "warning",
+    tone: "warning",
     title: "Periksa kembali",
     children: "Beberapa data belum lengkap.",
   },
@@ -42,7 +42,7 @@ export const Warning: Story = {
 
 export const Danger: Story = {
   args: {
-    variant: "danger",
+    tone: "danger",
     title: "Gagal",
     children: "Pembayaran tidak dapat diproses.",
   },

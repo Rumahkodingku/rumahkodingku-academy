@@ -36,7 +36,7 @@ function ResendForm({ defaultEmail }: { defaultEmail?: string }) {
   }
 
   if (resend.isSuccess) {
-    return <Alert variant="success">{t("auth.verify.resendSuccess")}</Alert>;
+    return <Alert tone="success">{t("auth.verify.resendSuccess")}</Alert>;
   }
 
   return (
@@ -78,7 +78,7 @@ export function VerifyEmailPanel({ locale, token }: { locale: Locale; token: str
   if (verifiedEmail) {
     return (
       <div className="grid gap-5">
-        <Alert variant="success" title={t("auth.verify.successTitle")}>
+        <Alert tone="success" title={t("auth.verify.successTitle")}>
           {t("auth.verify.successDescription", { email: verifiedEmail })}
         </Alert>
         <Link
@@ -94,7 +94,7 @@ export function VerifyEmailPanel({ locale, token }: { locale: Locale; token: str
   if (!token) {
     return (
       <div className="grid gap-5">
-        <Alert variant="warning" title={t("auth.verify.missingTokenTitle")}>
+        <Alert tone="warning" title={t("auth.verify.missingTokenTitle")}>
           {t("auth.verify.missingTokenDescription")}
         </Alert>
         <ResendForm />

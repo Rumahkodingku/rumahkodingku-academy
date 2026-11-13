@@ -20,7 +20,7 @@ export function FormError({ error }: { error: unknown }) {
         : t("auth.errors.generic");
 
   return (
-    <Alert variant="danger" title={t("auth.errors.title")}>
+    <Alert tone="danger" title={t("auth.errors.title")}>
       {message}
     </Alert>
   );

@@ -179,7 +179,7 @@ export function ProfileForm({ user, disabled = false }: { user: AuthUser; disabl
         </CardContent>
       </Card>
 
-      {success ? <Alert variant="success">{t("profile.saved")}</Alert> : null}
+      {success ? <Alert tone="success">{t("profile.saved")}</Alert> : null}
       <FormError error={update.error} />
 
       <Card>

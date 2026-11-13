@@ -49,7 +49,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
   if (registeredEmail) {
     return (
       <div className="grid gap-5">
-        <Alert variant="success" title={t("auth.register.successTitle")}>
+        <Alert tone="success" title={t("auth.register.successTitle")}>
           {t("auth.register.successDescription", { email: registeredEmail })}
         </Alert>
 
@@ -79,9 +79,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
           {resend.isPending ? t("auth.actions.resending") : t("auth.actions.resendVerification")}
         </Button>
 
-        {resend.isSuccess ? (
-          <Alert variant="success">{t("auth.register.resendSuccess")}</Alert>
-        ) : null}
+        {resend.isSuccess ? <Alert tone="success">{t("auth.register.resendSuccess")}</Alert> : null}
         <FormError error={resend.error} />
 
         <Link
