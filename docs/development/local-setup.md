@@ -168,10 +168,10 @@ Run migrations as a controlled step. Do not enable production schema synchroniza
 
 ## 11. Troubleshooting
 
-- **MySQL connection refused:** ensure `docker compose up -d mysql` is healthy and the port is `3308`.
-- **Redis timeout:** ensure Redis is on `6380` and `REDIS_URL` matches.
+- **MySQL connection refused:** ensure `docker compose up -d mysql` is healthy and the port is `3308`. The API `.env` must use the `academy_user` database on port `3308`.
+- **Redis timeout:** ensure Redis is on `6380` and `REDIS_URL` matches. The API `.env` must use `redis://localhost:6380`, not `6379`.
 - **Env validation fails:** check `.env` values and required server variables.
-- **Port already in use:** stop stale Node processes or choose another port.
+- **Port already in use:** the Docker Compose `api` service also uses port `3000`. Run `docker compose stop api` before `pnpm dev:api`, or set `PORT` to another value.
 - **Migration fails:** verify `DATABASE_URL`, MySQL user, and that migrations run from `packages/db`.
 - **Build fails after dependency changes:** run `pnpm install`, then `pnpm build`.
 

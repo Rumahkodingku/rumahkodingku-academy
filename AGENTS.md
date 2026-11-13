@@ -19,9 +19,9 @@ pnpm workspaces + Turborepo. Apps: `apps/web` (Next.js), `apps/api` (NestJS, Nod
 ## Package boundaries
 
 - `apps/web`: Next.js 16, React 19, Tailwind 4, React Compiler, typed routes. Env via `packages/env/web` (`NEXT_PUBLIC_SERVER_URL`, default `http://localhost:3000`). API client base is `${NEXT_PUBLIC_SERVER_URL}/api/v1`.
-- `apps/api`: NestJS on Node.js 24. Entry `src/index.ts`, listens on 3000, global prefix `/api/v1`, CORS from `CORS_ORIGIN`. Dev uses `tsx watch`; build `tsdown` -> `dist/index.mjs`; start `node dist/index.mjs`. Direct node commands need cwd `apps/api` so `.env` loads; prefer `pnpm --filter api start`.
+- `apps/api`: NestJS on Node.js 24. Entry `src/main.ts`, listens on 3000, global prefix `/api/v1`, CORS from `CORS_ORIGIN`. Dev runs `tsdown` watch plus `node --watch dist/main.mjs`; build `tsdown` -> `dist/main.mjs`; start `node dist/main.mjs`. Direct node commands need cwd `apps/api` so `.env` loads; prefer `pnpm --filter api start`.
 - `apps/docs`: Fumadocs + Next. Dev on 4000; build/check-types run `fumadocs-mdx` first.
-- `packages/db`: TypeORM DataSource, `synchronize` is enabled only when `NODE_ENV !== "production"`. Exports `AppDataSource`, `initializeDatabase`, `db`. No package scripts yet; production must use migrations.
+- `packages/db`: TypeORM DataSource, `synchronize` is enabled only when `NODE_ENV !== "production"`. Exports `AppDataSource`, `initializeDatabase`, `db`, RBAC constants, seeds, and CLI scripts (`db:seed:rbac`, `auth:create-admin`); production must use migrations.
 - `packages/env`: t3 env. Server requires `DATABASE_URL`, `CORS_ORIGIN`; web requires `NEXT_PUBLIC_SERVER_URL`.
 - `packages/config`: shared tsconfig base; `types: ["node"]`.
 
