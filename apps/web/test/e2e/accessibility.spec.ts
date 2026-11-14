@@ -48,7 +48,14 @@ async function expectNoSeriousViolations(page: import("@playwright/test").Page) 
 }
 
 test.describe("accessibility", () => {
-  for (const route of ["/", "/login", "/register", "/forbidden"]) {
+  for (const route of [
+    "/",
+    "/courses",
+    "/courses/nextjs-app-router",
+    "/login",
+    "/register",
+    "/forbidden",
+  ]) {
     test(`has no serious axe violations on ${route}`, async ({ page }) => {
       await page.goto(route);
       await expectNoSeriousViolations(page);
