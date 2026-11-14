@@ -107,22 +107,22 @@ Any change to an accepted decision MUST be recorded as an Architecture Decision 
 
 `apps/web` was a starter at the start of the migration. The table below records that baseline; the status table in Section 3.1 records what has been implemented. It MUST be updated when a gap is closed.
 
-| Area              | Current baseline                                                 | Target                                                         | Migration phase |
-| ----------------- | ---------------------------------------------------------------- | -------------------------------------------------------------- | --------------- |
-| Home route        | `app/page.tsx` is entirely `"use client"`                        | Server Component page; client islands only                     | Foundation      |
-| Routing           | Flat `app/`; no route groups or locale segment                   | Grouped routes under `app/[locale]/`                           | Foundation      |
-| Locale            | i18next client-only; no locale URL; unsupported `fr` file exists | `id` at root, `en` under `/en`; only supported locales shipped | Foundation      |
-| Middleware        | No `proxy.ts`                                                    | Locale rewrite and optimistic auth redirect                    | Foundation      |
-| Feature structure | Components and utilities mixed in `src/components`, `src/lib`    | `src/features/<domain>` with server/client boundaries          | Foundation      |
-| API access        | Browser-only Axios client                                        | Browser client plus server-only fetch with cookie forwarding   | Data layer      |
-| API types         | Hand-written types                                               | Generated OpenAPI schema plus thin typed wrappers              | Data layer      |
-| Auth              | No session DAL or route guard                                    | Session DAL, protected layouts, optimistic `proxy.ts`          | Auth shell      |
-| Marketing         | Strapi helpers are generic                                       | Server-only Strapi adapter with cache tags and SEO mapping     | Marketing       |
-| Caching           | No explicit strategy                                             | Cache matrix in Section 12                                     | Marketing       |
+| Area              | Current baseline                                                 | Target                                                          | Migration phase |
+| ----------------- | ---------------------------------------------------------------- | --------------------------------------------------------------- | --------------- |
+| Home route        | `app/page.tsx` is entirely `"use client"`                        | Server Component page; client islands only                      | Foundation      |
+| Routing           | Flat `app/`; no route groups or locale segment                   | Grouped routes under `app/[locale]/`                            | Foundation      |
+| Locale            | i18next client-only; no locale URL; unsupported `fr` file exists | `id` at root, `en` under `/en`; only supported locales shipped  | Foundation      |
+| Middleware        | No `proxy.ts`                                                    | Locale rewrite and optimistic auth redirect                     | Foundation      |
+| Feature structure | Components and utilities mixed in `src/components`, `src/lib`    | `src/features/<domain>` with server/client boundaries           | Foundation      |
+| API access        | Browser-only Axios client                                        | Browser client plus server-only fetch with cookie forwarding    | Data layer      |
+| API types         | Hand-written types                                               | Generated OpenAPI schema plus thin typed wrappers               | Data layer      |
+| Auth              | No session DAL or route guard                                    | Session DAL, protected layouts, optimistic `proxy.ts`           | Auth shell      |
+| Marketing         | Strapi helpers are generic                                       | Server-only Strapi adapter with cache tags and SEO mapping      | Marketing       |
+| Caching           | No explicit strategy                                             | Cache matrix in Section 12                                      | Marketing       |
 | UI system         | Custom native-first primitives and Tailwind exist                | Editorial tokenized UI primitives and feature-level composition | Hardening       |
-| Security          | No CSP/security headers                                          | CSP, `server-only`, sanitized rich text, image allowlist       | Hardening       |
-| Testing           | Vitest configured; no web tests                                  | Unit, component, E2E, accessibility coverage                   | Per phase       |
-| Storybook         | Storybook 10 and addons 8 are inconsistent                       | One aligned major version before UI expansion                  | Hardening       |
+| Security          | No CSP/security headers                                          | CSP, `server-only`, sanitized rich text, image allowlist        | Hardening       |
+| Testing           | Vitest configured; no web tests                                  | Unit, component, E2E, accessibility coverage                    | Per phase       |
+| Storybook         | Storybook 10 and addons 8 are inconsistent                       | One aligned major version before UI expansion                   | Hardening       |
 
 The current state is recorded for planning. It MUST NOT be treated as an approved exception to the target.
 
@@ -1323,8 +1323,7 @@ Do not add a second UI kit or CSS-in-JS runtime without an ADR.
 - Persist an explicit user choice.
 - Prevent theme flash during initial render.
 - Use semantic tokens in both themes.
-- Test dialogs, popovers, tables, code blocks, charts, and third-party embeds in dark mode.
-- Do not implement dark mode as a global color inversion.
+- Test dialogs, popovers, tables, code blocks, charts, and third-party embeds in the supported light theme.
 
 ### 17.6 Responsive Layout
 
