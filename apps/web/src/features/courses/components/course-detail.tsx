@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { Container } from "@/components/layout/container";
 import { ButtonLink } from "@/components/ui/button-link";
+import { CategoryIllustration } from "@/features/courses/components/category-illustration";
 import { Curriculum } from "@/features/courses/components/curriculum";
 import { InstructorBlock } from "@/features/courses/components/instructor-block";
 import { PricePanel } from "@/features/courses/components/price-panel";
@@ -70,7 +71,13 @@ export function CourseDetail({
             </div>
           </div>
 
-          <aside aria-label={t("courses.detail.curriculum")} className="hidden lg:block">
+          <aside aria-label={t("courses.detail.curriculum")} className="hidden lg:grid gap-6">
+            <CategoryIllustration
+              category={course.categories[0]}
+              className="aspect-[16/9] w-full"
+              sizes="(min-width: 1024px) 40vw, 0px"
+            />
+
             <div className="border-t border-line pt-4">
               <div className="flex items-baseline justify-between gap-4">
                 <p className="text-caption text-ink-muted">{t("courses.detail.curriculum")}</p>

@@ -1,6 +1,7 @@
 import type { Route } from "next";
 import type { HomepageContent, MarketingLink } from "@/strapi/content-types";
 
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 import { ButtonLink } from "@/components/ui/button-link";
@@ -57,14 +58,23 @@ function HeroArtifact({ homepage }: { homepage: HomepageContent }) {
       </div>
 
       {artifact ? (
-        <div className="mt-5 overflow-hidden rounded-sm border border-line">
-          {/* Real editorial media comes from Strapi; no stock or invented photography. */}
-          <img
-            src={artifact.media.url}
-            alt={artifact.media.alternativeText ?? artifact.caption ?? ""}
-            className="aspect-[4/3] w-full object-cover"
-          />
-        </div>
+        <figure className="mt-5 grid gap-3">
+          <div className="relative aspect-[16/10] overflow-hidden border border-line bg-surface-sunken">
+            <Image
+              src={artifact.media.url}
+              alt={artifact.media.alternativeText ?? artifact.caption ?? ""}
+              fill
+              priority
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+          {artifact.media.caption ? (
+            <figcaption className="text-caption text-ink-muted">
+              {artifact.media.caption}
+            </figcaption>
+          ) : null}
+        </figure>
       ) : (
         <div className="mt-5 grid gap-5">
           <p className="max-w-[18ch] text-h3 text-ink">Dari niat ke bukti.</p>

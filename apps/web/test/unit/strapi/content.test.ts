@@ -38,7 +38,10 @@ describe("Strapi marketing boundary", () => {
     expect(homepageFixtures.id.proof?.points.length).toBeGreaterThan(0);
     expect(homepageFixtures.en.cta?.primaryCta.href).toBe("/courses");
     expect(homepageFixtures.id.hero.note).toBeTruthy();
-    expect(homepageFixtures.id.hero.artifact).toBeUndefined();
+    expect(homepageFixtures.id.hero.artifact?.media.url).toBe(
+      "/imagery/home/learning-workspace.jpg",
+    );
+    expect(homepageFixtures.id.hero.artifact?.media.alternativeText).toBeTruthy();
   });
 
   it("keeps the editorial fields optional for existing content", () => {

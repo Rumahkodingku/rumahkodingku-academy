@@ -1,6 +1,27 @@
 import type { Locale } from "@/lib/i18n/routing";
 
 import type { HomepageContent, MarketingPageContent, SiteSettingsContent } from "./content-types";
+import type { StrapiMedia } from "./lib/types";
+
+function learningWorkspaceMedia(alternativeText: string, caption: string): StrapiMedia {
+  return {
+    id: 1,
+    documentId: "local-learning-workspace",
+    name: "learning-workspace",
+    alternativeText,
+    caption,
+    width: 1200,
+    height: 799,
+    formats: null,
+    hash: "learning-workspace",
+    ext: ".jpg",
+    mime: "image/jpeg",
+    size: 125856,
+    url: "/imagery/home/learning-workspace.jpg",
+    previewUrl: null,
+    provider: "local",
+  };
+}
 
 export const homepageFixtures = {
   id: {
@@ -12,7 +33,13 @@ export const homepageFixtures = {
       primaryCta: { label: "Jelajahi kursus", href: "/courses" },
       secondaryCta: { label: "Cara belajar", href: "#cara-belajar" },
       note: "Kursus dibeli satu per satu. Akses belajar seumur hidup.",
-      artifact: undefined,
+      artifact: {
+        media: learningWorkspaceMedia(
+          "Laptop dengan editor kode di meja kerja",
+          "Ilustrasi suasana belajar, bukan cuplikan kursus.",
+        ),
+        caption: "Ruang belajar",
+      },
     },
     features: [
       {
@@ -79,7 +106,13 @@ export const homepageFixtures = {
       primaryCta: { label: "Explore courses", href: "/courses" },
       secondaryCta: { label: "How it works", href: "#cara-belajar" },
       note: "Courses are bought one at a time. Learning access is lifelong.",
-      artifact: undefined,
+      artifact: {
+        media: learningWorkspaceMedia(
+          "Laptop with a code editor on a workspace desk",
+          "Learning environment illustration, not course footage.",
+        ),
+        caption: "Learning workspace",
+      },
     },
     features: [
       {

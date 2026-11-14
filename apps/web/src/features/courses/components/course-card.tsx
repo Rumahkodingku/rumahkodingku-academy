@@ -5,6 +5,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
+import { CategoryIllustration } from "@/features/courses/components/category-illustration";
 import {
   courseCategoryLabels,
   courseDifficultyLabels,
@@ -22,9 +23,15 @@ export function CourseCard({ course, locale }: { course: Course; locale: Locale 
   return (
     <Link
       href={localizedPath(locale, `/courses/${course.slug}`) as Route}
-      className="group grid gap-5 border-b border-line py-7 transition-colors hover:border-ink/40 md:grid-cols-[minmax(0,1fr)_auto] md:gap-8"
+      className="group grid grid-cols-[5.5rem_minmax(0,1fr)] gap-4 border-b border-line py-6 transition-colors hover:border-ink/40 sm:grid-cols-[7rem_minmax(0,1fr)] md:grid-cols-[9rem_minmax(0,1fr)_auto] md:gap-6 md:py-7"
     >
-      <div className="grid gap-3">
+      <CategoryIllustration
+        category={course.categories[0]}
+        className="aspect-[4/3] w-full self-start"
+        sizes="(min-width: 768px) 144px, 88px"
+      />
+
+      <div className="grid min-w-0 gap-3">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-caption text-ink-muted">
           <span>
             {course.categories.map((category) => courseCategoryLabels[category][locale]).join(", ")}
@@ -46,7 +53,7 @@ export function CourseCard({ course, locale }: { course: Course; locale: Locale 
         </div>
       </div>
 
-      <div className="flex items-end justify-between gap-4 md:min-w-32 md:flex-col md:items-end">
+      <div className="col-start-2 flex items-end justify-between gap-4 md:col-start-3 md:row-start-1 md:min-w-32 md:flex-col md:items-end">
         <span className="text-title text-ink">
           {formatCoursePrice(price, course.language, t("courses.free"))}
         </span>

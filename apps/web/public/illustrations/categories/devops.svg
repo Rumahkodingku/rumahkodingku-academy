@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Diagram pipeline DevOps">
+  <path d="M118 240h404" stroke="#CBD5E1" stroke-width="4" stroke-linecap="round"/>
+  <rect x="92" y="196" width="88" height="88" rx="12" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+  <path d="M122 240l10 10 22-24" fill="none" stroke="#2563EB" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="236" y="196" width="88" height="88" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <rect x="258" y="220" width="44" height="8" rx="4" fill="#0F172A"/>
+  <rect x="258" y="238" width="30" height="6" rx="3" fill="#94A3B8"/>
+  <rect x="258" y="252" width="36" height="6" rx="3" fill="#94A3B8"/>
+  <rect x="380" y="196" width="88" height="88" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <path d="M402 256l16-20 14 16 14-26" fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="524" y="196" width="88" height="88" rx="12" fill="#2563EB"/>
+  <path d="M556 240l12 12 18-24" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="194" y="312" width="92" height="56" rx="8" fill="#EAF2FF"/>
+  <rect x="338" y="312" width="92" height="56" rx="8" fill="#EAF2FF"/>
+  <path d="M240 312v-28M384 312v-28" stroke="#93B4F5" stroke-width="2" stroke-dasharray="5 5"/>
+  <path d="M212 338h56M356 338h56" stroke="#2563EB" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="118" cy="338" r="8" fill="#2563EB"/>
+  <circle cx="568" cy="338" r="8" fill="#2563EB"/>
+  <path d="M118 330v-40M568 330v-40" stroke="#93B4F5" stroke-width="2"/>
+</svg>
