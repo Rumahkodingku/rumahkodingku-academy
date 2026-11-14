@@ -75,7 +75,7 @@ export function VerifyEmailPanel({ locale, token }: { locale: Locale; token: str
         </Alert>
         <Link
           href={localizedPath(locale, "/login") as Route}
-          className="rounded-sm text-center text-body-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="rounded-sm text-center text-body-sm font-medium text-accent-strong underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           {t("auth.links.backToLogin")}
         </Link>
@@ -96,13 +96,13 @@ export function VerifyEmailPanel({ locale, token }: { locale: Locale; token: str
 
   return (
     <div className="grid gap-5">
-      <div className="flex items-start gap-3 rounded-xl border border-border bg-surface-subtle p-4">
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-primary">
+      <div className="flex items-start gap-3 rounded-md border border-line bg-surface-sunken p-4">
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-strong">
           <MailCheck aria-hidden="true" className="size-5" />
         </span>
         <div className="grid gap-1">
-          <p className="text-body-sm font-medium text-foreground">{t("auth.verify.readyTitle")}</p>
-          <p className="text-body-sm text-muted-foreground">{t("auth.verify.readyDescription")}</p>
+          <p className="text-body-sm font-medium text-ink">{t("auth.verify.readyTitle")}</p>
+          <p className="text-body-sm text-ink-muted">{t("auth.verify.readyDescription")}</p>
         </div>
       </div>
 
@@ -126,15 +126,15 @@ export function VerifyEmailPanel({ locale, token }: { locale: Locale; token: str
       <FormError error={verify.error} />
 
       {verify.isError ? (
-        <div className="grid gap-3 border-t border-border pt-5">
-          <p className="text-body-sm text-muted-foreground">{t("auth.verify.resendPrompt")}</p>
+        <div className="grid gap-3 border-t border-line pt-5">
+          <p className="text-body-sm text-ink-muted">{t("auth.verify.resendPrompt")}</p>
           <ResendForm />
         </div>
       ) : null}
 
       <Link
         href={localizedPath(locale, "/login") as Route}
-        className="rounded-sm text-center text-body-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="rounded-sm text-center text-body-sm font-medium text-accent-strong underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       >
         {t("auth.links.backToLogin")}
       </Link>

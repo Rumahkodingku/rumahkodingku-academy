@@ -53,16 +53,16 @@ export function RegisterForm({ locale }: { locale: Locale }) {
           {t("auth.register.successDescription", { email: registeredEmail })}
         </Alert>
 
-        <div className="rounded-xl border border-border bg-surface-subtle p-4">
+        <div className="rounded-md border border-line bg-surface-sunken p-4">
           <div className="flex items-start gap-3">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-primary">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-strong">
               <MailCheck aria-hidden="true" className="size-5" />
             </span>
             <div className="grid gap-1">
-              <p className="text-body-sm font-medium text-foreground">
+              <p className="text-body-sm font-medium text-ink">
                 {t("auth.register.checkEmailTitle")}
               </p>
-              <p className="text-body-sm text-muted-foreground">
+              <p className="text-body-sm text-ink-muted">
                 {t("auth.register.checkEmailDescription")}
               </p>
             </div>
@@ -84,7 +84,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
 
         <Link
           href={localizedPath(locale, "/login") as Route}
-          className="rounded-sm text-center text-body-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="rounded-sm text-center text-body-sm font-medium text-accent-strong underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           {t("auth.links.backToLogin")}
         </Link>
@@ -146,11 +146,11 @@ export function RegisterForm({ locale }: { locale: Locale }) {
         {register.isPending ? t("auth.actions.creatingAccount") : t("auth.actions.createAccount")}
       </Button>
 
-      <p className="text-center text-body-sm text-muted-foreground">
+      <p className="text-center text-body-sm text-ink-muted">
         {t("auth.links.haveAccount")}{" "}
         <Link
           href={localizedPath(locale, "/login") as Route}
-          className="font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="font-medium text-accent-strong underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           {t("auth.links.signIn")}
         </Link>

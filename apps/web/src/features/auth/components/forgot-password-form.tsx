@@ -51,7 +51,7 @@ export function ForgotPasswordForm({ locale }: { locale: Locale }) {
         </Alert>
         <Link
           href={localizedPath(locale, "/login") as Route}
-          className="rounded-sm text-center text-body-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="rounded-sm text-center text-body-sm font-medium text-accent-strong underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           {t("auth.links.backToLogin")}
         </Link>
@@ -84,7 +84,7 @@ export function ForgotPasswordForm({ locale }: { locale: Locale }) {
 
       <Link
         href={localizedPath(locale, "/login") as Route}
-        className="rounded-sm text-center text-body-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="rounded-sm text-center text-body-sm font-medium text-accent-strong underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       >
         {t("auth.links.backToLogin")}
       </Link>

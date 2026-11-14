@@ -29,7 +29,7 @@ function UserAvatar({ user }: { user: AuthUser }) {
       <img
         src={user.profile.avatarUrl}
         alt=""
-        className="size-8 rounded-full border border-border object-cover"
+        className="size-8 rounded-full border border-line object-cover"
         loading="lazy"
       />
     );
@@ -38,7 +38,7 @@ function UserAvatar({ user }: { user: AuthUser }) {
   return (
     <span
       aria-hidden="true"
-      className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-caption font-semibold text-primary"
+      className="flex size-8 items-center justify-center rounded-full bg-accent-soft text-caption font-semibold text-accent-strong"
     >
       {initials(user.profile.displayName || user.email)}
     </span>
@@ -68,7 +68,7 @@ function SignedInMenu({ user, locale }: { user: AuthUser; locale: Locale }) {
         <span className="hidden max-w-32 truncate text-body-sm font-medium lg:block">
           {user.profile.displayName}
         </span>
-        <ChevronDown aria-hidden="true" className="size-4 text-muted-foreground" />
+        <ChevronDown aria-hidden="true" className="size-4 text-ink-muted" />
       </MenuTrigger>
       <MenuContent align="end" className="w-56">
         <div className="px-2.5 py-2">

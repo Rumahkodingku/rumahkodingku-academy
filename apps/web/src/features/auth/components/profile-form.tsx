@@ -267,7 +267,7 @@ export function ProfileForm({ user, disabled = false }: { user: AuthUser; disabl
             placeholder="Asia/Jakarta"
           />
           <div className="grid gap-2 sm:col-span-2">
-            <label className="text-body-sm font-medium text-foreground" htmlFor="profile-locale">
+            <label className="text-body-sm font-medium text-ink" htmlFor="profile-locale">
               {t("profile.fields.locale")}
             </label>
             <Select

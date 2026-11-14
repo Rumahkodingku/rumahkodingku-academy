@@ -56,7 +56,7 @@ export function SilentRefresh({ hasAccessCookie, hasRefreshCookie, children }: S
   if (refreshing) {
     return (
       <div
-        className="grid min-h-svh place-items-center bg-surface-subtle px-6"
+        className="grid min-h-svh place-items-center bg-surface-sunken px-6"
         aria-live="polite"
         aria-busy="true"
       >

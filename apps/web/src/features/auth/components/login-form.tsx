@@ -75,7 +75,7 @@ export function LoginForm({ locale, next }: { locale: Locale; next?: string }) {
         <div className="flex justify-end">
           <Link
             href={localizedPath(locale, "/forgot-password") as Route}
-            className="rounded-sm text-body-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="rounded-sm text-body-sm font-medium text-accent-strong underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             {t("auth.links.forgotPassword")}
           </Link>
@@ -86,11 +86,11 @@ export function LoginForm({ locale, next }: { locale: Locale; next?: string }) {
         {login.isPending ? t("auth.actions.signingIn") : t("auth.actions.signIn")}
       </Button>
 
-      <p className="text-center text-body-sm text-muted-foreground">
+      <p className="text-center text-body-sm text-ink-muted">
         {t("auth.links.noAccount")}{" "}
         <Link
           href={localizedPath(locale, "/register") as Route}
-          className="font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="font-medium text-accent-strong underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           {t("auth.links.register")}
         </Link>

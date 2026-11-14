@@ -34,7 +34,7 @@ export function VerificationBanner({ email }: { email: string }) {
           {resend.isPending ? t("auth.actions.resending") : t("auth.actions.resendVerification")}
         </Button>
         {sent ? (
-          <span className="inline-flex items-center gap-1.5 text-body-sm text-status-success">
+          <span className="inline-flex items-center gap-1.5 text-body-sm text-success">
             <MailWarning aria-hidden="true" className="size-4" />
             {t("auth.verificationBanner.sent")}
           </span>
