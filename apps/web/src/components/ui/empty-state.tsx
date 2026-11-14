@@ -29,9 +29,11 @@ function EmptyState({
       {...props}
     >
       <div className="flex items-center gap-3">
-        <Icon aria-hidden="true" className="size-5 text-accent" />
+        <Icon aria-hidden="true" className="size-5 text-accent-strong" />
         {code ? (
-          <p className="font-mono text-eyebrow uppercase tracking-[0.16em] text-accent">{code}</p>
+          <p className="font-mono text-eyebrow uppercase tracking-[0.16em] text-accent-strong">
+            {code}
+          </p>
         ) : null}
       </div>
       <div className="grid max-w-[52ch] gap-3">

@@ -102,6 +102,7 @@ function Select({
 
     const listbox = listboxRef.current;
     listbox?.showPopover?.();
+    requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
     triggerRef.current?.focus();
 
     return () => listbox?.hidePopover?.();

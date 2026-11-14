@@ -83,7 +83,7 @@ export function AvatarUpload({ user, disabled = false }: { user: AuthUser; disab
               className="size-24 rounded-lg border border-line object-cover"
             />
           ) : (
-            <span className="flex size-24 items-center justify-center rounded-lg border border-line bg-surface-sunken text-h3 font-semibold text-accent">
+            <span className="flex size-24 items-center justify-center rounded-lg border border-line bg-surface-sunken text-h3 font-semibold text-accent-strong">
               {initials(user.profile.displayName || user.email)}
             </span>
           )}
@@ -97,6 +97,7 @@ export function AvatarUpload({ user, disabled = false }: { user: AuthUser; disab
             ref={inputRef}
             type="file"
             accept="image/jpeg,image/png,image/webp"
+            aria-label={t("profile.avatar.upload")}
             className="sr-only"
             onChange={(event) => handleFile(event.target.files?.[0])}
           />

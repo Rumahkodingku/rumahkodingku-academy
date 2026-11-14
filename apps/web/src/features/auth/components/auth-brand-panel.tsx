@@ -19,7 +19,7 @@ export function AuthBrandPanel() {
 
         <div className="grid max-w-[34rem] gap-8 py-10 animate-auth-rise">
           <div className="grid gap-5">
-            <p className="text-eyebrow uppercase text-accent">Learn · Build · Grow</p>
+            <p className="text-eyebrow uppercase text-accent-strong">Learn · Build · Grow</p>
             <h1 id="auth-brand-heading" className="max-w-[11ch] text-display text-ink">
               Bangun kemampuan yang bisa Anda buktikan.
             </h1>
@@ -35,7 +35,7 @@ export function AuthBrandPanel() {
                 key={value.label}
                 className="grid grid-cols-[2rem_1fr] gap-3 border-b border-line py-4"
               >
-                <span className="font-mono text-caption text-accent">0{index + 1}</span>
+                <span className="font-mono text-caption text-accent-strong">0{index + 1}</span>
                 <div className="grid gap-1">
                   <p className="text-body-sm font-medium text-ink">{value.label}</p>
                   <p className="text-caption text-ink-muted">{value.detail}</p>

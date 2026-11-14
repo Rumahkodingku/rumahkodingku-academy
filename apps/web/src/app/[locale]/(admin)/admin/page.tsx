@@ -40,7 +40,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
   return (
     <Container className="grid gap-12 py-20 md:py-28">
       <header className="grid max-w-[52ch] gap-4">
-        <p className="text-eyebrow uppercase text-accent">Area admin</p>
+        <p className="text-eyebrow uppercase text-accent-strong">Area admin</p>
         <h1 className="text-h1 text-ink">Panel pengelolaan Academy.</h1>
         <p className="text-body-lg text-ink-muted">
           Modul kursus, peserta, transaksi, dan peninjauan proyek akan tersedia di sini.

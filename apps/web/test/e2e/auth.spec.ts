@@ -6,6 +6,8 @@ import { PASSWORD, tokenFromMail, uniqueEmail } from "../helpers/auth";
 
 async function register(page: Page, email: string, name = "Test Learner") {
   await page.goto("/register");
+  await page.waitForLoadState("networkidle");
+  await page.waitForTimeout(250);
   await page.locator("#register-name").fill(name);
   await page.locator("#register-email").fill(email);
   await page.locator("#register-password").fill(PASSWORD);
@@ -23,6 +25,8 @@ async function verify(page: Page, email: string) {
 
 async function login(page: Page, email: string, password = PASSWORD) {
   await page.goto("/login");
+  await page.waitForLoadState("networkidle");
+  await page.waitForTimeout(250);
   await page.locator("#login-email").fill(email);
   await page.locator("#login-password").fill(password);
   await page.getByRole("button", { name: "Masuk" }).click();
@@ -102,12 +106,16 @@ test.describe("auth flow", () => {
 
   test("resets a password through the Mailpit link", async ({ page }) => {
     await page.goto("/forgot-password");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(250);
     await page.locator("#forgot-email").fill(email);
     await page.getByRole("button", { name: "Kirim tautan reset" }).click();
     await expect(page.getByText("Permintaan diterima")).toBeVisible();
 
     const token = await tokenFromMail(email, "Reset password", "/reset-password");
     await page.goto(`/reset-password?token=${token}`);
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(250);
     await page.locator("#reset-password").fill("new-correct-horse-battery");
     await page.locator("#reset-confirm-password").fill("new-correct-horse-battery");
     await page.getByRole("button", { name: "Simpan password baru" }).click();
@@ -120,6 +128,8 @@ test.describe("auth flow", () => {
 
   test("does not redirect to an unsafe next path", async ({ page }) => {
     await page.goto("/login?next=%2F%2Fevil.example");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(250);
     await page.locator("#login-email").fill(email);
     await page.locator("#login-password").fill(password);
     await page.getByRole("button", { name: "Masuk" }).click();

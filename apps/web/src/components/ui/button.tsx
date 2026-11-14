@@ -14,7 +14,7 @@ const buttonVariants = cva(
         primary: "bg-ink text-canvas hover:bg-ink-hover active:bg-ink-active",
         secondary: "border-line-strong bg-transparent text-ink hover:border-ink hover:bg-surface",
         ghost: "text-ink hover:bg-surface-sunken",
-        link: "h-auto rounded-none border-0 p-0 text-accent underline-offset-4 hover:underline",
+        link: "h-auto rounded-none border-0 p-0 text-accent-strong underline-offset-4 hover:underline",
         danger: "bg-danger text-canvas hover:bg-danger/90",
       },
       size: {

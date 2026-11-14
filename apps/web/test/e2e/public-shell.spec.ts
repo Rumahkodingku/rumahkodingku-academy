@@ -2,6 +2,8 @@ import { expect, test } from "@playwright/test";
 
 test("public shell renders and stays usable on mobile", async ({ page }) => {
   await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  await page.waitForTimeout(250);
 
   const header = page.getByRole("banner");
   const footer = page.getByRole("contentinfo");

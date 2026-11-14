@@ -167,6 +167,7 @@ function MenuContent({
 
     const content = contentRef.current;
     content?.showPopover?.();
+    requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
     const firstItem = content?.querySelector<HTMLElement>('[role="menuitem"]:not([disabled])');
     firstItem?.focus();
 

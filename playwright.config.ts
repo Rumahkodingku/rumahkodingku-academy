@@ -13,6 +13,13 @@ export default defineConfig({
     baseURL: "http://localhost:3001",
     trace: "on-first-retry",
   },
+  expect: {
+    toHaveScreenshot: {
+      animations: "disabled",
+      caret: "hide",
+      maxDiffPixelRatio: 0.02,
+    },
+  },
   projects: [
     {
       name: "chromium",

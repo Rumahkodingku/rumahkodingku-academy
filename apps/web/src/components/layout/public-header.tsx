@@ -54,7 +54,6 @@ export function PublicHeader({ locale, user }: { locale: Locale; user: AuthUser 
       <Container className="flex h-[72px] items-center justify-between gap-4">
         <Link
           href={homeHref as Route}
-          aria-label="RumahKodingku Academy"
           className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           <BrandLogo size="sm" />
@@ -109,7 +108,7 @@ export function PublicHeader({ locale, user }: { locale: Locale; user: AuthUser 
                     key={item.href}
                     href={item.href as Route}
                     onClick={() => setMenuOpen(false)}
-                    className="border-b border-line py-4 text-h3 text-ink transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    className="border-b border-line py-4 text-h3 text-ink transition-colors hover:text-accent-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   >
                     {t(item.key)}
                   </Link>

@@ -34,7 +34,7 @@ export function PublicFooter({ locale }: { locale: Locale }) {
             <Link
               key={item.href}
               href={localizedPath(locale, item.href) as Route}
-              className="w-fit text-body-sm text-deep-foreground transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="w-fit text-body-sm text-deep-foreground transition-colors hover:text-accent-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               {t(item.key)}
             </Link>

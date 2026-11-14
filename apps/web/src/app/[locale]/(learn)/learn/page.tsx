@@ -21,7 +21,7 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
   return (
     <Container className="grid gap-12 py-20 md:py-28">
       <header className="grid max-w-[52ch] gap-4">
-        <p className="text-eyebrow uppercase text-accent">Ruang belajar</p>
+        <p className="text-eyebrow uppercase text-accent-strong">Ruang belajar</p>
         <h1 className="text-h1 text-ink">Selamat datang, {user?.profile.displayName}.</h1>
         <p className="text-body-lg text-ink-muted">
           Ini adalah ruang belajar Anda. Kursus yang sudah dimiliki, progres, dan proyek akan muncul
@@ -31,7 +31,7 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
 
       <div className="grid border-t border-line md:grid-cols-2">
         <section className="grid gap-4 border-b border-line py-8 md:border-r md:pr-10">
-          <span className="font-mono text-caption text-accent">01</span>
+          <span className="font-mono text-caption text-accent-strong">01</span>
           <h2 className="text-h3 text-ink">Mulai dari katalog</h2>
           <p className="max-w-[38ch] text-body-sm text-ink-muted">
             Temukan kursus yang paling dekat dengan tujuan belajar Anda.
@@ -43,7 +43,7 @@ export default async function LearnPage({ params }: { params: Promise<{ locale: 
         </section>
 
         <section className="grid gap-4 border-b border-line py-8 md:pl-10">
-          <span className="font-mono text-caption text-accent">02</span>
+          <span className="font-mono text-caption text-accent-strong">02</span>
           <h2 className="text-h3 text-ink">Lengkapi profil</h2>
           <p className="max-w-[38ch] text-body-sm text-ink-muted">
             Tambahkan nama tampilan dan informasi lain agar pengalaman belajar lebih personal.

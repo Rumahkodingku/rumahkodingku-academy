@@ -14,7 +14,7 @@
 
 The implementation source of truth is `apps/web/src/index.css`. The v2 system replaces the original Modern SaaS token baseline:
 
-- Canvas: paper `#F6F1E7`, surface `#FBF8F2`, sunken `#EFE9DD`, ink `#141311`, muted `#5C564D`, line `#DCD4C6`.
+- Canvas: white `#FFFFFF`, surface `#FBF8F2`, sunken `#EFE9DD`, ink `#141311`, muted `#5C564D`, line `#DCD4C6`.
 - Accent: Academy Blue `#2563EB`; dark accent `#7FB0FF`.
 - Deep surfaces: `#141311` light, `#0B0A09` dark.
 - Type: Space Grotesk display, Manrope body, Geist Mono code.

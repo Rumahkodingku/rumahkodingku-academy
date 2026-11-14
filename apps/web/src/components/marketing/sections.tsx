@@ -11,7 +11,7 @@ export function MarketingHero({ homepage }: { homepage: HomepageContent }) {
     <section className="border-b border-line pb-20 pt-16 md:pb-28 md:pt-24">
       <div className="mx-auto grid w-full max-w-page gap-12 px-5 md:px-7 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16 xl:px-10">
         <Reveal className="grid gap-7">
-          <p className="text-eyebrow uppercase text-accent">{homepage.hero.eyebrow}</p>
+          <p className="text-eyebrow uppercase text-accent-strong">{homepage.hero.eyebrow}</p>
           <h1 className="max-w-[15ch] text-display text-ink">{homepage.hero.title}</h1>
           <p className="max-w-[52ch] text-body-lg text-ink-muted">{homepage.hero.description}</p>
           <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -71,7 +71,7 @@ function HeroArtifact({ homepage }: { homepage: HomepageContent }) {
           <ol className="grid gap-4">
             {homepage.steps.slice(0, 3).map((step, index) => (
               <li key={step.title} className="grid grid-cols-[2rem_1fr] gap-3">
-                <span className="font-mono text-caption text-accent">0{index + 1}</span>
+                <span className="font-mono text-caption text-accent-strong">0{index + 1}</span>
                 <div className="grid gap-1 border-b border-line pb-3">
                   <p className="text-body-sm font-medium text-ink">{step.title}</p>
                   <p className="text-caption text-ink-muted">{step.description}</p>
@@ -128,7 +128,7 @@ export function MarketingPrograms({ homepage }: { homepage: HomepageContent }) {
     <section id="program" className="scroll-mt-24 border-b border-line py-20 md:py-28">
       <div className="mx-auto grid w-full max-w-page gap-10 px-5 md:px-7 xl:px-10">
         <div className="grid max-w-[46ch] gap-3">
-          <p className="text-eyebrow uppercase text-accent">Program</p>
+          <p className="text-eyebrow uppercase text-accent-strong">Program</p>
           <h2 className="text-h2 text-ink">Fondasi belajar yang terarah.</h2>
           <p className="text-body-lg text-ink-muted">
             Setiap bagian dirancang agar Anda tahu apa yang dipelajari, apa yang dibangun, dan bukti
@@ -143,7 +143,7 @@ export function MarketingPrograms({ homepage }: { homepage: HomepageContent }) {
               data-slot="program-row"
               className="grid gap-4 border-b border-line py-6 md:grid-cols-[4rem_1fr_auto] md:items-start"
             >
-              <span className="font-mono text-caption text-accent">0{index + 1}</span>
+              <span className="font-mono text-caption text-accent-strong">0{index + 1}</span>
               <div className="grid max-w-[52ch] gap-1">
                 <h3 className="text-h3 text-ink">{feature.title}</h3>
                 <p className="text-body-sm text-ink-muted">{feature.description}</p>
@@ -166,7 +166,7 @@ export function MarketingSteps({ homepage }: { homepage: HomepageContent }) {
       <div className="mx-auto grid w-full max-w-page gap-10 px-5 md:px-7 xl:px-10">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div className="grid max-w-[46ch] gap-3">
-            <p className="text-eyebrow uppercase text-accent">Cara belajar</p>
+            <p className="text-eyebrow uppercase text-accent-strong">Cara belajar</p>
             <h2 className="text-h2 text-ink">Dari rasa ingin tahu ke karya nyata.</h2>
           </div>
           <p className="max-w-[32ch] text-body-sm text-ink-muted">
@@ -181,7 +181,7 @@ export function MarketingSteps({ homepage }: { homepage: HomepageContent }) {
               data-slot="learning-step"
               className="grid gap-4 border-t border-line pt-5"
             >
-              <span className="font-display text-h2 text-accent">0{index + 1}</span>
+              <span className="font-display text-h2 text-accent-strong">0{index + 1}</span>
               <h3 className="text-h4 text-ink">{step.title}</h3>
               <p className="text-body-sm text-ink-muted">{step.description}</p>
             </div>
@@ -233,13 +233,13 @@ export function MarketingCta({ cta }: { cta?: HomepageContent["cta"] }) {
   }
 
   return (
-    <section data-slot="cta-band" className="bg-accent py-20 text-canvas md:py-28">
+    <section data-slot="cta-band" className="bg-accent-strong py-20 text-canvas md:py-28">
       <div className="mx-auto grid w-full max-w-page gap-8 px-5 md:px-7 lg:grid-cols-[1fr_auto] lg:items-end xl:px-10">
         <div className="grid gap-5">
-          <p className="text-eyebrow uppercase text-canvas/70">{cta.eyebrow ?? "Mulai"}</p>
+          <p className="text-eyebrow uppercase text-canvas">{cta.eyebrow ?? "Mulai"}</p>
           <h2 className="max-w-[16ch] text-h2 text-canvas">{cta.title}</h2>
           {cta.description ? (
-            <p className="max-w-[44ch] text-body-lg text-canvas/80">{cta.description}</p>
+            <p className="max-w-[44ch] text-body-lg text-canvas">{cta.description}</p>
           ) : null}
         </div>
         <div className="flex flex-wrap gap-3">

@@ -46,7 +46,7 @@ export function BrandLogo({
             )}
           >
             RumahKodingku
-          </span>
+          </span>{" "}
           <span
             className={cn(
               "mt-1 text-caption uppercase tracking-[0.18em]",

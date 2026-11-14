@@ -21,7 +21,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
   return (
     <Container className="grid gap-10 py-20 md:py-28">
       <header className="grid max-w-[52ch] gap-4">
-        <p className="text-eyebrow uppercase text-accent">Profil</p>
+        <p className="text-eyebrow uppercase text-accent-strong">Profil</p>
         <h1 className="text-h1 text-ink">Kenali diri Anda di Academy.</h1>
         <p className="text-body-lg text-ink-muted">
           Atur identitas publik, kontak, tautan, dan preferensi notifikasi. Email dan status akun

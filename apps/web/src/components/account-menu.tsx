@@ -62,12 +62,8 @@ function SignedInMenu({ user, locale }: { user: AuthUser; locale: Locale }) {
 
   return (
     <Menu>
-      <MenuTrigger
-        variant="ghost"
-        size="sm"
-        className="h-10 gap-2 px-2"
-        aria-label={t("account.menuLabel", { name: user.profile.displayName })}
-      >
+      <MenuTrigger variant="ghost" size="sm" className="h-10 gap-2 px-2">
+        <span className="sr-only">Menu akun: </span>
         <UserAvatar user={user} />
         <span className="hidden max-w-32 truncate text-body-sm font-medium lg:block">
           {user.profile.displayName}

@@ -41,6 +41,7 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "catalog:",
     "@rumahkodingku-academy/config": "workspace:*",
     "@storybook/addon-docs": "^10.6.7",

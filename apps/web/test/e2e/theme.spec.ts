@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const LIGHT_CANVAS = "rgb(246, 241, 231)";
+const LIGHT_CANVAS = "rgb(255, 255, 255)";
 const DARK_CANVAS = "rgb(17, 16, 14)";
 
 test.describe("theme foundations", () => {

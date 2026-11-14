@@ -3,14 +3,14 @@
 > **Document type:** Visual & experience direction  
 > **Version:** 1.0.0  
 > **Status:** Approved baseline  
-> **Selected direction:** Editorial Academy — paper/ink, Academy Blue signal, Space Grotesk + Manrope  
+> **Selected direction:** Editorial Academy — white/ink, Academy Blue signal, Space Grotesk + Manrope  
 > **Last updated:** 2026-11-12
 
 ---
 
 ## 1. Design Direction Summary
 
-RumahKodingku Academy menggunakan arah **Editorial Academy**: permukaan paper/ink, aksen Academy Blue yang terbatas, tipografi Space Grotesk + Manrope, tombol pill, dan garis hairline. Light Mode dan Dark Mode memiliki kualitas yang setara. Bagian “Modern SaaS” di bawah adalah catatan historis dan tidak lagi menjadi arah implementasi.
+RumahKodingku Academy menggunakan arah **Editorial Academy**: permukaan white/ink, aksen Academy Blue yang terbatas, tipografi Space Grotesk + Manrope, tombol pill, dan garis hairline. Light Mode dan Dark Mode memiliki kualitas yang setara. Bagian “Modern SaaS” di bawah adalah catatan historis dan tidak lagi menjadi arah implementasi.
 
 Hasil yang dituju adalah platform edukasi yang terlihat modern, profesional, tepercaya, dan mudah digunakan, tetapi tidak dingin atau generik. Ekspresi visual digunakan untuk membangun identitas dan menarik perhatian pada area yang tepat; antarmuka belajar tetap tenang, fokus, dan minim distraksi.
 
