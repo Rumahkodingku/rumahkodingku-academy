@@ -6,7 +6,7 @@
 
 **Architecture:** Native-first React primitives (`<dialog>`, `<button>`, `<input>`, Popover API) with small internal hooks for positioning, dismissal, focus, and typeahead. No component/UI library. Tailwind utilities, Lucide icons, `cva`, `tailwind-merge`, TanStack Query, and Motion remain. Visual language is warm paper/ink with Academy Blue as the only accent, Space Grotesk display type, Manrope body type, pill actions, 6–8 px surfaces, and hairline composition.
 
-**Tech Stack:** Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4, Motion, Vitest, Testing Library, Playwright, Storybook 10, Strapi contract + fixtures.
+**Tech Stack:** Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4, Motion, Vitest, Testing Library, Playwright, Storybook 10, local marketing contract + fixtures.
 
 **Spec:** This document plus `docs/design/design-brief.md`, `docs/design/design-direction.md`, `docs/design/design-system.md`, and `docs/design/ui-ux-guidelines.md`. Where this plan conflicts with the old “Modern SaaS” direction, this plan wins.
 
@@ -26,7 +26,7 @@
 | Motion              | `motion` with `LazyMotion` and reduced-motion support                                                   |
 | Scope               | Every active route: marketing, auth, profile, learn, admin, system states                               |
 | Auth layout         | 1:1 editorial split                                                                                     |
-| Strapi              | Extend TypeScript contract, fixtures, and docs; do not create a Strapi app                              |
+| Marketing content   | Extend TypeScript contract, fixtures, and docs; do not create a remote CMS                              |
 | Migration           | Incremental vertical slices. New component API is used immediately; no permanent compatibility wrappers |
 | Storybook           | Keep and update every story                                                                             |
 
@@ -336,13 +336,13 @@ apps/web/src/components/language-switch.tsx
 apps/web/src/components/mode-toggle.tsx
 apps/web/src/features/auth/components/*.tsx
 apps/web/src/features/auth/validation.ts (only if error keys change)
-apps/web/src/strapi/content-types.ts
-apps/web/src/strapi/fixtures.ts
+apps/web/src/marketing/content-types.ts
+apps/web/src/marketing/fixtures.ts
 apps/web/src/stories/*.stories.tsx
 apps/web/.storybook/preview.tsx
 apps/web/test/unit/components/ui/*.test.tsx
 apps/web/test/unit/components/layout/public-header.test.tsx
-apps/web/test/unit/strapi/content.test.ts
+apps/web/test/unit/marketing/content.test.ts
 apps/web/test/e2e/auth-layout.spec.ts
 apps/web/test/e2e/public-shell.spec.ts
 apps/web/package.json
@@ -350,7 +350,7 @@ docs/design/design-system.md
 docs/design/design-direction.md
 docs/design/ui-ux-guidelines.md
 docs/architecture/nextjs-architecture.md
-docs/architecture/strapi-content-model.md
+docs/architecture/marketing-content-model.md
 docs/development/development-roadmap.md
 ```
 
@@ -379,7 +379,7 @@ apps/web/src/components/ui/sonner.tsx
 - Auth tokens never enter JavaScript-readable storage.
 - Authorization uses `AuthUser.permissions`, never role-name comparisons.
 - Keep the API contract, auth behavior, RBAC, and database untouched.
-- Keep `apps/web/src/strapi` server-only boundary intact.
+- Keep `apps/web/src/marketing` content boundary intact.
 - Run `pnpm format` before commit; Husky runs commitlint.
 - Commit style: Conventional Commits, one commit per task unless noted.
 
@@ -390,7 +390,7 @@ apps/web/src/components/ui/sonner.tsx
 1. **Keyboard and screen-reader use of custom Select/Menu.** A person must be able to open, navigate, select, close, and return focus without a mouse. Tests: Task 2, Task 11.
 2. **Dialog behavior in WebKit.** Escape, focus return, backdrop, scroll lock, and mobile viewport must match Chromium and Firefox. Tests: Task 5, Task 10.
 3. **Theme flash and dark contrast.** First paint must not flash light theme, and every token pair must remain readable in dark mode. Tests: Task 1, Task 6, Task 14.
-4. **Strapi optional-field fallback and mobile overflow.** Missing new fields must not break the landing page; 390 px layouts must never overflow. Tests: Task 7, Task 8, Task 14.
+4. **Marketing optional-field fallback and mobile overflow.** Missing new fields must not break the landing page; 390 px layouts must never overflow. Tests: Task 7, Task 8, Task 14.
 5. **Motion cost and reduced motion.** Marketing animation must not block first render or ignore `prefers-reduced-motion`. Tests: Task 1, Task 8, Task 14.
 
 ---
@@ -1028,18 +1028,18 @@ git commit -m "feat(web): rebuild public shell with editorial navigation"
 
 ---
 
-### Task 7: Strapi contract extension
+### Task 7: Marketing contract extension
 
 **Files:**
 
-- Modify: `apps/web/src/strapi/content-types.ts`
-- Modify: `apps/web/src/strapi/fixtures.ts`
-- Modify: `apps/web/test/unit/strapi/content.test.ts`
-- Modify: `docs/architecture/strapi-content-model.md`
+- Modify: `apps/web/src/marketing/content-types.ts`
+- Modify: `apps/web/src/marketing/fixtures.ts`
+- Modify: `apps/web/test/unit/marketing/content.test.ts`
+- Modify: `docs/architecture/marketing-content-model.md`
 
 **Interfaces:**
 
-- Consumes: existing `HomepageContent`, `MarketingLink`, `MarketingFeature`, `MarketingStep`, `StrapiMedia`.
+- Consumes: existing `HomepageContent`, `MarketingLink`, `MarketingFeature`, `MarketingStep`, `MarketingMedia`.
 - Produces: optional `statement`, `proof`, `cta`, `hero.artifact`, and `hero.note` fields from Section 5 of the plan discussion.
 
 - [ ] **Step 1: Write failing contract tests**
@@ -1054,7 +1054,7 @@ Assertions:
 Run:
 
 ```bash
-pnpm --filter web test -- test/unit/strapi/content.test.ts
+pnpm --filter web test -- test/unit/marketing/content.test.ts
 ```
 
 Expected: FAIL because the fields do not exist.
@@ -1075,12 +1075,12 @@ Add Indonesian and English content for:
 
 - [ ] **Step 4: Update docs**
 
-Add the new fields to `docs/architecture/strapi-content-model.md` with type, required/optional, and locale rules.
+Add the new fields to `docs/architecture/marketing-content-model.md` with type, required/optional, and locale rules.
 
 - [ ] **Step 5: Run tests**
 
 ```bash
-pnpm --filter web test -- test/unit/strapi/content.test.ts
+pnpm --filter web test -- test/unit/marketing/content.test.ts
 pnpm --filter web check-types
 ```
 
@@ -1089,7 +1089,7 @@ Expected: PASS.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add apps/web/src/strapi apps/web/test/unit/strapi docs/architecture/strapi-content-model.md
+git add apps/web/src/marketing apps/web/test/unit/marketing docs/architecture/marketing-content-model.md
 git commit -m "feat(web): extend marketing content contract"
 ```
 
@@ -1789,11 +1789,11 @@ git commit -m "test(web): verify custom UI across routes and browsers"
 - [ ] No horizontal overflow at 390 px on any route.
 - [ ] Auth flow, refresh, logout, unverified, and forbidden behavior still pass.
 - [ ] Profile update, avatar upload/remove, and private avatar behavior still pass.
-- [ ] Strapi optional fields do not break rendering when absent.
+- [ ] Marketing optional fields do not break rendering when absent.
 - [ ] Storybook builds and every component story renders.
 - [ ] Unit, Playwright, axe, build, and lint pass.
 - [ ] Visual baseline and screenshot evidence are committed.
-- [ ] Design, architecture, Strapi, and roadmap docs are updated.
+- [ ] Design, architecture, marketing, and roadmap docs are updated.
 - [ ] No fake testimonials, ratings, stock photos, or invented metrics.
 
 ---
@@ -1801,7 +1801,7 @@ git commit -m "test(web): verify custom UI across routes and browsers"
 ## 10. Out of Scope
 
 - New backend endpoints or database changes.
-- New Strapi application inside this repository.
+- New remote CMS application inside this repository.
 - Full catalog, course detail, checkout, player, quiz, project review, certificate UI.
 - Admin CRUD dashboards beyond the current placeholder.
 - Social login, testimonials, ratings, or stock photography.

@@ -1147,7 +1147,7 @@ Pengembangan ditargetkan mencapai kondisi production-ready. Tahapan berikut menu
 
 **Fokus:** Fondasi pengalaman produk dan pengelolaan akun.
 
-Cakupan: - Website publik. - Konten marketing dari Strapi. - Registrasi dan login. - Profil user. - Role User dan Admin. - Dashboard awal. - Kategori course. - Katalog course. - Detail course. - i18n Indonesia default, siap Inggris.
+Cakupan: - Website publik. - Konten marketing dari fixture lokal. - Registrasi dan login. - Profil user. - Role User dan Admin. - Dashboard awal. - Kategori course. - Katalog course. - Detail course. - i18n Indonesia default, siap Inggris.
 
 Hasil yang diharapkan: - Pengunjung dapat mengenal platform. - User dapat membuat akun. - User dapat menemukan dan memahami course. - Admin dapat mulai mengelola konten dasar.
 
@@ -1230,7 +1230,7 @@ Hasil yang diharapkan: - Pengalaman pembelian dan pembelajaran lebih lengkap. - 
 
 **Fokus:** Memastikan produk siap digunakan secara nyata.
 
-Cakupan: - Pemeriksaan seluruh alur utama. - Pengujian fungsional. - Pengujian keamanan. - Pengujian performa. - Pemeriksaan aksesibilitas. - Validasi pengalaman mobile. - Monitoring operasional termasuk Redis, Socket.io, Strapi, dan PostHog. - Backup dan pemulihan. - Dokumentasi operasional. - Persiapan peluncuran.
+Cakupan: - Pemeriksaan seluruh alur utama. - Pengujian fungsional. - Pengujian keamanan. - Pengujian performa. - Pemeriksaan aksesibilitas. - Validasi pengalaman mobile. - Monitoring operasional termasuk Redis, Socket.io, dan PostHog. - Backup dan pemulihan. - Dokumentasi operasional. - Persiapan peluncuran.
 
 Hasil yang diharapkan: - Seluruh fitur utama berjalan sesuai kebutuhan. - Tidak ada masalah kritis yang belum ditangani. - Operasional platform dapat dipantau. - Platform siap digunakan oleh user.
 
@@ -1344,7 +1344,7 @@ Detail berikut harus dibahas dalam dokumen terpisah: - Arsitektur sistem dan pem
 - Jangan memberikan akses course hanya berdasarkan redirect pembayaran.
 - Jangan menghilangkan riwayat submission dan penilaian.
 - Jangan menambahkan partial refund pada MVP.
-- Jangan menggunakan Strapi untuk data course, user, order, atau enrollment.
+- Jangan menyimpan data course, user, order, atau enrollment di konten marketing.
 - Jangan mengembalikan backend ke Bun atau direktori `apps/server`.
 - Jika terdapat kebutuhan yang belum didefinisikan, identifikasi sebagai keputusan terbuka dan jangan membuat asumsi bisnis yang berdampak besar.
 - Jika dokumen teknis bertentangan dengan master plan, tandai konflik tersebut untuk diselesaikan sebelum implementasi dilanjutkan.
@@ -1363,35 +1363,35 @@ Detail berikut harus dibahas dalam dokumen terpisah: - Arsitektur sistem dan pem
 
 Bagian ini adalah ringkasan keputusan produk yang telah dikonfirmasi. AI agent dan tim harus memperlakukannya sebagai acuan, kecuali ada keputusan baru yang secara eksplisit menggantikannya.
 
-| No. | Area                          | Keputusan                                                                                                           |
-| --: | ----------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-|   1 | Nama brand                    | Rumah Kodingku Academy                                                                                              |
-|   2 | Tagline                       | Learn · Build · Grow                                                                                                |
-|   3 | Identitas visual              | Menggabungkan logomark resmi Rumah Kodingku dengan identitas Academy                                                |
-|   4 | Warna aksen Academy           | Academy Blue `#2563EB`; warna utama brand induk tetap dipertahankan                                                 |
-|   5 | Role                          | Hanya USER dan ADMIN                                                                                                |
-|   6 | Model penjualan               | Pembelian individual per course                                                                                     |
-|   7 | Model pembayaran              | One-time payment                                                                                                    |
-|   8 | Hak akses                     | Lifetime access untuk course yang telah dimiliki, tunduk pada kebijakan refund dan ketentuan platform               |
-|   9 | Quiz                          | Fleksibel; admin menentukan lesson atau section yang memiliki quiz                                                  |
-|  10 | Konten lesson                 | YouTube Video atau Rich Text                                                                                        |
-|  11 | Struktur course               | Course → Section → Lesson                                                                                           |
-|  12 | Final project                 | Configurable per course; jika aktif, GitHub repository URL dan deployment URL wajib, file upload opsional           |
-|  13 | Resubmission                  | Tidak dibatasi; setiap pengiriman menjadi versi baru                                                                |
-|  14 | Penilaian final project       | Review manual oleh admin; keputusan `REVISION_REQUIRED` atau `APPROVED`                                             |
-|  15 | Sertifikat                    | Otomatis setelah seluruh persyaratan terpenuhi; final project wajib jika diaktifkan; reissue membuat record baru    |
-|  16 | Learning roadmap              | Selalu sequential; course berikutnya terbuka setelah course sebelumnya selesai                                      |
-|  17 | Community                     | Course discussion forum dan Q&A per lesson                                                                          |
-|  18 | Refund                        | Full refund, ditinjau admin secara case-by-case; tanpa partial refund pada MVP                                      |
-|  19 | Payment provider              | Midtrans sebagai kandidat utama; persetujuan merchant dan penerimaan produk kursus digital masih harus dikonfirmasi |
-|  20 | Pembayaran selama development | Mock payment untuk lokal dan Midtrans Sandbox untuk integration testing; tidak boleh memberi enrollment production  |
-|  21 | Target kualitas               | Production-ready dengan pengujian menyeluruh                                                                        |
-|  22 | Course discovery              | Featured = flag admin; newest = `publishedAt`; popular = enrollment 30 hari terakhir                                |
-|  23 | Kupon                         | Satu kupon aktif per order; kupon kedua ditolak                                                                     |
-|  24 | Review course                 | Review baru tampil setelah disetujui admin (`PENDING` → `PUBLISHED`)                                                |
-|  25 | Mata uang                     | IDR integer; tidak memakai float                                                                                    |
-|  26 | Layanan pendukung MVP         | Redis cache/rate limit; Socket.io notifikasi in-app; PostHog analytics/flags; i18n siap Inggris; Strapi marketing   |
-|  27 | Info instruktur               | Field teks pada course; tidak menambah role atau login instruktur                                                   |
+| No. | Area                          | Keputusan                                                                                                               |
+| --: | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+|   1 | Nama brand                    | Rumah Kodingku Academy                                                                                                  |
+|   2 | Tagline                       | Learn · Build · Grow                                                                                                    |
+|   3 | Identitas visual              | Menggabungkan logomark resmi Rumah Kodingku dengan identitas Academy                                                    |
+|   4 | Warna aksen Academy           | Academy Blue `#2563EB`; warna utama brand induk tetap dipertahankan                                                     |
+|   5 | Role                          | Hanya USER dan ADMIN                                                                                                    |
+|   6 | Model penjualan               | Pembelian individual per course                                                                                         |
+|   7 | Model pembayaran              | One-time payment                                                                                                        |
+|   8 | Hak akses                     | Lifetime access untuk course yang telah dimiliki, tunduk pada kebijakan refund dan ketentuan platform                   |
+|   9 | Quiz                          | Fleksibel; admin menentukan lesson atau section yang memiliki quiz                                                      |
+|  10 | Konten lesson                 | YouTube Video atau Rich Text                                                                                            |
+|  11 | Struktur course               | Course → Section → Lesson                                                                                               |
+|  12 | Final project                 | Configurable per course; jika aktif, GitHub repository URL dan deployment URL wajib, file upload opsional               |
+|  13 | Resubmission                  | Tidak dibatasi; setiap pengiriman menjadi versi baru                                                                    |
+|  14 | Penilaian final project       | Review manual oleh admin; keputusan `REVISION_REQUIRED` atau `APPROVED`                                                 |
+|  15 | Sertifikat                    | Otomatis setelah seluruh persyaratan terpenuhi; final project wajib jika diaktifkan; reissue membuat record baru        |
+|  16 | Learning roadmap              | Selalu sequential; course berikutnya terbuka setelah course sebelumnya selesai                                          |
+|  17 | Community                     | Course discussion forum dan Q&A per lesson                                                                              |
+|  18 | Refund                        | Full refund, ditinjau admin secara case-by-case; tanpa partial refund pada MVP                                          |
+|  19 | Payment provider              | Midtrans sebagai kandidat utama; persetujuan merchant dan penerimaan produk kursus digital masih harus dikonfirmasi     |
+|  20 | Pembayaran selama development | Mock payment untuk lokal dan Midtrans Sandbox untuk integration testing; tidak boleh memberi enrollment production      |
+|  21 | Target kualitas               | Production-ready dengan pengujian menyeluruh                                                                            |
+|  22 | Course discovery              | Featured = flag admin; newest = `publishedAt`; popular = enrollment 30 hari terakhir                                    |
+|  23 | Kupon                         | Satu kupon aktif per order; kupon kedua ditolak                                                                         |
+|  24 | Review course                 | Review baru tampil setelah disetujui admin (`PENDING` → `PUBLISHED`)                                                    |
+|  25 | Mata uang                     | IDR integer; tidak memakai float                                                                                        |
+|  26 | Layanan pendukung MVP         | Redis cache/rate limit; Socket.io notifikasi in-app; PostHog analytics/flags; i18n siap Inggris; konten marketing lokal |
+|  27 | Info instruktur               | Field teks pada course; tidak menambah role atau login instruktur                                                       |
 
 ### 19.1. Keputusan Teknis yang Dikelola di Dokumen Terpisah
 
@@ -1408,7 +1408,7 @@ Keputusan berikut telah ditetapkan untuk dokumen arsitektur dan implementasi, te
 - Realtime notification: Socket.io.
 - Product analytics dan feature flags: PostHog.
 - Internasionalisasi: Indonesia default, struktur siap untuk Inggris.
-- CMS marketing: Strapi; bukan sumber data course, user, order, atau enrollment.
+- Konten marketing: fixture lokal; bukan sumber data course, user, order, atau enrollment.
 - Deployment: VPS dengan Coolify.
 - API: REST `/api/v1` dengan success envelope `{ data, meta }` dan RFC 9457 Problem Details untuk error.
 - Dokumentasi API: Swagger `/swagger`, Scalar `/reference`, OpenAPI JSON `/swagger-json`.

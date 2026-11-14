@@ -36,7 +36,7 @@ Admin/analytics: MySQL-derived reports, audit records, announcement/settings per
 
 ## Test data
 
-Factories and deterministic fixtures; separate databases; Midtrans Sandbox credentials only; no real user/payment data; reset only disposable databases. Never use production Redis or Strapi data in tests.
+Factories and deterministic fixtures; separate databases; Midtrans Sandbox credentials only; no real user/payment data; reset only disposable databases. Never use production Redis data in tests.
 
 ## Quality gates
 

@@ -9,7 +9,6 @@ Separate UI, business logic, persistence, marketing content, and external integr
 ```mermaid
 flowchart LR
   U[Visitor / USER / ADMIN] --> W[Next.js Web]
-  U --> C[Strapi Marketing CMS]
   W --> A[NestJS API]
   A --> D[(MySQL)]
   A --> R[(Redis)]
@@ -22,7 +21,6 @@ flowchart LR
   W --> Y[YouTube Embed]
   W --> P[PostHog]
   A --> P
-  C --> W
 ```
 
 ## Applications
@@ -34,7 +32,7 @@ flowchart LR
 - `packages/env`: runtime environment validation.
 - `packages/config`: shared TypeScript and tooling configuration.
 
-Strapi is a separate marketing-content service. It is not the source of truth for courses, users, orders, payments, enrollments, progress, projects, or certificates.
+Marketing content is local typed content in `apps/web`. It is not the source of truth for courses, users, orders, payments, enrollments, progress, projects, or certificates.
 
 ## Backend domains
 

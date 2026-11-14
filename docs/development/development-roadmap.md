@@ -8,7 +8,7 @@ This roadmap follows the approved product and technical decisions:
 
 - Brand RumahKodingku Academy; parent brand RumahKodingku; tagline Learn · Build · Grow; Academy accent `#2563EB`.
 - Next.js 16 + React 19, NestJS on Node.js 24 LTS in `apps/api`, Turborepo + pnpm, MySQL, TypeORM.
-- Redis for cache and rate limiting; Socket.io for in-app notifications; PostHog for product analytics/flags; i18next with Indonesian default and English-ready structure; Strapi for marketing content only.
+- Redis for cache and rate limiting; Socket.io for in-app notifications; PostHog for product analytics/flags; i18next with Indonesian default and English-ready structure; Local typed fixtures for marketing content only.
 - JWT access + refresh tokens in HttpOnly cookies.
 - Midtrans as preferred initial payment provider, subject to merchant onboarding approval; provider-neutral adapter; local mock for development and Midtrans Sandbox for integration tests.
 - Local filesystem on persistent VPS storage.
@@ -58,7 +58,7 @@ Tasks:
 - Approve analytics event taxonomy, platform settings, and announcement scope.
 - Create backlog tickets linked to FR/BR IDs and define acceptance criteria.
 
-Deliverables: approved decision log (`docs/product/decision-log.md`), prioritized backlog (`docs/development/phase-0-backlog.md`), brand assets, external account checklist, Strapi content model.
+Deliverables: approved decision log (`docs/product/decision-log.md`), prioritized backlog (`docs/development/phase-0-backlog.md`), brand assets, external account checklist, local marketing content model.
 
 Exit gate: no unresolved ambiguity affecting money, access, privacy, security, certificate eligibility, or data retention.
 
@@ -105,13 +105,13 @@ Tasks:
 - Build global layout, navigation, responsive container, and typography.
 - Configure i18next with Indonesian default and English-ready resources.
 - Define loading, empty, error, forbidden, and not-found patterns.
-- Configure Strapi marketing content model and rendering boundary.
+- Configure local marketing content model and rendering boundary.
 
 Deliverables: API/data foundation, design tokens, reusable components, responsive app shell, marketing-content integration.
 
-Exit gate: migrations run cleanly; UI primitives have keyboard/focus states; parent brand colors are sourced from official assets, not guessed; Strapi cannot serve LMS data.
+Exit gate: migrations run cleanly; UI primitives have keyboard/focus states; parent brand colors are sourced from official assets, not guessed; Marketing content cannot own LMS data.
 
-Status: Phase 2 implemented. Data foundation has 45 tables, UUID v7 entities, an initial schema migration, an additive outbox migration, and a CI migration verification step. Design foundations include semantic tokens, Geist typography, the official logo lockup, accessible Base UI primitives, responsive public shell, loading/empty/error/not-found patterns, Storybook 10 stories, and a marketing-only Strapi content contract with a server-only fetch boundary. Local exit-gate verification passes: fresh MySQL migration, primitive keyboard/focus tests, Playwright public-shell test, and a production build. The GitHub Actions run remains pending until this branch is pushed. Feature pages, the real Strapi app, and auth routes stay in later phases.
+Status: Phase 2 implemented. Data foundation has 45 tables, UUID v7 entities, an initial schema migration, an additive outbox migration, and a CI migration verification step. Design foundations include semantic tokens, Geist typography, the official logo lockup, accessible Base UI primitives, responsive public shell, loading/empty/error/not-found patterns, Storybook 10 stories, and a marketing-only local content contract with typed fixtures. Local exit-gate verification passes: fresh MySQL migration, primitive keyboard/focus tests, Playwright public-shell test, and a production build. The GitHub Actions run remains pending until this branch is pushed. Feature pages and auth routes stay in later phases.
 
 ## 6. Phase 3 — Authentication and account security
 
@@ -138,7 +138,7 @@ Status: Phase 3 complete. The `apps/web` UI was subsequently replaced with a cus
 
 Tasks:
 
-- Build landing page using approved brand direction and Strapi marketing content.
+- Build landing page using approved brand direction and local marketing content.
 - Build course catalog with search, filters, pagination, and featured/newest/popular sorting.
 - Build course detail with outcomes, curriculum preview, prerequisites, price, lifetime-access terms, instructor/author, and certificate conditions.
 - Ensure only published courses appear publicly and can be purchased.
@@ -271,11 +271,11 @@ Performance/reliability:
 - Review MySQL indexes/slow queries, Redis hit rate, and API concurrency.
 - Test upload/storage capacity behavior.
 - Test payment reconciliation/retries, app restart, migrations, and daily backup restore against RPO 24 hours / RTO 4 hours.
-- Validate health checks, alerts, incident runbooks, Strapi availability, and Redis degradation behavior.
+- Validate health checks, alerts, incident runbooks, and Redis degradation behavior.
 
 Staging/UAT/release:
 
-- Provision staging in Coolify with domains, TLS, env vars, MySQL, Redis, Strapi, and persistent file volume.
+- Provision staging in Coolify with domains, TLS, env vars, MySQL, Redis, and persistent file volume.
 - Configure Midtrans Sandbox notification URL and verify notification handling.
 - Run all migrations from an empty database.
 - Seed controlled test courses and test accounts.
@@ -326,7 +326,7 @@ Can run in parallel once interfaces are agreed:
 - Course player shell and progress API.
 - Quiz authoring and learner quiz UI after contract freeze.
 - Community UI and API after moderation/access rules are agreed.
-- Strapi marketing content and public page shell.
+- Local marketing content and public page shell.
 - Coolify pipeline and app development after environment contract is defined.
 
 Must remain sequential:

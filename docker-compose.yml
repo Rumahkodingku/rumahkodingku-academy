@@ -49,11 +49,6 @@ services:
       - EMAIL_SMTP_PORT=1025
       - EMAIL_SMTP_USER=
       - EMAIL_SMTP_PASSWORD=
-      - GARAGE_ENDPOINT=http://garage:3900
-      - GARAGE_ACCESS_KEY=
-      - GARAGE_SECRET_KEY=
-      - GARAGE_BUCKET=academy-uploads
-      - STRAPI_URL=http://strapi:1337
     volumes:
       - api_uploads:/app/apps/api/uploads
     restart: unless-stopped
@@ -102,37 +97,6 @@ services:
     networks:
       - rumahkodingku-academy-network
 
-  strapi:
-    image: vshadbolt/strapi:latest
-    container_name: rumahkodingku-academy-strapi
-    ports:
-      - "1337:1337"
-    environment:
-      NODE_ENV: development
-      HOST: 0.0.0.0
-      PORT: 1337
-      DATABASE_CLIENT: mysql
-      DATABASE_HOST: mysql
-      DATABASE_PORT: 3306
-      DATABASE_NAME: strapi
-      DATABASE_USERNAME: strapi_user
-      DATABASE_PASSWORD: ${STRAPI_DB_PASSWORD:-strapi_password}
-      APP_KEYS: ${STRAPI_APP_KEYS:-change-me-app-key-1,change-me-app-key-2}
-      API_TOKEN_SALT: ${STRAPI_API_TOKEN_SALT:-change-me-api-token-salt}
-      ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET:-change-me-admin-jwt-secret}
-      TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT:-change-me-transfer-token-salt}
-      JWT_SECRET: ${STRAPI_JWT_SECRET:-change-me-jwt-secret}
-    volumes:
-      - strapi_app:/srv/app
-      - strapi_data:/app/.tmp
-      - strapi_uploads:/app/public/uploads
-    restart: unless-stopped
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - rumahkodingku-academy-network
-
   prometheus:
     image: prom/prometheus:latest
     container_name: rumahkodingku-academy-prometheus
@@ -170,46 +134,6 @@ services:
     networks:
       - rumahkodingku-academy-network
 
-  databasus:
-    image: databasus/databasus:latest
-    container_name: rumahkodingku-academy-databasus
-    ports:
-      - "4005:4005"
-    volumes:
-      - databasus_data:/app/data
-      - ./backups:/backups
-    restart: unless-stopped
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - rumahkodingku-academy-network
-
-  garage:
-    image: dxflrs/garage:v2.5.0
-    container_name: rumahkodingku-academy-garage
-    ports:
-      - "3904:3900"
-      - "3905:3901"
-      - "3906:3902"
-      - "3907:3903"
-    environment:
-      GARAGE_CONFIG_FILE: /etc/garage.toml
-      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
-      GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN:-change-me-admin-token}
-      GARAGE_METRICS_TOKEN: ${GARAGE_METRICS_TOKEN:-change-me-metrics-token}
-      GARAGE_DEFAULT_ACCESS_KEY: ${GARAGE_DEFAULT_ACCESS_KEY:-GK000000000000000000000000}
-      GARAGE_DEFAULT_SECRET_KEY: ${GARAGE_DEFAULT_SECRET_KEY:-change-me-default-secret-key-at-least-32-chars}
-      GARAGE_DEFAULT_BUCKET: ${GARAGE_DEFAULT_BUCKET:-academy-uploads}
-    volumes:
-      - garage_data:/var/lib/garage/data
-      - garage_meta:/var/lib/garage/meta
-      - ./infra/garage/garage.toml:/etc/garage.toml:ro
-    command: ["/garage", "server", "--single-node", "--default-bucket"]
-    restart: unless-stopped
-    networks:
-      - rumahkodingku-academy-network
-
   mailpit:
     image: axllent/mailpit:latest
     container_name: rumahkodingku-academy-mailpit
@@ -233,7 +157,6 @@ services:
     depends_on:
       - web
       - api
-      - strapi
       - grafana
     networks:
       - rumahkodingku-academy-network
@@ -246,13 +169,6 @@ volumes:
   mysql_data:
   api_uploads:
   redis_data:
-  strapi_app:
-  strapi_data:
-  strapi_uploads:
   prometheus_data:
   grafana_data:
-  databasus_data:
-  backups:
-  garage_data:
-  garage_meta:
   cloudflared_config:

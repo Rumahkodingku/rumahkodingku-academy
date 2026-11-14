@@ -37,14 +37,14 @@ Default UI language is Indonesian. Use the i18n layer for user-facing copy; keep
 
 ## UI and design tokens
 
-Use semantic tokens from `apps/web/src/index.css`; do not hard-code colors in components. Use the shared primitives in `apps/web/src/components/ui/` and Base UI behavior instead of custom keyboard/focus implementations. Use `Button` for actions and `ButtonLink` for navigation; Base UI `Button` must not render links. Every interactive control needs a visible focus state and a target of at least 44×44 CSS px where practical. Use `Container` and `Section` for page rhythm. Marketing content reads go through `apps/web/src/strapi/server.ts`; never import that module into a client component. Critical asynchronous events use `outbox_events`; notification delivery uses `notification_outbox`.
+Use semantic tokens from `apps/web/src/index.css`; do not hard-code colors in components. Use the shared primitives in `apps/web/src/components/ui/` and Base UI behavior instead of custom keyboard/focus implementations. Use `Button` for actions and `ButtonLink` for navigation; Base UI `Button` must not render links. Every interactive control needs a visible focus state and a target of at least 44×44 CSS px where practical. Use `Container` and `Section` for page rhythm. Marketing content comes from `apps/web/src/marketing`; keep it server-side or pass typed content into client components. Critical asynchronous events use `outbox_events`; notification delivery uses `notification_outbox`.
 
-## Redis, Socket.io, PostHog, Strapi
+## Redis, Socket.io, PostHog, Marketing
 
 - Redis: cache and rate limiting only. Never make it the source of truth for orders, payments, enrollments, or refresh sessions.
 - Socket.io: in-app notifications. Authenticate the socket and derive identity from the session, never from client input. Provide polling fallback.
 - PostHog: product analytics and feature flags only. Never send secrets or sensitive payment data. Admin reports use MySQL.
-- Strapi: marketing content only. Do not store course, user, order, enrollment, or progress data there.
+- Marketing content: local typed fixtures only. Do not store course, user, order, enrollment, or progress data there.
 
 ## Security
 

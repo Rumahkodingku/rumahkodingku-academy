@@ -31,7 +31,7 @@ repo/
 - `packages/db` owns the data source, entities, and migrations.
 - `packages/env` owns validated server/web environment schemas.
 - `packages/config` owns shared TypeScript and tooling configuration.
-- Strapi is a separate marketing service; it never owns LMS data.
+- Marketing content is local typed content in `apps/web`; it never owns LMS data.
 
 ## Dependency rules
 

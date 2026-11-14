@@ -60,12 +60,6 @@ Expected ports:
 - Redis: `localhost:6380`
 - Mailpit UI: `http://localhost:8026`
 
-Strapi is optional for LMS core development. Start it only when working on marketing content:
-
-```sh
-docker compose up -d strapi
-```
-
 ## 5. Run database migrations
 
 ```sh

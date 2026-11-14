@@ -9,7 +9,7 @@
 **UI runtime:** React 19  
 **Styling:** Tailwind CSS 4 + custom native-first primitives + Motion  
 **API:** NestJS REST under `/api/v1`  
-**Marketing content:** Strapi (marketing only)  
+**Marketing content:** local typed fixtures in `apps/web`  
 **Monorepo:** pnpm Workspaces + Turborepo
 
 > **Normative language:** The words MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY express requirements. MUST and MUST NOT are mandatory constraints. SHOULD and SHOULD NOT are strong recommendations that require a documented reason to deviate. MAY indicates an optional choice.
@@ -32,7 +32,7 @@ The frontend MUST:
 - Deliver a secure learner area and admin area backed by the NestJS API.
 - Keep server components as the default and client JavaScript as small as practical.
 - Make loading, empty, error, unauthorized, and offline states explicit.
-- Keep business rules authoritative in NestJS and Strapi limited to marketing content.
+- Keep business rules authoritative in NestJS and marketing content local to `apps/web`.
 - Remain testable at unit, component, API-contract, accessibility, and end-to-end levels.
 - Be deployable as a standalone Node.js application on the existing VPS + Coolify topology.
 
@@ -41,7 +41,7 @@ The frontend MUST:
 - Next.js App Router structure and route groups.
 - Server and Client Component boundaries.
 - Feature module organization and ownership.
-- Browser and server data access to NestJS and Strapi.
+- Browser and server data access to NestJS, plus local marketing content.
 - TanStack Query and Zustand usage.
 - Caching, revalidation, and rendering strategy.
 - Authentication UI, session reads, and optimistic route protection.
@@ -60,7 +60,7 @@ The following remain governed by their own documents:
 - Product business rules and pricing.
 - Detailed visual design specifications and brand assets.
 - Infrastructure-as-code and Coolify-specific manifests.
-- Strapi content modeling beyond the frontend rendering contract.
+- Marketing content modeling beyond the frontend rendering contract.
 
 ### 1.5 Repository Context and Verification Rule
 
@@ -97,7 +97,7 @@ When this document conflicts with the current implementation, follow the approve
 | WEB-010 | Authentication       | HttpOnly cookies owned by NestJS; `proxy.ts` only performs optimistic checks                      | Accepted |
 | WEB-011 | Mutations            | TanStack Query mutations from the browser; Server Actions only for Next-local concerns            | Accepted |
 | WEB-012 | Deployment           | `output: "standalone"` on Node.js 24 LTS behind HTTPS                                             | Accepted |
-| WEB-013 | Marketing content    | Strapi is accessed through a server-only adapter                                                  | Accepted |
+| WEB-013 | Marketing content    | Local typed fixtures in `apps/web/src/marketing`; no remote CMS                                   | Accepted |
 | WEB-014 | BFF                  | No catch-all BFF proxy; direct API is the default                                                 | Accepted |
 | WEB-015 | Testing              | Vitest for synchronous units; Playwright for async RSC and journeys; Storybook for UI states      | Accepted |
 
@@ -117,7 +117,7 @@ Any change to an accepted decision MUST be recorded as an Architecture Decision 
 | API access        | Browser-only Axios client                                        | Browser client plus server-only fetch with cookie forwarding    | Data layer      |
 | API types         | Hand-written types                                               | Generated OpenAPI schema plus thin typed wrappers               | Data layer      |
 | Auth              | No session DAL or route guard                                    | Session DAL, protected layouts, optimistic `proxy.ts`           | Auth shell      |
-| Marketing         | Strapi helpers are generic                                       | Server-only Strapi adapter with cache tags and SEO mapping      | Marketing       |
+| Marketing         | Local typed fixtures exist in `apps/web`                         | Local marketing module with typed content                       | Marketing       |
 | Caching           | No explicit strategy                                             | Cache matrix in Section 12                                      | Marketing       |
 | UI system         | Custom native-first primitives and Tailwind exist                | Editorial tokenized UI primitives and feature-level composition | Hardening       |
 | Security          | No CSP/security headers                                          | CSP, `server-only`, sanitized rich text, image allowlist        | Hardening       |
@@ -134,7 +134,7 @@ The current state is recorded for planning. It MUST NOT be treated as an approve
 | Phase 1 — foundation             | Done    | Locale segment, as-needed proxy, marketing group, providers, metadata, sitemap/robots, image allowlist, starter home converted to a Server Component.                                                                                                   |
 | Phase 2 — data layer             | Done    | Browser client, server-only fetch, generated OpenAPI schema from the current API, Problem Details mapping, query client, tests.                                                                                                                         |
 | Phase 3 — auth shell             | Done    | Server-side session reads via `GET /users/me`, permission-based guards, protected route groups, account menu, split auth UI, profile/avatar editing, silent refresh with one-shot retry, and Playwright auth coverage in Chromium, Firefox, and WebKit. |
-| Phase 4 — marketing/catalog      | Pending | Public pages and Strapi rendering.                                                                                                                                                                                                                      |
+| Phase 4 — marketing/catalog      | Pending | Public pages and local marketing content.                                                                                                                                                                                                               |
 | Phase 5 — learning               | Pending | Learner dashboard, player, quiz, project, certificate.                                                                                                                                                                                                  |
 | Phase 6 — commerce               | Pending | Checkout and payment status.                                                                                                                                                                                                                            |
 | Phase 7 — admin                  | Pending | Administration screens.                                                                                                                                                                                                                                 |
@@ -146,7 +146,7 @@ The generated OpenAPI snapshot currently covers the implemented API surface only
 
 1. **Server-first rendering.** Render data on the server unless interactivity requires the browser. Every client boundary is a bundle-size and hydration decision.
 2. **Smallest client boundary.** Put `"use client"` on the smallest component that needs state, events, browser APIs, or client hooks. Never mark an entire page as a client component for one widget.
-3. **One source of truth per concern.** NestJS owns LMS data, authorization, payments, and sessions. Strapi owns marketing content only. The frontend owns presentation, navigation, and optimistic UX.
+3. **One source of truth per concern.** NestJS owns LMS data, authorization, payments, and sessions. Marketing content lives in local typed fixtures. The frontend owns presentation, navigation, and optimistic UX.
 4. **No duplicated business rules.** Price, coupon, enrollment, progress, grading, certificate eligibility, and project decisions stay server-side. The UI explains and displays; it does not decide.
 5. **URLs are navigation state.** Filters, pagination, tabs, sorting, and search SHOULD be represented in the URL when they are shareable or reload-safe. Ephemeral overlays stay in component state.
 6. **Explicit states.** Every data-driven surface has loading, empty, error, unauthorized, and partial states. A blank screen is a defect.
@@ -167,7 +167,7 @@ Browser
 
 Next.js server
   ├── server fetch with forwarded cookies ─→ NestJS /api/v1
-  ├── server-only Strapi adapter ─────────→ Strapi /api
+  ├── local marketing content ────────────→ apps/web/src/marketing
   └── generated metadata/sitemap/OG ──────→ public output
 
 NestJS
@@ -176,20 +176,20 @@ NestJS
   ├── providers (mail, storage, payments)
   └── Socket.io gateway
 
-Strapi
-  └── marketing content only; never LMS data
+Local marketing content
+  └── typed fixtures only; never LMS data
 ```
 
 ### 5.1 Responsibilities
 
-| Path/service       | Owns                                                                     | Must not own                                                          |
-| ------------------ | ------------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| `apps/web`         | Routing, rendering, UI/UX, client state, SEO, i18n, frontend security    | Business rules, pricing, enrollment, grading, server authorization    |
-| `apps/api`         | REST contract, authentication, authorization, transactions, domain rules | UI composition, Strapi content                                        |
-| Strapi             | Marketing pages, articles, categories, authors, media for marketing      | Courses, users, orders, payments, enrollments, progress, certificates |
-| `packages/env/web` | Validated browser and server environment schema                          | Business logic                                                        |
-| `packages/config`  | TypeScript/tooling baseline                                              | Runtime state                                                         |
-| `packages/db`      | DataSource, entities, migrations                                         | Frontend access                                                       |
+| Path/service             | Owns                                                                     | Must not own                                                          |
+| ------------------------ | ------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| `apps/web`               | Routing, rendering, UI/UX, client state, SEO, i18n, frontend security    | Business rules, pricing, enrollment, grading, server authorization    |
+| `apps/api`               | REST contract, authentication, authorization, transactions, domain rules | UI composition, marketing content                                     |
+| `apps/web/src/marketing` | Marketing pages, features, steps, media for marketing                    | Courses, users, orders, payments, enrollments, progress, certificates |
+| `packages/env/web`       | Validated browser and server environment schema                          | Business logic                                                        |
+| `packages/config`        | TypeScript/tooling baseline                                              | Runtime state                                                         |
+| `packages/db`            | DataSource, entities, migrations                                         | Frontend access                                                       |
 
 ### 5.2 Direct API Decision
 
@@ -217,7 +217,7 @@ The browser and the Next.js server reach NestJS through a same-origin `/api/v1` 
 
 Pages, layouts, and data-oriented sections MUST be Server Components unless they need client behavior. Server Components may:
 
-- Fetch data directly from NestJS or Strapi.
+- Fetch data directly from NestJS or local marketing content.
 - Read cookies and headers through server-only APIs.
 - Access server-only environment values.
 - Render Client Components as children or leaves.
@@ -396,50 +396,50 @@ Route groups do not appear in URLs. They exist to share layouts and boundaries.
 
 ### 7.3 Route Map
 
-| URL                                   | Page                | Group         | Access        | API dependency  |
-| ------------------------------------- | ------------------- | ------------- | ------------- | --------------- |
-| `/`                                   | Home                | `(marketing)` | Public        | Catalog/Strapi  |
-| `/courses`                            | Catalog/search      | `(marketing)` | Public        | Catalog         |
-| `/courses/[slug]`                     | Course detail       | `(marketing)` | Public        | Catalog         |
-| `/roadmaps`                           | Roadmap catalog     | `(marketing)` | Public        | Roadmaps        |
-| `/roadmaps/[slug]`                    | Roadmap detail      | `(marketing)` | Public        | Roadmaps        |
-| `/certificates/verify/[code]`         | Public verification | `(marketing)` | Public        | Certificates    |
-| `/blog`, `/blog/[slug]`               | Marketing content   | `(marketing)` | Public        | Strapi          |
-| `/about`, `/faq`, `/contact`          | Company/help        | `(marketing)` | Public        | Strapi/local    |
-| `/login`                              | Login               | `(auth)`      | Guest         | Auth            |
-| `/register`                           | Registration        | `(auth)`      | Guest         | Auth            |
-| `/forgot-password`                    | Request reset       | `(auth)`      | Guest         | Auth            |
-| `/reset-password`                     | Reset password      | `(auth)`      | Guest         | Auth            |
-| `/verify-email`                       | Verify email        | `(auth)`      | Guest         | Auth            |
-| `/checkout`                           | Start checkout      | `(commerce)`  | USER          | Orders          |
-| `/checkout/[orderId]`                 | Payment status      | `(commerce)`  | USER          | Orders/Payments |
-| `/learn`                              | Learning dashboard  | `(learn)`     | USER          | Enrollments     |
-| `/learn/courses/[courseId]`           | Course player       | `(learn)`     | Enrolled USER | Learning        |
-| `/learn/lessons/[lessonId]`           | Lesson              | `(learn)`     | Enrolled USER | Learning        |
-| `/learn/quizzes/[quizId]`             | Quiz                | `(learn)`     | Enrolled USER | Quizzes         |
-| `/learn/quizzes/attempts/[attemptId]` | Attempt/result      | `(learn)`     | Enrolled USER | Quizzes         |
-| `/learn/projects/[projectId]`         | Final project       | `(learn)`     | Enrolled USER | Projects        |
-| `/learn/certificates`                 | My certificates     | `(learn)`     | USER          | Certificates    |
-| `/me`                                 | Account overview    | `(account)`   | USER          | Users           |
-| `/me/orders`                          | Order history       | `(account)`   | USER          | Orders          |
-| `/me/notifications`                   | Notifications       | `(account)`   | USER          | Notifications   |
-| `/me/wishlist`                        | Wishlist            | `(account)`   | USER          | Wishlist        |
-| `/me/reviews`                         | Reviews             | `(account)`   | USER          | Reviews         |
-| `/me/settings`                        | Profile/settings    | `(account)`   | USER          | Users           |
-| `/admin`                              | Admin dashboard     | `(admin)`     | ADMIN         | Admin/Analytics |
-| `/admin/courses`                      | Course management   | `(admin)`     | ADMIN         | Courses         |
-| `/admin/orders`                       | Orders              | `(admin)`     | ADMIN         | Orders          |
-| `/admin/payments`                     | Payments            | `(admin)`     | ADMIN         | Payments        |
-| `/admin/refund-requests`              | Refunds             | `(admin)`     | ADMIN         | Refunds         |
-| `/admin/coupons`                      | Coupons             | `(admin)`     | ADMIN         | Coupons         |
-| `/admin/users`                        | Users               | `(admin)`     | ADMIN         | Users           |
-| `/admin/community`                    | Moderation          | `(admin)`     | ADMIN         | Community       |
-| `/admin/reviews`                      | Review moderation   | `(admin)`     | ADMIN         | Reviews         |
-| `/admin/roadmaps`                     | Roadmaps            | `(admin)`     | ADMIN         | Roadmaps        |
-| `/admin/certificates`                 | Certificates        | `(admin)`     | ADMIN         | Certificates    |
-| `/admin/analytics`                    | Analytics/reports   | `(admin)`     | ADMIN         | Analytics       |
-| `/admin/audit-logs`                   | Audit trail         | `(admin)`     | ADMIN         | Audit           |
-| `/admin/settings`                     | Platform settings   | `(admin)`     | ADMIN         | Admin           |
+| URL                                   | Page                | Group         | Access        | API dependency        |
+| ------------------------------------- | ------------------- | ------------- | ------------- | --------------------- |
+| `/`                                   | Home                | `(marketing)` | Public        | Catalog/local content |
+| `/courses`                            | Catalog/search      | `(marketing)` | Public        | Catalog               |
+| `/courses/[slug]`                     | Course detail       | `(marketing)` | Public        | Catalog               |
+| `/roadmaps`                           | Roadmap catalog     | `(marketing)` | Public        | Roadmaps              |
+| `/roadmaps/[slug]`                    | Roadmap detail      | `(marketing)` | Public        | Roadmaps              |
+| `/certificates/verify/[code]`         | Public verification | `(marketing)` | Public        | Certificates          |
+| `/blog`, `/blog/[slug]`               | Marketing content   | `(marketing)` | Public        | Local content         |
+| `/about`, `/faq`, `/contact`          | Company/help        | `(marketing)` | Public        | Local content         |
+| `/login`                              | Login               | `(auth)`      | Guest         | Auth                  |
+| `/register`                           | Registration        | `(auth)`      | Guest         | Auth                  |
+| `/forgot-password`                    | Request reset       | `(auth)`      | Guest         | Auth                  |
+| `/reset-password`                     | Reset password      | `(auth)`      | Guest         | Auth                  |
+| `/verify-email`                       | Verify email        | `(auth)`      | Guest         | Auth                  |
+| `/checkout`                           | Start checkout      | `(commerce)`  | USER          | Orders                |
+| `/checkout/[orderId]`                 | Payment status      | `(commerce)`  | USER          | Orders/Payments       |
+| `/learn`                              | Learning dashboard  | `(learn)`     | USER          | Enrollments           |
+| `/learn/courses/[courseId]`           | Course player       | `(learn)`     | Enrolled USER | Learning              |
+| `/learn/lessons/[lessonId]`           | Lesson              | `(learn)`     | Enrolled USER | Learning              |
+| `/learn/quizzes/[quizId]`             | Quiz                | `(learn)`     | Enrolled USER | Quizzes               |
+| `/learn/quizzes/attempts/[attemptId]` | Attempt/result      | `(learn)`     | Enrolled USER | Quizzes               |
+| `/learn/projects/[projectId]`         | Final project       | `(learn)`     | Enrolled USER | Projects              |
+| `/learn/certificates`                 | My certificates     | `(learn)`     | USER          | Certificates          |
+| `/me`                                 | Account overview    | `(account)`   | USER          | Users                 |
+| `/me/orders`                          | Order history       | `(account)`   | USER          | Orders                |
+| `/me/notifications`                   | Notifications       | `(account)`   | USER          | Notifications         |
+| `/me/wishlist`                        | Wishlist            | `(account)`   | USER          | Wishlist              |
+| `/me/reviews`                         | Reviews             | `(account)`   | USER          | Reviews               |
+| `/me/settings`                        | Profile/settings    | `(account)`   | USER          | Users                 |
+| `/admin`                              | Admin dashboard     | `(admin)`     | ADMIN         | Admin/Analytics       |
+| `/admin/courses`                      | Course management   | `(admin)`     | ADMIN         | Courses               |
+| `/admin/orders`                       | Orders              | `(admin)`     | ADMIN         | Orders                |
+| `/admin/payments`                     | Payments            | `(admin)`     | ADMIN         | Payments              |
+| `/admin/refund-requests`              | Refunds             | `(admin)`     | ADMIN         | Refunds               |
+| `/admin/coupons`                      | Coupons             | `(admin)`     | ADMIN         | Coupons               |
+| `/admin/users`                        | Users               | `(admin)`     | ADMIN         | Users                 |
+| `/admin/community`                    | Moderation          | `(admin)`     | ADMIN         | Community             |
+| `/admin/reviews`                      | Review moderation   | `(admin)`     | ADMIN         | Reviews               |
+| `/admin/roadmaps`                     | Roadmaps            | `(admin)`     | ADMIN         | Roadmaps              |
+| `/admin/certificates`                 | Certificates        | `(admin)`     | ADMIN         | Certificates          |
+| `/admin/analytics`                    | Analytics/reports   | `(admin)`     | ADMIN         | Analytics             |
+| `/admin/audit-logs`                   | Audit trail         | `(admin)`     | ADMIN         | Audit                 |
+| `/admin/settings`                     | Platform settings   | `(admin)`     | ADMIN         | Admin                 |
 
 The route map is UX routing, not the API contract. API paths, payloads, and status codes remain in `docs/api/api-specification.md`. Add `planned` to this table only when a product requirement and API contract exist.
 
@@ -535,7 +535,7 @@ Not every module needs every folder. Add a folder only when it has real content.
 | --------------- | ----------------------------------------------------------- |
 | `auth`          | Login, registration, recovery, verification UI, session DAL |
 | `account`       | Profile, settings, orders, notifications, wishlist, reviews |
-| `marketing`     | Landing, about, FAQ, contact, Strapi-rendered pages         |
+| `marketing`     | Landing, about, FAQ, contact, local content pages           |
 | `catalog`       | Course catalog, search, filters, course detail              |
 | `checkout`      | Order creation, coupon validation, payment status           |
 | `learning`      | Learner dashboard, course player, lesson progress           |
@@ -583,7 +583,7 @@ If an export is only used inside the feature, do not export it. Remove `index.ts
 | `src/components/shared/` | App-wide presentational composition                         | Domain-specific policy                                       |
 | `src/components/layout/` | Header, footer, shells, navigation chrome                   | Page data fetching beyond navigation needs                   |
 | `src/lib/api/`           | Browser/server transport, generated schema, Problem Details | Business rules, React rendering                              |
-| `src/lib/strapi/`        | Server-only marketing adapter, media helpers, SEO mapping   | LMS data                                                     |
+| `src/marketing/`         | Local marketing content, fixtures, media metadata           | LMS data                                                     |
 | `src/lib/auth/`          | Session DAL, route guards, auth view helpers                | Token issuance, refresh rotation, password hashing           |
 | `src/lib/i18n/`          | Server/client i18n setup, locale metadata                   | Page copy decisions                                          |
 | `src/config/`            | Env access, navigation, site metadata                       | Secrets in client code                                       |
@@ -600,7 +600,7 @@ If an export is only used inside the feature, do not export it. Remove `index.ts
 | `components/ui`     | No    | No                                 | Yes             | Yes                 | Pure utilities | No       | Yes     |
 | `components/shared` | No    | Public presentational exports only | Yes             | Yes                 | Yes            | Yes      | Yes     |
 | `lib`               | No    | No                                 | No              | No                  | Yes            | Yes      | Yes     |
-| `lib/strapi`        | No    | No                                 | No              | No                  | `lib/strapi`   | Yes      | Yes     |
+| `marketing`         | No    | No                                 | No              | No                  | `marketing`    | Yes      | Yes     |
 
 Rules:
 
@@ -615,8 +615,6 @@ Rules:
 These modules MUST start with `import "server-only";`:
 
 - `src/lib/api/server.ts`
-- `src/lib/strapi/server.ts`
-- `src/lib/strapi/client.ts` (authenticated client)
 - `src/lib/auth/session.ts`
 - Any feature `server/` module that reads cookies, secrets, or privileged data.
 
@@ -759,8 +757,6 @@ A catch-all `/api/proxy/[...path]` is prohibited.
 | `NEXT_PUBLIC_SITE_URL`     | Browser + server | Public web origin for metadata/sitemap       |
 | `API_URL`                  | Server only      | Internal API origin for RSC/server fetch     |
 | `AUTH_SESSION_COOKIE`      | Server only      | Cookie name used for optimistic proxy checks |
-| `NEXT_PUBLIC_STRAPI_URL`   | Browser + server | Public Strapi media/content origin           |
-| `STRAPI_API_TOKEN`         | Server only      | Authenticated Strapi reads                   |
 | `NEXT_PUBLIC_POSTHOG_KEY`  | Browser          | Product analytics                            |
 | `NEXT_PUBLIC_POSTHOG_HOST` | Browser          | PostHog host                                 |
 
@@ -856,20 +852,20 @@ On logout:
 
 ### 12.1 Cache Matrix
 
-| Data                     | Source  | Strategy                 | Tag / key            |
-| ------------------------ | ------- | ------------------------ | -------------------- |
-| Marketing page           | Strapi  | ISR, about 1 hour        | `strapi:page:<slug>` |
-| Blog list                | Strapi  | ISR, about 1 hour        | `strapi:blog`        |
-| Blog detail              | Strapi  | ISR, about 1 hour        | `strapi:blog:<slug>` |
-| Course catalog           | NestJS  | 60 seconds               | `catalog:courses`    |
-| Course detail (public)   | NestJS  | 60–300 seconds           | `course:<id>`        |
-| Public roadmap           | NestJS  | 300 seconds              | `roadmaps`           |
-| Certificate verification | NestJS  | `no-store` or very short | none                 |
-| Learner area             | NestJS  | `no-store`               | none                 |
-| Account area             | NestJS  | `no-store`               | none                 |
-| Admin area               | NestJS  | `no-store`               | none                 |
-| Session/user             | NestJS  | per-request `cache()`    | none                 |
-| Static assets            | Next.js | immutable                | file hash            |
+| Data                     | Source        | Strategy                 | Tag / key         |
+| ------------------------ | ------------- | ------------------------ | ----------------- |
+| Marketing page           | Local fixture | Static                   | none              |
+| Blog list                | Local fixture | Static                   | none              |
+| Blog detail              | Local fixture | Static                   | none              |
+| Course catalog           | NestJS        | 60 seconds               | `catalog:courses` |
+| Course detail (public)   | NestJS        | 60–300 seconds           | `course:<id>`     |
+| Public roadmap           | NestJS        | 300 seconds              | `roadmaps`        |
+| Certificate verification | NestJS        | `no-store` or very short | none              |
+| Learner area             | NestJS        | `no-store`               | none              |
+| Account area             | NestJS        | `no-store`               | none              |
+| Admin area               | NestJS        | `no-store`               | none              |
+| Session/user             | NestJS        | per-request `cache()`    | none              |
+| Static assets            | Next.js       | immutable                | file hash         |
 
 ### 12.2 Rules
 
@@ -884,10 +880,9 @@ On logout:
 
 ### 12.3 Marketing Content
 
-- Strapi content is public and cacheable unless preview/draft mode is active.
-- Draft/preview mode MUST use a server-only token and MUST NOT be enabled for anonymous users.
-- Media URLs are normalized through the Strapi adapter; do not expose internal admin URLs.
-- SEO metadata from Strapi is mapped explicitly, not dumped as raw HTML.
+- Local marketing content is public and rendered at build time unless it becomes dynamic.
+- Marketing media URLs are local or use approved storage hosts.
+- SEO metadata from local marketing content is mapped explicitly, not dumped as raw HTML.
 
 ### 12.4 Catalog
 
@@ -1256,7 +1251,7 @@ Do not hardcode `Rp`, separators, month names, or date order outside the formatt
 - Indonesian copy is the source of truth for product tone.
 - English copy is reviewed for meaning, not word-for-word translation.
 - `alt`, `aria-label`, metadata, empty states, and validation messages are all translated.
-- Strapi content is localized by its own locale fields; do not machine-translate without review.
+- Marketing content is localized by `id` and `en` fixtures; do not machine-translate without review.
 
 ### 16.7 SEO and hreflang
 
@@ -1264,7 +1259,7 @@ Do not hardcode `Rp`, separators, month names, or date order outside the formatt
 - Canonical URLs include the correct locale prefix.
 - `sitemap.ts` includes both locales and excludes private routes.
 - `robots.ts` disallows learner/account/admin/auth routes.
-- Metadata title/description come from the locale dictionary or Strapi SEO fields.
+- Metadata title/description come from the locale dictionary or local marketing fields.
 
 ### 16.8 Locale Switching
 
@@ -1437,7 +1432,7 @@ For every page and major component:
 - Browser input is untrusted.
 - Client-side authorization is explanatory only.
 - Session identity comes from the API-verified cookie, never from a client-supplied user ID or role.
-- Strapi content is trusted only after sanitization for rich text.
+- Local marketing rich text is trusted only after sanitization.
 - Server-only environment values never cross into a client bundle.
 
 ### 19.2 Server-Only Code
@@ -1446,8 +1441,7 @@ The following MUST be server-only:
 
 - Session DAL and route guards.
 - Server API fetch.
-- Authenticated Strapi client and token.
-- Any code that reads `API_URL`, `STRAPI_API_TOKEN`, or other secrets.
+- Any code that reads `API_URL` or other secrets.
 - Any code that reads cookies or private headers.
 
 Use `import "server-only";` and verify the production build does not include these modules in client chunks.
@@ -1455,7 +1449,6 @@ Use `import "server-only";` and verify the production build does not include the
 ### 19.3 Environment and Secrets
 
 - `NEXT_PUBLIC_*` values are public by definition. Never put a secret behind that prefix.
-- `STRAPI_API_TOKEN` is server-only.
 - PostHog keys are project public keys; still do not send secrets, tokens, payment data, or unnecessary PII.
 - Do not commit `.env` files.
 - Validate all values through `packages/env/web`.
@@ -1492,7 +1485,7 @@ CSP rollout:
 ### 19.6 XSS and Rich Text
 
 - Do not use `dangerouslySetInnerHTML` without a sanitizer.
-- Sanitize Strapi rich text on the server with an allowlist of tags/attributes.
+- Sanitize local marketing rich text on the server with an allowlist of tags/attributes.
 - Lesson rich text follows the same rule.
 - URLs from content are validated; reject `javascript:` and unexpected protocols.
 - User-generated content is rendered as text by default.
@@ -1500,7 +1493,7 @@ CSP rollout:
 
 ### 19.7 Images and Remote Content
 
-- Configure `images.remotePatterns` only for approved Strapi and storage hosts.
+- Configure `images.remotePatterns` only for approved remote image hosts.
 - Do not proxy arbitrary remote images.
 - Validate image dimensions and alt text from content.
 - Do not use user-provided URLs as `src` without host validation.
@@ -1767,11 +1760,11 @@ WCAG 2.2 AA for all user-facing flows. Accessibility is part of the Definition o
 - Validate structured data before release.
 - Do not invent ratings or reviews that the product does not have.
 
-### 22.6 Strapi SEO
+### 22.6 Marketing SEO
 
-- Map Strapi SEO fields to Next metadata explicitly.
+- Map marketing SEO fields to Next metadata explicitly.
 - Sanitize rich text and metadata.
-- Do not render raw Strapi HTML into `<head>`.
+- Do not render raw marketing HTML into `<head>`.
 - Preview/draft content is not indexed.
 
 ### 22.7 Private Routes
@@ -1858,7 +1851,7 @@ E2E uses deterministic fixtures and a disposable environment. Never use producti
 - Use factories and fixtures.
 - Keep test users separate from real accounts.
 - Reset disposable databases only.
-- Never use production Redis, Strapi, or payment credentials.
+- Never use production Redis or payment credentials.
 - Mock payment outcomes are labeled and never grant production access.
 
 ### 23.8 CI Gates
@@ -1955,15 +1948,14 @@ Minimum dashboards:
 
 ### 25.2 Environment Matrix
 
-| Variable                   | Build time | Runtime | Exposure        |
-| -------------------------- | ---------- | ------- | --------------- |
-| `NEXT_PUBLIC_SERVER_URL`   | Yes        | Yes     | Public          |
-| `API_URL`                  | No         | Yes     | Server only     |
-| `NEXT_PUBLIC_STRAPI_URL`   | Yes        | Yes     | Public          |
-| `STRAPI_API_TOKEN`         | No         | Yes     | Server only     |
-| `NEXT_PUBLIC_POSTHOG_KEY`  | Yes        | Yes     | Public          |
-| `NEXT_PUBLIC_POSTHOG_HOST` | Yes        | Yes     | Public          |
-| `NODE_ENV`                 | Yes        | Yes     | Public behavior |
+| Variable                 | Build time | Runtime | Exposure    |
+| ------------------------ | ---------- | ------- | ----------- |
+| `NEXT_PUBLIC_SERVER_URL` | Yes        | Yes     | Public      |
+| `API_URL`                | No         | Yes     | Server only |
+
+| `NEXT_PUBLIC_POSTHOG_KEY` | Yes | Yes | Public |
+| `NEXT_PUBLIC_POSTHOG_HOST` | Yes | Yes | Public |
+| `NODE_ENV` | Yes | Yes | Public behavior |
 
 `NEXT_PUBLIC_*` values are baked into the client bundle at build time. Changing them requires a rebuild.
 
@@ -1994,7 +1986,7 @@ Minimum dashboards:
 ### 25.6 Health and Readiness
 
 - Provide a lightweight health endpoint or use the root page.
-- Readiness should reflect the ability to serve the app, not Strapi availability.
+- Readiness should reflect the ability to serve the app and its API.
 - Do not expose dependency credentials in health output.
 - Configure Coolify health checks and restart policy.
 
@@ -2035,7 +2027,7 @@ The following are prohibited unless a documented exception is approved.
 6. **Caching private data.** Shared caches for learner, account, checkout, or admin responses.
 7. **Unsanitized HTML.** `dangerouslySetInnerHTML` without a server-side allowlist sanitizer.
 8. **Direct `process.env` access.** Reading environment values in components or feature code instead of `packages/env/web`.
-9. **Server-only imports in client code.** Importing session, Strapi token, or server fetch modules into a client bundle.
+9. **Server-only imports in client code.** Importing session or server fetch modules into a client bundle.
 10. **Business logic duplication.** Recalculating price, coupon, eligibility, progress, grading, or refund rules in the UI.
 11. **`any` API responses.** Disabling type safety instead of fixing the contract or generated type.
 12. **Manual generated-file edits.** Editing `schema.d.ts` or other generated output.
@@ -2164,7 +2156,7 @@ The following are prohibited unless a documented exception is approved.
 Tasks:
 
 - Review and approve this document.
-- Inventory current routes, components, env values, and Strapi usage.
+- Inventory current routes, components, env values, and marketing content usage.
 - Confirm supported locales (`id`, `en`).
 - Confirm same-site cookie topology and production domains.
 - Confirm Storybook version alignment owner.
@@ -2180,7 +2172,7 @@ Exit criteria:
 
 Tasks:
 
-- Add `API_URL` and any missing Strapi/PostHog values to `packages/env/web`.
+- Add `API_URL` and any missing PostHog values to `packages/env/web`.
 - Move to `src/app/[locale]/layout.tsx`.
 - Add `src/proxy.ts` for locale as-needed and optimistic auth redirect.
 - Add route groups and remove the unsupported `fr` locale.
@@ -2243,7 +2235,7 @@ Tasks:
 - Build catalog with filters, search, pagination, and sorting.
 - Build course detail with curriculum preview, price, outcomes, and certificate conditions.
 - Build roadmap catalog/detail and certificate verification.
-- Add Strapi-backed about/FAQ/contact/blog with server-only adapter.
+- Add local about/FAQ/contact/blog content.
 - Add metadata, JSON-LD, sitemap entries, and cache tags.
 - Add marketing/catalog E2E and accessibility checks.
 
@@ -2337,17 +2329,16 @@ See Section 7.3. The route map is a UX contract, not an API contract.
 
 ### Appendix B — Environment Matrix
 
-| Variable                   | Scope  | Required                      | Notes                                             |
-| -------------------------- | ------ | ----------------------------- | ------------------------------------------------- |
-| `NEXT_PUBLIC_SERVER_URL`   | Public | Yes                           | API origin for browser                            |
-| `NEXT_PUBLIC_SITE_URL`     | Public | Yes                           | Web origin for canonical URLs and sitemap         |
-| `API_URL`                  | Server | Yes in deployment             | Internal API origin; may equal public URL locally |
-| `AUTH_SESSION_COOKIE`      | Server | Yes                           | Cookie name for optimistic proxy checks           |
-| `NEXT_PUBLIC_STRAPI_URL`   | Public | Yes if Strapi content is used | Marketing content/media                           |
-| `STRAPI_API_TOKEN`         | Server | If authenticated Strapi reads | Never expose                                      |
-| `NEXT_PUBLIC_POSTHOG_KEY`  | Public | Optional                      | Product analytics                                 |
-| `NEXT_PUBLIC_POSTHOG_HOST` | Public | Optional                      | Defaults to PostHog US host                       |
-| `NODE_ENV`                 | Both   | Yes                           | `development`, `test`, `production`               |
+| Variable                 | Scope  | Required          | Notes                                             |
+| ------------------------ | ------ | ----------------- | ------------------------------------------------- |
+| `NEXT_PUBLIC_SERVER_URL` | Public | Yes               | API origin for browser                            |
+| `NEXT_PUBLIC_SITE_URL`   | Public | Yes               | Web origin for canonical URLs and sitemap         |
+| `API_URL`                | Server | Yes in deployment | Internal API origin; may equal public URL locally |
+| `AUTH_SESSION_COOKIE`    | Server | Yes               | Cookie name for optimistic proxy checks           |
+
+| `NEXT_PUBLIC_POSTHOG_KEY` | Public | Optional | Product analytics |
+| `NEXT_PUBLIC_POSTHOG_HOST` | Public | Optional | Defaults to PostHog US host |
+| `NODE_ENV` | Both | Yes | `development`, `test`, `production` |
 
 All variables are validated by `packages/env/web`. `NEXT_PUBLIC_*` changes require a rebuild.
 
@@ -2397,4 +2388,4 @@ Project references:
 
 ### 28.11 Final Architecture Statement
 
-`apps/web` is a server-first Next.js 16 App Router application organized by business feature modules. Server Components render public and authenticated pages; Client Components exist only for interaction, browser APIs, and client-side server state. NestJS remains the source of truth for authentication, authorization, LMS data, money, access, and assessment. Strapi supplies marketing content only. The browser and the Next.js server call NestJS directly, with HttpOnly cookies, CSRF protection, RFC 9457 errors, and generated API types. Caching is explicit and user-aware. Internationalization uses i18next with as-needed locale routing. Security, accessibility, performance, and testability are part of every feature's definition of done, not a final phase.
+`apps/web` is a server-first Next.js 16 App Router application organized by business feature modules. Server Components render public and authenticated pages; Client Components exist only for interaction, browser APIs, and client-side server state. NestJS remains the source of truth for authentication, authorization, LMS data, money, access, and assessment. Marketing content is local typed content in `apps/web`. The browser and the Next.js server call NestJS directly, with HttpOnly cookies, CSRF protection, RFC 9457 errors, and generated API types. Caching is explicit and user-aware. Internationalization uses i18next with as-needed locale routing. Security, accessibility, performance, and testability are part of every feature's definition of done, not a final phase.

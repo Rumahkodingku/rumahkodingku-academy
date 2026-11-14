@@ -1,5 +1,5 @@
 import type { Route } from "next";
-import type { HomepageContent, MarketingLink } from "@/strapi/content-types";
+import type { HomepageContent, MarketingLink } from "@/marketing/content-types";
 
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";

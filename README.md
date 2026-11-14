@@ -11,7 +11,7 @@ Course-based learning platform for RumahKodingku Academy.
 - `packages/env` — validated server/web environment.
 - `packages/config` — shared TypeScript and tooling config.
 
-Redis, Socket.io, PostHog, i18next, and Strapi are part of the MVP support stack. Strapi is marketing-content only; LMS data stays in MySQL through NestJS.
+Redis, Socket.io, PostHog, and i18next are part of the MVP support stack. Marketing content lives in local typed fixtures; LMS data stays in MySQL through NestJS.
 
 ## Setup
 

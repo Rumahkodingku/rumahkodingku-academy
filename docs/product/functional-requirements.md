@@ -10,7 +10,7 @@ Priority: P0 release blocker; P1 core; P2 enhancement.
 - FR-PUB-04 P0: Unpublished courses cannot be purchased.
 - FR-PUB-05 P1: Featured, newest, and popular discovery are available. Featured uses an admin flag; newest uses `publishedAt`; popular uses enrollment count in the last 30 days.
 - FR-PUB-06 P1: Public roadmap catalog/detail and certificate verification pages exist.
-- FR-PUB-07 P1: About, FAQ, Contact, and marketing content are available. Strapi may supply marketing content only.
+- FR-PUB-07 P1: About, FAQ, Contact, and marketing content are available from local typed content.
 
 ## Identity
 

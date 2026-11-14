@@ -12,11 +12,9 @@
 | ORM                     | TypeORM                                                           |
 | Auth                    | JWT access + refresh in HttpOnly cookies; host-only in production |
 | Payment                 | Midtrans (initial provider; merchant approval pending)            |
-| File storage            | Local filesystem on persistent VPS storage                        |
 | Cache/rate limit        | Redis                                                             |
-| Realtime                | Socket.io                                                         |
 | Product analytics/flags | PostHog                                                           |
-| Marketing CMS           | Strapi (marketing content only)                                   |
+| Marketing content       | Local typed fixtures in `apps/web`                                |
 | i18n                    | i18next; Indonesian default, English-ready                        |
 | Deployment              | VPS + Coolify                                                     |
 | Lint/format             | oxlint + oxfmt                                                    |
@@ -26,7 +24,7 @@
 | Auth                    | `@nestjs/authentication` + `@nestjs/authorization`                |
 | Mail                    | `@nestjs/mail` + Handlebars                                       |
 | Email provider          | Resend; sender `academy@rumahkodingku.com`                        |
-| File storage            | `@nestjs/storage` (local, S3/Garage)                              |
+| File storage            | `@nestjs/storage` local filesystem                                |
 | Realtime                | NestJS WebSocket gateway + Socket.io                              |
 
 ## API and money
@@ -58,9 +56,9 @@ Use a provider-neutral backend adapter; implement Midtrans as the first provider
 
 Redis is used for cache and rate limiting, not as the source of truth for orders, payments, enrollments, or refresh sessions. Socket.io delivers in-app notifications with polling fallback; authenticate socket connections and never trust client-supplied user identity.
 
-## PostHog and Strapi
+## PostHog
 
-PostHog supplies product analytics and feature flags; admin financial/learning reports remain MySQL-derived. Strapi supplies marketing content only and must not become a second source of truth for course, user, order, or enrollment data.
+PostHog supplies product analytics and feature flags; admin financial/learning reports remain MySQL-derived. Marketing content is local typed content and must not become a second source of truth for course, user, order, or enrollment data.
 
 ## Local storage
 

@@ -1,25 +1,14 @@
 import type { Locale } from "@/lib/i18n/routing";
 
-import type { HomepageContent, MarketingPageContent, SiteSettingsContent } from "./content-types";
-import type { StrapiMedia } from "./lib/types";
+import type { HomepageContent, MarketingMedia } from "./content-types";
 
-function learningWorkspaceMedia(alternativeText: string, caption: string): StrapiMedia {
+function learningWorkspaceMedia(alternativeText: string, caption: string): MarketingMedia {
   return {
-    id: 1,
-    documentId: "local-learning-workspace",
-    name: "learning-workspace",
+    url: "/imagery/home/learning-workspace.jpg",
     alternativeText,
     caption,
     width: 1200,
     height: 799,
-    formats: null,
-    hash: "learning-workspace",
-    ext: ".jpg",
-    mime: "image/jpeg",
-    size: 125856,
-    url: "/imagery/home/learning-workspace.jpg",
-    previewUrl: null,
-    provider: "local",
   };
 }
 
@@ -171,41 +160,3 @@ export const homepageFixtures = {
     },
   },
 } satisfies Record<Locale, HomepageContent>;
-
-export const siteSettingsFixtures = {
-  id: {
-    siteName: "RumahKodingku Academy",
-    tagline: "Learn · Build · Grow",
-    description: "Platform belajar teknologi dengan kursus, proyek, dan sertifikat.",
-    nav: [
-      { label: "Beranda", href: "/" },
-      { label: "Program", href: "/#program" },
-      { label: "Cara belajar", href: "/#cara-belajar" },
-    ],
-    footerText: "Belajar, bangun, dan tumbuhkan kemampuan teknologi Anda.",
-  },
-  en: {
-    siteName: "RumahKodingku Academy",
-    tagline: "Learn · Build · Grow",
-    description: "A technology learning platform with courses, projects, and certificates.",
-    nav: [
-      { label: "Home", href: "/" },
-      { label: "Programs", href: "/#program" },
-      { label: "How it works", href: "/#cara-belajar" },
-    ],
-    footerText: "Learn, build, and grow your technology skills.",
-  },
-} satisfies Record<Locale, SiteSettingsContent>;
-
-export const marketingPageFixtures = [
-  {
-    title: "Tentang RumahKodingku Academy",
-    slug: "tentang",
-    blocks: [
-      {
-        __component: "blocks.rich-text",
-        body: "RumahKodingku Academy membantu orang belajar teknologi melalui kursus terstruktur dan proyek nyata.",
-      },
-    ],
-  },
-] satisfies MarketingPageContent[];

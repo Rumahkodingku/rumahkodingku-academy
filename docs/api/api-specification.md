@@ -284,4 +284,4 @@ Client may fall back to polling via `GET /me/notifications`. Never accept a clie
 
 200 success; 201 created; 202 accepted; 204 no content; 400 malformed; 401 unauthenticated; 403 forbidden; 404 not found/not visible; 409 conflict; 422 semantic validation if adopted consistently; 429 rate limited; 500/503 server/dependency failure.
 
-Validate DTOs, ownership, roles, CSRF, rate limits, idempotency, webhook authenticity, and upload policies. Admin financial/learning analytics are computed from MySQL; PostHog is not a financial source of truth. Strapi content is marketing-only.
+Validate DTOs, ownership, roles, CSRF, rate limits, idempotency, webhook authenticity, and upload policies. Admin financial/learning analytics are computed from MySQL; PostHog is not a financial source of truth. Marketing content is local typed content.

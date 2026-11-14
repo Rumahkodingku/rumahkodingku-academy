@@ -2,7 +2,7 @@
 
 ## Actors
 
-Visitor (unauthenticated), USER (learner), ADMIN, and external services (Midtrans, email provider, YouTube, Strapi marketing CMS, PostHog).
+Visitor (unauthenticated), USER (learner), ADMIN, and external services (Midtrans, email provider, YouTube, PostHog).
 
 ## 1. Discover and purchase
 
@@ -50,4 +50,4 @@ USER can save courses to a unique wishlist. After completing a course, USER can 
 
 ADMIN manages users, courses, sections, lessons, quizzes, roadmaps, project reviews, community moderation, refunds, orders, payments, certificates, reviews, coupons, announcements, and platform settings. Sensitive actions require confirmation and audit logging.
 
-In-app and email notifications cover payment, enrollment, review, certificate, and community events. Email uses a transactional outbox. Admin financial and learning reports are computed from MySQL; PostHog supplies product analytics and feature flags only. Strapi supplies marketing content only.
+In-app and email notifications cover payment, enrollment, review, certificate, and community events. Email uses a transactional outbox. Admin financial and learning reports are computed from MySQL; PostHog supplies product analytics and feature flags only. Marketing content is served from local typed fixtures.
