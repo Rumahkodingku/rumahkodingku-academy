@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Diagram arsitektur backend">
+  <rect x="84" y="82" width="250" height="70" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <rect x="84" y="170" width="250" height="70" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <rect x="84" y="258" width="250" height="70" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <rect x="104" y="102" width="10" height="30" rx="5" fill="#2563EB"/>
+  <rect x="128" y="108" width="112" height="8" rx="4" fill="#0F172A"/>
+  <rect x="128" y="124" width="78" height="6" rx="3" fill="#94A3B8"/>
+  <circle cx="300" cy="117" r="6" fill="#2563EB"/>
+  <rect x="104" y="190" width="10" height="30" rx="5" fill="#2563EB"/>
+  <rect x="128" y="196" width="98" height="8" rx="4" fill="#0F172A"/>
+  <rect x="128" y="212" width="132" height="6" rx="3" fill="#94A3B8"/>
+  <circle cx="300" cy="205" r="6" fill="#2563EB"/>
+  <rect x="104" y="278" width="10" height="30" rx="5" fill="#2563EB"/>
+  <rect x="128" y="284" width="120" height="8" rx="4" fill="#0F172A"/>
+  <rect x="128" y="300" width="88" height="6" rx="3" fill="#94A3B8"/>
+  <circle cx="300" cy="293" r="6" fill="#2563EB"/>
+  <path d="M334 205h54" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/>
+  <path d="M380 197l10 8-10 8" fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M418 110c0-20 16-32 40-32h34c24 0 40 12 40 32v22c0 20-16 32-40 32h-34c-24 0-40-12-40-32z" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <path d="M418 116c0 18 18 28 40 28s40-10 40-28" fill="none" stroke="#2563EB" stroke-width="2"/>
+  <path d="M418 154c0 18 18 28 40 28s40-10 40-28" fill="none" stroke="#2563EB" stroke-width="2"/>
+  <path d="M498 132v22" stroke="#CBD5E1" stroke-width="2"/>
+  <rect x="430" y="228" width="142" height="100" rx="10" fill="#EAF2FF"/>
+  <rect x="450" y="250" width="58" height="8" rx="4" fill="#2563EB"/>
+  <rect x="450" y="272" width="98" height="6" rx="3" fill="#93B4F5"/>
+  <rect x="450" y="290" width="84" height="6" rx="3" fill="#93B4F5"/>
+  <path d="M430 386h142" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round"/>
+  <path d="M456 386v-18M500 386v-26M544 386v-12" stroke="#2563EB" stroke-width="6" stroke-linecap="round"/>
+</svg>

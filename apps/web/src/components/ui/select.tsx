@@ -2,7 +2,7 @@
 
 import { Check, ChevronDown } from "lucide-react";
 import { createPortal } from "react-dom";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 import { useAnchoredPosition } from "@/lib/ui/use-anchored-position";
 import { useDismissableLayer } from "@/lib/ui/use-dismissable-layer";
@@ -29,6 +29,7 @@ type SelectProps = {
   "aria-label"?: string;
   disabled?: boolean;
   variant?: "popover" | "sheet";
+  portal?: boolean;
 };
 
 function Select({
@@ -42,6 +43,7 @@ function Select({
   "aria-label": ariaLabel,
   disabled = false,
   variant = "popover",
+  portal = true,
 }: SelectProps) {
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
   const value = controlledValue ?? uncontrolledValue;
@@ -50,7 +52,7 @@ function Select({
   const [mounted, setMounted] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const listboxRef = useRef<HTMLDivElement>(null);
-  const listboxId = useRef(`select-${Math.random().toString(36).slice(2)}`).current;
+  const listboxId = `select-${useId()}`;
 
   const selectedIndex = options.findIndex((option) => option.value === value);
   const selected = options[selectedIndex];
@@ -270,7 +272,7 @@ function Select({
         <ChevronDown aria-hidden="true" className="size-4 text-ink-muted" />
       </button>
 
-      {open && mounted ? createPortal(content, document.body) : null}
+      {open && mounted ? (portal ? createPortal(content, document.body) : content) : null}
     </>
   );
 }

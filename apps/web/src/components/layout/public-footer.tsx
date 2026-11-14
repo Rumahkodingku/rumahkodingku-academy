@@ -11,6 +11,7 @@ import { localizedPath, type Locale } from "@/lib/i18n/routing";
 
 const footerLinks = [
   { key: "nav.home", href: "/" },
+  { key: "nav.courses", href: "/courses" },
   { key: "nav.program", href: "/#program" },
   { key: "nav.howItWorks", href: "/#cara-belajar" },
 ] as const;

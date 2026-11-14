@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { BrandLogo } from "@/components/brand/brand-logo";
 
 const values = [
@@ -13,8 +15,17 @@ export function AuthBrandPanel() {
         aria-labelledby="auth-brand-heading"
         className="relative hidden flex-col justify-between border-r border-line bg-canvas px-10 py-12 lg:flex xl:px-16"
       >
-        <div className="animate-auth-rise">
+        <div className="flex items-start justify-between gap-6 animate-auth-rise">
           <BrandLogo size="md" />
+          <div className="relative aspect-[16/10] w-28 shrink-0 overflow-hidden border border-line bg-surface-sunken xl:w-32">
+            <Image
+              src="/imagery/auth/architecture.jpg"
+              alt=""
+              fill
+              sizes="128px"
+              className="object-cover"
+            />
+          </div>
         </div>
 
         <div className="grid max-w-[34rem] gap-8 py-10 animate-auth-rise">

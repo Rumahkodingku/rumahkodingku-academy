@@ -3,6 +3,8 @@ import { expect, test } from "@playwright/test";
 const widths = [390, 768, 1024, 1440];
 const routes = [
   { name: "home", path: "/" },
+  { name: "catalog", path: "/courses" },
+  { name: "course-detail", path: "/courses/nextjs-app-router" },
   { name: "login", path: "/login" },
   { name: "register", path: "/register" },
   { name: "forbidden", path: "/forbidden" },

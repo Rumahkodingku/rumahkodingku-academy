@@ -18,15 +18,23 @@ import { isLocale, localizedPath } from "@/lib/i18n/routing";
 const modules = [
   {
     title: "Konten kursus",
-    description: "Kelola kursus, section, dan lesson.",
+    description: "Kelola kursus, section, lesson, dan publikasi.",
   },
   {
-    title: "Proyek peserta",
+    title: "Peserta",
+    description: "Lihat enrollment dan progres belajar.",
+  },
+  {
+    title: "Transaksi",
+    description: "Telusuri order, pembayaran, dan refund.",
+  },
+  {
+    title: "Proyek",
     description: "Tinjau submission dan beri feedback.",
   },
   {
-    title: "Akses dan peran",
-    description: "Kelola akses administratif.",
+    title: "Sertifikat",
+    description: "Kelola penerbitan dan verifikasi sertifikat.",
   },
 ] as const;
 
@@ -67,9 +75,18 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
         </TableBody>
       </Table>
 
-      <ButtonLink href={localizedPath(locale, "/") as Route} variant="secondary" className="w-fit">
-        Kembali ke beranda
-      </ButtonLink>
+      <div className="flex flex-wrap gap-3">
+        <ButtonLink
+          href={localizedPath(locale, "/courses") as Route}
+          variant="secondary"
+          className="w-fit"
+        >
+          Lihat katalog publik
+        </ButtonLink>
+        <ButtonLink href={localizedPath(locale, "/") as Route} variant="ghost" className="w-fit">
+          Kembali ke beranda
+        </ButtonLink>
+      </div>
     </Container>
   );
 }

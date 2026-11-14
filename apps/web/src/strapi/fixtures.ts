@@ -1,6 +1,27 @@
 import type { Locale } from "@/lib/i18n/routing";
 
 import type { HomepageContent, MarketingPageContent, SiteSettingsContent } from "./content-types";
+import type { StrapiMedia } from "./lib/types";
+
+function learningWorkspaceMedia(alternativeText: string, caption: string): StrapiMedia {
+  return {
+    id: 1,
+    documentId: "local-learning-workspace",
+    name: "learning-workspace",
+    alternativeText,
+    caption,
+    width: 1200,
+    height: 799,
+    formats: null,
+    hash: "learning-workspace",
+    ext: ".jpg",
+    mime: "image/jpeg",
+    size: 125856,
+    url: "/imagery/home/learning-workspace.jpg",
+    previewUrl: null,
+    provider: "local",
+  };
+}
 
 export const homepageFixtures = {
   id: {
@@ -9,10 +30,16 @@ export const homepageFixtures = {
       title: "Belajar teknologi dengan praktik nyata.",
       description:
         "Kursus terstruktur, proyek nyata, dan sertifikat untuk membantu Anda membangun kemampuan yang bisa dibuktikan.",
-      primaryCta: { label: "Lihat program", href: "#program" },
+      primaryCta: { label: "Jelajahi kursus", href: "/courses" },
       secondaryCta: { label: "Cara belajar", href: "#cara-belajar" },
       note: "Kursus dibeli satu per satu. Akses belajar seumur hidup.",
-      artifact: undefined,
+      artifact: {
+        media: learningWorkspaceMedia(
+          "Laptop dengan editor kode di meja kerja",
+          "Ilustrasi suasana belajar, bukan cuplikan kursus.",
+        ),
+        caption: "Ruang belajar",
+      },
     },
     features: [
       {
@@ -66,7 +93,7 @@ export const homepageFixtures = {
     cta: {
       title: "Mulai dari satu langkah yang bisa Anda lihat hasilnya.",
       description: "Pilih program, kerjakan proyek pertama, lalu buktikan kemampuan Anda.",
-      primaryCta: { label: "Jelajahi program", href: "#program" },
+      primaryCta: { label: "Jelajahi kursus", href: "/courses" },
       secondaryCta: { label: "Cara belajar", href: "#cara-belajar" },
     },
   },
@@ -76,10 +103,16 @@ export const homepageFixtures = {
       title: "Learn technology through real practice.",
       description:
         "Structured courses, real projects, and certificates that help you build skills you can prove.",
-      primaryCta: { label: "View programs", href: "#program" },
+      primaryCta: { label: "Explore courses", href: "/courses" },
       secondaryCta: { label: "How it works", href: "#cara-belajar" },
       note: "Courses are bought one at a time. Learning access is lifelong.",
-      artifact: undefined,
+      artifact: {
+        media: learningWorkspaceMedia(
+          "Laptop with a code editor on a workspace desk",
+          "Learning environment illustration, not course footage.",
+        ),
+        caption: "Learning workspace",
+      },
     },
     features: [
       {
@@ -133,7 +166,7 @@ export const homepageFixtures = {
     cta: {
       title: "Start with one step whose result you can see.",
       description: "Choose a program, build your first project, and prove what you can do.",
-      primaryCta: { label: "Explore programs", href: "#program" },
+      primaryCta: { label: "Explore courses", href: "/courses" },
       secondaryCta: { label: "How it works", href: "#cara-belajar" },
     },
   },
