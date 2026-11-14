@@ -5,7 +5,7 @@
 > **Status:** Baseline specification  
 > **Primary accent:** `#2563EB`
 > **Brand color:** `#406194`  
-> **Themes:** Light and Dark  
+> **Theme:** Light only  
 > **Last updated:** 2026-11-12
 
 ---
@@ -110,13 +110,10 @@ Values are starting points. Run contrast tests for every actual foreground/backg
 
 ### 4.4 Theme implementation rules
 
-- Define theme variables at a root theme boundary, e.g. `data-theme="light"` and `data-theme="dark"`.
+- Define theme variables at the root theme boundary.
 - Use semantic variables in all components.
-- Respect OS preference on first visit if user has not selected a preference.
-- Persist explicit user selection using the application's approved preference mechanism.
 - Prevent theme flash during initial render.
 - Ensure embedded content, charts, code blocks, dialogs, and third-party UI have deliberate theme treatment.
-- Do not implement Dark Mode as a simple global color inversion.
 
 ## 5. Typography
 

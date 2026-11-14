@@ -55,13 +55,6 @@ test.describe("accessibility", () => {
     });
   }
 
-  test("has no serious axe violations in dark mode", async ({ page }) => {
-    await page.addInitScript(() => localStorage.setItem("theme", "dark"));
-    await page.goto("/");
-    await expect(page.locator("html")).toHaveClass(/dark/);
-    await expectNoSeriousViolations(page);
-  });
-
   test("has no serious axe violations in the signed-in shell", async ({ page }) => {
     await signIn(page);
 

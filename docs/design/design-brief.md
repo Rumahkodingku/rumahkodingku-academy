@@ -19,7 +19,7 @@ Arah desain yang menjadi baseline:
 
 - **Modern SaaS Learning Platform**
 - **Expressive visual character**, digunakan secara terarah dan tidak mengganggu fokus belajar.
-- **Light Mode dan Dark Mode** dengan kualitas desain setara.
+- **Light Mode** sebagai pengalaman resmi.
 - **Academy Blue `#2563EB`** sebagai aksen identitas Academy.
 - Identitas visual dan logo resmi RumahKodingku tetap dihormati; warna atau logomark induk tidak boleh diubah sembarangan.
 
@@ -51,7 +51,7 @@ RumahKodingku Academy menggabungkan:
 - **Clarity over cleverness:** navigasi, status, harga, syarat, dan tindakan harus mudah dipahami.
 - **Trust by design:** informasi pembelian, akses, progres, dan sertifikat disampaikan secara transparan.
 - **Practice matters:** proyek dan hasil karya merupakan bagian penting dari perjalanan belajar.
-- **Inclusive by default:** desain responsif, aksesibel, dan mendukung Light serta Dark Mode.
+- **Inclusive by default:** desain responsif, aksesibel, dan mendukung Light Mode.
 - **Consistent but expressive:** sistem visual konsisten dengan ekspresi visual yang terarah.
 
 ## 3. Goals
@@ -342,7 +342,7 @@ Desain dianggap siap untuk implementasi jika:
 
 - Seluruh halaman utama dan alur kritis telah terpetakan.
 - USER dan ADMIN memiliki navigasi yang sesuai.
-- Light dan Dark Mode dirancang secara lengkap.
+- Light Mode dirancang secara lengkap.
 - State loading, empty, error, success, disabled, dan permission telah dipertimbangkan.
 - Pembelian, akses lifetime, roadmap, dan refund tidak menimbulkan interpretasi keliru.
 - Pengumpulan proyek dan version history dapat dipahami.

@@ -10,7 +10,7 @@
 
 ## 1. Design Direction Summary
 
-RumahKodingku Academy menggunakan arah **Editorial Academy**: permukaan white/ink, aksen Academy Blue yang terbatas, tipografi Space Grotesk + Manrope, tombol pill, dan garis hairline. Light Mode dan Dark Mode memiliki kualitas yang setara. Bagian “Modern SaaS” di bawah adalah catatan historis dan tidak lagi menjadi arah implementasi.
+RumahKodingku Academy menggunakan arah **Editorial Academy**: permukaan white/ink, aksen Academy Blue yang terbatas, tipografi Space Grotesk + Manrope, tombol pill, dan garis hairline. Hanya Light Mode. Bagian “Modern SaaS” di bawah adalah catatan historis dan tidak lagi menjadi arah implementasi.
 
 Hasil yang dituju adalah platform edukasi yang terlihat modern, profesional, tepercaya, dan mudah digunakan, tetapi tidak dingin atau generik. Ekspresi visual digunakan untuk membangun identitas dan menarik perhatian pada area yang tepat; antarmuka belajar tetap tenang, fokus, dan minim distraksi.
 
@@ -73,15 +73,9 @@ Prioritas:
 - Aksi berikutnya jelas.
 - Diskusi dan Q&A tidak mengganggu pembacaan materi.
 
-### 2.4 Light and Dark Mode
+### 2.4 Light Mode Only
 
-Kedua tema merupakan pengalaman resmi, bukan tema utama dan tema tambahan yang sekadar dibalik.
-
-- Light Mode menjadi tampilan awal yang direkomendasikan untuk halaman publik.
-- Dark Mode harus dirancang dengan surface, border, text, dan elevation tersendiri.
-- Preferensi OS dapat digunakan saat kunjungan awal.
-- Pilihan eksplisit pengguna harus dipertahankan.
-- Semua komponen, state, chart, editor, modal, dan embed state perlu diuji pada kedua tema.
+Hanya Light Mode yang didukung. Semua komponen, state, modal, dan embed state diuji pada Light Mode.
 
 ## 3. Brand Integration
 

@@ -9,7 +9,7 @@ Chromium baselines live at:
 
 `apps/web/test/e2e/visual.spec.ts-snapshots/`
 
-Coverage: home, login, register, and forbidden at 390, 768, 1024, and 1440 px in light and dark mode (32 snapshots).
+Coverage: home, login, register, and forbidden at 390, 768, 1024, and 1440 px in light mode (16 snapshots).
 
 The light canvas is white `#FFFFFF`. Warm `surface` and `surface-sunken` tokens remain for editorial panels, ticker, and input wells.
 

@@ -17,10 +17,6 @@ test("public shell renders and stays usable on mobile", async ({ page }) => {
   );
   await expect(page.getByRole("link", { name: "RumahKodingku Academy" })).toBeVisible();
 
-  await page.getByRole("button", { name: "Tema" }).click();
-  await page.getByRole("menuitem", { name: "Gelap" }).click();
-  await expect(page.locator("html")).toHaveClass(/dark/);
-
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole("button", { name: "Buka menu" }).click();
 

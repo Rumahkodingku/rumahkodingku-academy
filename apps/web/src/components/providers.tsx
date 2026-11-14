@@ -9,7 +9,6 @@ import type { Locale } from "@/lib/i18n/routing";
 import { PostHogProvider } from "@/lib/posthog";
 
 import { MotionProvider } from "./motion/motion-provider";
-import { ThemeProvider } from "./theme-provider";
 
 export default function Providers({
   children,
@@ -21,14 +20,12 @@ export default function Providers({
   const [queryClient] = useState(() => createQueryClient());
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-      <QueryClientProvider client={queryClient}>
-        <I18nProvider locale={locale}>
-          <MotionProvider>
-            <PostHogProvider>{children}</PostHogProvider>
-          </MotionProvider>
-        </I18nProvider>
-      </QueryClientProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <I18nProvider locale={locale}>
+        <MotionProvider>
+          <PostHogProvider>{children}</PostHogProvider>
+        </MotionProvider>
+      </I18nProvider>
+    </QueryClientProvider>
   );
 }

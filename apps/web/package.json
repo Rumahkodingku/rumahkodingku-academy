@@ -28,7 +28,6 @@
     "lucide-react": "^1.72.0",
     "motion": "^14.13.0",
     "next": "catalog:",
-    "next-themes": "^0.4.6",
     "posthog-js": "^1.447.12",
     "qs": "^6.17.1",
     "react": "catalog:",

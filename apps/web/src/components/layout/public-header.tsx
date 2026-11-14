@@ -19,7 +19,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { LanguageSwitch } from "@/components/language-switch";
-import { ModeToggle } from "@/components/mode-toggle";
 import type { AuthUser } from "@/features/auth/types";
 import { localizedPath, type Locale } from "@/lib/i18n/routing";
 import { cn } from "@/lib/utils";
@@ -78,7 +77,6 @@ export function PublicHeader({ locale, user }: { locale: Locale; user: AuthUser 
 
         <div className="flex items-center gap-1">
           <LanguageSwitch />
-          <ModeToggle />
           <AccountMenu user={user} locale={locale} />
           <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
             <DialogTrigger

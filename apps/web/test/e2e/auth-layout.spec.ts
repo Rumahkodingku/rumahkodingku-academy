@@ -35,20 +35,6 @@ test.describe("auth layout", () => {
     });
   }
 
-  test("supports dark mode without horizontal overflow", async ({ page }) => {
-    await page.emulateMedia({ colorScheme: "dark" });
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/login");
-
-    await expect(page.getByRole("heading", { name: "Masuk ke akun Anda" })).toBeVisible();
-    await expect(page.locator("html")).toHaveClass(/dark/);
-
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth > window.innerWidth,
-    );
-    expect(overflow).toBe(false);
-  });
-
   test("is keyboard operable and respects reduced motion", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.setViewportSize({ width: 390, height: 844 });

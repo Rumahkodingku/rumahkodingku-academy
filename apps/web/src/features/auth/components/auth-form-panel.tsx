@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
 import { LanguageSwitch } from "@/components/language-switch";
-import { ModeToggle } from "@/components/mode-toggle";
 
 type AuthFormPanelProps = {
   title: string;
@@ -14,7 +13,6 @@ export function AuthFormPanel({ title, description, children }: AuthFormPanelPro
     <div className="w-full">
       <div className="mb-10 flex items-center justify-end gap-1">
         <LanguageSwitch />
-        <ModeToggle />
       </div>
 
       <div className="grid gap-3">
