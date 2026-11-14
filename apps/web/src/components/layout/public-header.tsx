@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { key: "nav.home", href: "/" },
+  { key: "nav.courses", href: "/courses" },
   { key: "nav.program", href: "/#program" },
   { key: "nav.howItWorks", href: "/#cara-belajar" },
 ] as const;
@@ -58,7 +59,7 @@ export function PublicHeader({ locale, user }: { locale: Locale; user: AuthUser 
           <BrandLogo size="sm" />
         </Link>
 
-        <nav aria-label={t("nav.label")} className="hidden items-center gap-6 md:flex">
+        <nav aria-label={t("nav.label")} className="hidden items-center gap-5 md:flex">
           {navLinks.map((item) => (
             <Link
               key={item.href}
