@@ -347,9 +347,6 @@ importers:
       '@rumahkodingku-academy/env':
         specifier: workspace:*
         version: link:../../packages/env
-      '@strapi/client':
-        specifier: ^1.6.2
-        version: 1.6.2
       '@tanstack/react-query':
         specifier: ^5.107.1
         version: 5.107.1(@types/react@19.3.0)(react@19.3.1)
@@ -3423,10 +3420,6 @@ packages:
         optional: true
       typescript:
         optional: true
-
-  '@strapi/client@1.6.2':
-    resolution: {integrity: sha512-yISbChmwyp0Br1i8iafli38SGy1um9vqN7tzzEHyehrQsx1rkVe1r5Wkgd1DOAYtJcMnH7QmX/owSrHqN4rHEw==}
-    engines: {node: '>=20.18.2 <=24.x.x'}
 
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
@@ -6710,10 +6703,6 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
-
-  qs@6.15.2:
-    resolution: {integrity: sha512-Rzq0KEyX/w/tEybncDgdkZrJgVUsUMk3xjh3t5bv3S1HTAtg+uOYt72+ZfwiQwKdysThkTBdL/rTi6HDmX9Ddw==}
-    engines: {node: '>=0.6'}
 
   qs@6.17.1:
     resolution: {integrity: sha512-jd3COkaKVgGUW+ZHyEHCG9bH7RoaaiWuMgzsIBjUMVjLAaWGWpoUAVwljVvBHxRu/2qEHnadLGZrkutYUBPQJA==}
@@ -10780,13 +10769,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@strapi/client@1.6.2':
-    dependencies:
-      debug: 4.4.3(supports-color@10.2.2)
-      qs: 6.15.2
-    transitivePeerDependencies:
-      - supports-color
-
   '@swc/helpers@0.5.23':
     dependencies:
       tslib: 2.9.1
@@ -14393,10 +14375,6 @@ snapshots:
   punycode@1.4.1: {}
 
   punycode@2.3.1: {}
-
-  qs@6.15.2:
-    dependencies:
-      side-channel: 1.1.1
 
   qs@6.17.1:
     dependencies:

@@ -46,6 +46,6 @@ Protected routes are covered by Playwright flow and axe tests rather than separa
 
 ## Known limitations
 
-- The Strapi application does not exist in this repository yet. Editorial fields are defined in the TypeScript contract, fixtures, and `docs/architecture/strapi-content-model.md`.
+- Marketing content is local typed content in `apps/web`. Editorial fields are defined in the TypeScript contract, fixtures, and `docs/architecture/marketing-content-model.md`.
 - Visual baselines are Chromium-only because font rasterization differs by engine.
-- The first production deploy still needs a live Strapi smoke check and CI verification.
+- The first production deploy still needs CI verification.

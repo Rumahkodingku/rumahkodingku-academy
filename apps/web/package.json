@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@rumahkodingku-academy/env": "workspace:*",
-    "@strapi/client": "^1.6.2",
     "@tanstack/react-query": "^5.107.1",
     "@tanstack/react-query-devtools": "^5.107.1",
     "axios": "^1.21.1",

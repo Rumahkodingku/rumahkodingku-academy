@@ -17,7 +17,7 @@ This is the prioritized backlog created from the approved Phase 0 decisions. Eac
 | RK-006 | 2     | Project/certificate schema                                       | FR-PROJ-01–FR-PROJ-05, FR-CERT-01–FR-CERT-05, BR-130–BR-146      | Versioned submissions; one active certificate per enrollment; reissue history; migrations tested.                      |
 | RK-007 | 2     | Outbox and notification schema                                   | FR-NOTIF-01–FR-NOTIF-02, BR-170–BR-177                           | Transactional outbox; idempotent consumers; retry metadata; no duplicate financial side effects.                       |
 | RK-008 | 2     | Design system primitives and app shell                           | Design system, FR-LEARN-08, FR-PUB-01                            | Keyboard/focus states; light/dark; empty/loading/error patterns; no guessed brand assets.                              |
-| RK-009 | 2     | Strapi marketing content model                                   | FR-PUB-07, BR-175                                                | Page/Article/Category/Author/SEO; no LMS data in Strapi; server-only rendering boundary.                               |
+| RK-009 | 2     | Local marketing content model                                    | FR-PUB-07, BR-175                                                | Typed homepage content and fixtures; no LMS data in marketing content.                                                 |
 
 ## 2. Authentication and account
 

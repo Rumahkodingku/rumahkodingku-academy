@@ -10,7 +10,7 @@ import {
   MarketingTicker,
 } from "@/components/marketing/sections";
 import { isLocale } from "@/lib/i18n/routing";
-import { getHomepage } from "@/strapi/server";
+import { getMarketingHomepage } from "@/marketing";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -19,7 +19,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     notFound();
   }
 
-  const homepage = await getHomepage(locale);
+  const homepage = getMarketingHomepage(locale);
 
   return (
     <>

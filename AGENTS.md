@@ -35,13 +35,13 @@ pnpm workspaces + Turborepo. Apps: `apps/web` (Next.js), `apps/api` (NestJS, Nod
 - Money is IDR integer; never float. Full refunds only in the MVP. One coupon per order.
 - Final project is configurable per course; when enabled, GitHub URL + deployment URL are required, files optional. Review decisions are `REVISION_REQUIRED` or `APPROVED`; there is no `REJECTED`.
 - Roadmaps are always sequential. Certificate reissue creates a new record; one active certificate per enrollment.
-- Redis is cache/rate-limit only, never source of truth for orders/payments/enrollments/refresh sessions. Socket.io delivers in-app notifications with polling fallback. PostHog is product analytics/flags only; admin reports come from MySQL. Strapi is marketing-only; LMS data stays in MySQL/NestJS.
+- Redis is cache/rate-limit only, never source of truth for orders/payments/enrollments/refresh sessions. Socket.io delivers in-app notifications with polling fallback. PostHog is product analytics/flags only; admin reports come from MySQL. Marketing content is local typed content in apps/web; LMS data stays in MySQL/NestJS.
 - Default UI language is Indonesian (`id`); i18n is ready for English (`en`).
 - TypeORM entity/migration globs are relative to process cwd; run DB work from `packages/db` or adjust globs when adding entities.
 - `pnpm test` runs web unit/component tests and API unit tests; Playwright is not part of `pnpm test`. Web tests live under `apps/web/test/unit`; E2E under `apps/web/test/e2e`.
 - Husky pre-commit runs lint-staged: `oxlint` + `oxfmt --write` on staged files.
 - CI (`.github/workflows/ci.yml`): Node 24, frozen lockfile, format check, lint, check-types, build, test, contract/integration tests, and a Playwright job with MySQL, Redis, and Mailpit on push/PR to `dev`/`main`/`master`.
-- `docker-compose.yml` maps web 3001, API 3000, MySQL 3308, Redis 6380, Strapi 1337, Prometheus 9091, Grafana 3100, Databasus 4005, Garage 3904-3907, Mailpit 8026/1026; Cloudflared is profile `tunnel`. Verify env values before use.
+- `docker-compose.yml` maps web 3001, API 3000, MySQL 3308, Redis 6380, Prometheus 9091, Grafana 3100, Mailpit 8026/1026; Cloudflared is profile `tunnel`. Verify env values before use.
 - Local infra commands: `docker compose config`, `docker compose up -d`, `docker compose --profile tunnel up -d`, `docker compose down`.
 - `bts.jsonc` is generator metadata and may lag after manual migrations. Treat package manifests, lockfile, and `docs/PLAN.md` as authoritative for the current code.
 

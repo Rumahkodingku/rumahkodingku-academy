@@ -10,7 +10,7 @@ This package is the shared source of truth for product, design, engineering, QA,
 - `product/`: user journeys, functional requirements, business rules, and the approved Phase 0 decision log.
 - `architecture/`: system boundaries, monorepo, technology decisions.
 - `architecture/nextjs-architecture.md`: Next.js App Router rendering, routing, data, auth, caching, i18n, testing, and migration baseline.
-- `architecture/strapi-content-model.md`: marketing-only Strapi content contract, boundary, permissions, and fixtures.
+- `architecture/marketing-content-model.md`: local marketing content contract and fixtures.
 - `database/`: relational model and ERD.
 - `api/`: REST contract baseline.
 - `design/`: design brief, visual direction, tokens, UX rules.
@@ -28,7 +28,7 @@ Supporting MVP services:
 - Socket.io: in-app notification delivery with polling fallback.
 - PostHog: product analytics and feature flags. Admin financial reports come from MySQL.
 - i18n: Indonesian default; structure ready for English.
-- Strapi: marketing content only. Course, user, order, and enrollment data stay in NestJS/MySQL.
+- Marketing content: local typed fixtures. Course, user, order, and enrollment data stay in NestJS/MySQL.
 
 Canonical API contract: `/api/v1`, success envelope `{ "data": {}, "meta": {} }`, RFC 9457 Problem Details errors (`application/problem+json`) with `type`, `title`, `status`, `detail`, `instance`, `code`, `requestId`, and optional `errors`. Swagger is at `/swagger`, Scalar at `/reference`, OpenAPI JSON at `/swagger-json`. CSRF token is issued by `GET /api/v1/csrf/token` and sent as `x-csrf-token`.
 

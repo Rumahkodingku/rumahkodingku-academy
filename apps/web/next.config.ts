@@ -9,9 +9,6 @@ const appDir = dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = resolve(appDir, "../..");
 const turbopackRoot = existsSync(join(workspaceRoot, "packages")) ? workspaceRoot : appDir;
 
-const strapiUrl = new URL(env.NEXT_PUBLIC_STRAPI_URL);
-const strapiProtocol = strapiUrl.protocol.replace(":", "") as "http" | "https";
-
 const apiUrl = env.API_URL.replace(/\/$/, "");
 
 const nextConfig: NextConfig = {
@@ -28,16 +25,6 @@ const nextConfig: NextConfig = {
         destination: `${apiUrl}/api/v1/:path*`,
       },
     ];
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: strapiProtocol,
-        hostname: strapiUrl.hostname,
-        port: strapiUrl.port,
-        pathname: "/**",
-      },
-    ],
   },
   turbopack: {
     root: turbopackRoot,
