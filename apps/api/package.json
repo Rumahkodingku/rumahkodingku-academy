@@ -5,9 +5,11 @@
   "scripts": {
     "build": "tsdown",
     "check-types": "tsc -b",
-    "test": "vitest run --passWithNoTests",
-    "dev": "tsx watch src/main.ts",
-    "start": "node dist/main.mjs"
+    "test": "vitest run --config vitest.config.mts --passWithNoTests",
+    "dev": "tsdown && (tsdown -w --no-clean & TSDOWN_PID=$!; trap 'kill $TSDOWN_PID' EXIT; node --watch dist/main.mjs)",
+    "start": "node dist/main.mjs",
+    "test:integration": "vitest run --config vitest.integration.config.mts",
+    "test:contract": "vitest run --config vitest.contract.config.mts"
   },
   "dependencies": {
     "@nestjs/authentication": "^0.1.5",
@@ -29,6 +31,7 @@
     "@nestjs/websockets": "^12.4.2",
     "@rumahkodingku-academy/db": "workspace:*",
     "@rumahkodingku-academy/env": "workspace:*",
+    "@rumahkodingku-academy/helpers": "workspace:*",
     "@scalar/nestjs-api-reference": "^1.2.36",
     "bullmq": "^6.7.5",
     "compression": "^1.8.2",
@@ -49,20 +52,25 @@
     "rxjs": "^7.8.2",
     "socket.io": "^4.8.4",
     "swagger-ui-express": "^5.0.1",
+    "typeorm": "^1.1.2",
+    "uuid": "^14.0.3",
     "winston": "^3.19.0",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@nestjs/testing": "^12.5.0",
     "@playwright/test": "catalog:",
     "@rumahkodingku-academy/config": "workspace:*",
     "@types/compression": "^1.8.1",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/node": "catalog:",
+    "@types/supertest": "^7.2.1",
     "@vitest/coverage-v8": "catalog:",
     "@vitest/ui": "catalog:",
     "jsdom": "catalog:",
     "playwright": "catalog:",
+    "supertest": "^7.3.2",
     "tsdown": "^0.23.7",
     "tsx": "^4.20.0",
     "typescript": "^6.0.3",

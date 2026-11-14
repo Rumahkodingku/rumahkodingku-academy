@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 
-import { requireAdmin } from "@/lib/auth/session";
+import { AppShell } from "@/components/layout/app-shell";
+import { PERMISSIONS } from "@/features/auth/permissions";
+import { requirePermission } from "@/lib/auth/session";
 import { isLocale } from "@/lib/i18n/routing";
 
 export default async function AdminLayout({
@@ -16,7 +18,11 @@ export default async function AdminLayout({
     notFound();
   }
 
-  await requireAdmin(locale);
+  const user = await requirePermission(locale, PERMISSIONS.ADMIN_ACCESS);
 
-  return children;
+  return (
+    <AppShell locale={locale} user={user}>
+      {children}
+    </AppShell>
+  );
 }

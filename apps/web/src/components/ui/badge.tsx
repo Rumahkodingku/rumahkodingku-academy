@@ -8,29 +8,26 @@ const badgeVariants = cva(
   "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-caption font-medium",
   {
     variants: {
-      variant: {
-        neutral: "border-border bg-muted text-muted-foreground",
-        info: "border-status-info/30 bg-status-info/10 text-status-info",
-        success: "border-status-success/30 bg-status-success/10 text-status-success",
-        warning: "border-status-warning/30 bg-status-warning/10 text-status-warning",
-        danger: "border-status-danger/30 bg-status-danger/10 text-status-danger",
-        outline: "border-border-strong bg-transparent text-foreground",
+      tone: {
+        neutral: "border-line bg-transparent text-ink-muted",
+        accent: "border-accent/30 bg-accent-soft text-accent-strong",
+        success: "border-success/30 bg-transparent text-success",
+        warning: "border-warning/30 bg-transparent text-warning",
+        danger: "border-danger/30 bg-transparent text-danger",
       },
     },
     defaultVariants: {
-      variant: "neutral",
+      tone: "neutral",
     },
   },
 );
 
 function Badge({
   className,
-  variant,
+  tone,
   ...props
 }: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants>) {
-  return (
-    <span data-slot="badge" className={cn(badgeVariants({ variant, className }))} {...props} />
-  );
+  return <span data-slot="badge" className={cn(badgeVariants({ tone, className }))} {...props} />;
 }
 
 export { Badge, badgeVariants };

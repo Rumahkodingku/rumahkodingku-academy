@@ -5,10 +5,23 @@
 > **Status:** Baseline specification  
 > **Primary accent:** `#2563EB`
 > **Brand color:** `#406194`  
-> **Themes:** Light and Dark  
+> **Theme:** Light only  
 > **Last updated:** 2026-11-12
 
 ---
+
+## 0. Current Implementation — Editorial Academy v2
+
+The implementation source of truth is `apps/web/src/index.css`. The v2 system replaces the original Modern SaaS token baseline:
+
+- Canvas: white `#FFFFFF`, surface `#FBF8F2`, sunken `#EFE9DD`, ink `#141311`, muted `#5C564D`, line `#DCD4C6`.
+- Accent: Academy Blue `#2563EB`; dark accent `#7FB0FF`.
+- Deep surfaces: `#141311` light, `#0B0A09` dark.
+- Type: Space Grotesk display, Manrope body, Geist Mono code.
+- Actions: pill buttons with ink fill; blue is reserved for links, focus, active, and selected states.
+- Surfaces: 6–8 px radius, hairline borders, minimal shadow.
+- Motion: 180–260 ms UI, 600–800 ms editorial reveal, reduced-motion respected.
+- No Base UI or other component library. See `docs/refactor/web-ui-overhaul-plan.md`.
 
 ## 1. Purpose
 
@@ -97,13 +110,10 @@ Values are starting points. Run contrast tests for every actual foreground/backg
 
 ### 4.4 Theme implementation rules
 
-- Define theme variables at a root theme boundary, e.g. `data-theme="light"` and `data-theme="dark"`.
+- Define theme variables at the root theme boundary.
 - Use semantic variables in all components.
-- Respect OS preference on first visit if user has not selected a preference.
-- Persist explicit user selection using the application's approved preference mechanism.
 - Prevent theme flash during initial render.
 - Ensure embedded content, charts, code blocks, dialogs, and third-party UI have deliberate theme treatment.
-- Do not implement Dark Mode as a simple global color inversion.
 
 ## 5. Typography
 

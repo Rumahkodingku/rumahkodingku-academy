@@ -33,6 +33,161 @@
   "footer": {
     "description": "Belajar, bangun, dan tumbuhkan kemampuan teknologi Anda melalui kursus terstruktur dan proyek nyata.",
     "navLabel": "Navigasi footer",
-    "rights": "© {{year}} RumahKodingku Academy."
+    "rights": "© {{year}} RumahKodingku Academy.",
+    "statement": "Belajar, bangun, dan buktikan kemampuan Anda.",
+    "note": "Kursus, proyek, dan sertifikat untuk kemampuan yang bisa dibuktikan.",
+    "navigation": "Navigasi",
+    "academy": "Academy"
+  },
+  "auth": {
+    "login": {
+      "title": "Masuk ke akun Anda",
+      "description": "Lanjutkan perjalanan belajar dan akses kursus yang sudah Anda miliki."
+    },
+    "register": {
+      "title": "Buat akun belajar",
+      "description": "Mulai dari satu langkah kecil. Kursus, proyek, dan sertifikat menunggu.",
+      "successTitle": "Akun berhasil dibuat",
+      "successDescription": "Kami mengirim tautan verifikasi ke {{email}}. Buka email untuk mengaktifkan akun.",
+      "checkEmailTitle": "Cek kotak masuk Anda",
+      "checkEmailDescription": "Tautan verifikasi berlaku 24 jam. Jika tidak menemukan email, periksa folder spam.",
+      "resendSuccess": "Tautan verifikasi baru sudah dikirim."
+    },
+    "forgot": {
+      "title": "Lupa password?",
+      "titleDescription": "Masukkan email akun Anda. Kami akan mengirim tautan untuk membuat password baru.",
+      "description": "Jika email terdaftar, tautan reset akan dikirim.",
+      "successTitle": "Permintaan diterima",
+      "successDescription": "Jika email terdaftar, tautan reset password akan segera masuk."
+    },
+    "reset": {
+      "title": "Buat password baru",
+      "description": "Gunakan password yang kuat dan belum pernah dipakai di layanan lain.",
+      "missingTokenTitle": "Tautan tidak valid",
+      "missingTokenDescription": "Tautan reset tidak memiliki token. Minta tautan baru untuk melanjutkan.",
+      "successTitle": "Password diperbarui",
+      "successDescription": "Password baru sudah tersimpan. Silakan masuk kembali."
+    },
+    "verify": {
+      "title": "Verifikasi email",
+      "description": "Satu langkah lagi untuk mengaktifkan akun dan membuka akses belajar.",
+      "successTitle": "Email terverifikasi",
+      "successDescription": "Email {{email}} berhasil diverifikasi. Silakan masuk.",
+      "missingTokenTitle": "Token verifikasi tidak ditemukan",
+      "missingTokenDescription": "Buka tautan verifikasi dari email, atau minta tautan baru di bawah.",
+      "readyTitle": "Siap memverifikasi",
+      "readyDescription": "Klik tombol di bawah untuk memverifikasi alamat email Anda.",
+      "resendPrompt": "Tautan sudah kedaluwarsa atau tidak valid? Minta tautan baru.",
+      "resendSuccess": "Tautan verifikasi baru sudah dikirim."
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "name": "Nama lengkap",
+      "confirmPassword": "Konfirmasi password",
+      "newPassword": "Password baru",
+      "passwordHint": "Minimal 12 karakter. Gunakan kombinasi yang sulit ditebak."
+    },
+    "actions": {
+      "showPassword": "Tampilkan password",
+      "hidePassword": "Sembunyikan password",
+      "signingIn": "Memproses...",
+      "signIn": "Masuk",
+      "creatingAccount": "Membuat akun...",
+      "createAccount": "Buat akun",
+      "resending": "Mengirim ulang...",
+      "resendVerification": "Kirim ulang verifikasi",
+      "sending": "Mengirim...",
+      "sendResetLink": "Kirim tautan reset",
+      "saving": "Menyimpan...",
+      "saveNewPassword": "Simpan password baru",
+      "verifying": "Memverifikasi...",
+      "verifyEmail": "Verifikasi email"
+    },
+    "links": {
+      "forgotPassword": "Lupa password?",
+      "noAccount": "Belum punya akun?",
+      "register": "Daftar",
+      "backToLogin": "Kembali ke halaman masuk",
+      "haveAccount": "Sudah punya akun?",
+      "signIn": "Masuk",
+      "requestNewLink": "Minta tautan baru"
+    },
+    "errors": {
+      "title": "Tidak dapat diproses",
+      "generic": "Terjadi kesalahan. Coba lagi sebentar lagi.",
+      "email": "Masukkan alamat email yang valid.",
+      "passwordRequired": "Masukkan password.",
+      "nameRequired": "Masukkan nama lengkap.",
+      "passwordLength": "Password harus 12–128 karakter.",
+      "passwordMismatch": "Konfirmasi password tidak sama.",
+      "url": "Gunakan URL http atau https yang valid.",
+      "timezone": "Gunakan zona waktu IANA yang valid.",
+      "countryCode": "Gunakan kode negara dua huruf.",
+      "username": "Username 3–30 karakter: huruf kecil, angka, atau garis bawah."
+    },
+    "verificationBanner": {
+      "title": "Email belum terverifikasi",
+      "description": "Verifikasi email untuk membuka akses belajar, profil, dan avatar.",
+      "sent": "Tautan verifikasi sudah dikirim."
+    },
+    "silentRefresh": {
+      "loading": "Memulihkan sesi..."
+    }
+  },
+  "account": {
+    "menuLabel": "Menu akun {{name}}",
+    "profile": "Profil",
+    "admin": "Admin",
+    "signOut": "Keluar",
+    "signingOut": "Keluar..."
+  },
+  "profile": {
+    "saved": "Profil berhasil disimpan.",
+    "save": "Simpan perubahan",
+    "saving": "Menyimpan...",
+    "readOnlyHint": "Email, status, dan izin hanya dapat dibaca.",
+    "sections": {
+      "identity": "Identitas",
+      "about": "Tentang Anda",
+      "contact": "Kontak dan lokasi",
+      "links": "Tautan",
+      "preferences": "Preferensi"
+    },
+    "fields": {
+      "displayName": "Nama tampilan",
+      "fullName": "Nama lengkap",
+      "username": "Username",
+      "headline": "Headline",
+      "bio": "Bio",
+      "phone": "Nomor telepon",
+      "countryCode": "Kode negara",
+      "city": "Kota",
+      "timezone": "Zona waktu",
+      "locale": "Bahasa",
+      "websiteUrl": "Website",
+      "githubUrl": "GitHub",
+      "linkedinUrl": "LinkedIn",
+      "xUrl": "X",
+      "instagramUrl": "Instagram",
+      "emailNotifications": "Notifikasi email",
+      "emailNotificationsDescription": "Terima pembaruan penting lewat email.",
+      "inAppNotifications": "Notifikasi dalam aplikasi",
+      "inAppNotificationsDescription": "Tampilkan pembaruan di dalam Academy."
+    },
+    "placeholders": {
+      "bio": "Ceritakan minat dan tujuan belajar Anda."
+    },
+    "avatar": {
+      "title": "Avatar",
+      "upload": "Unggah avatar",
+      "uploading": "Mengunggah...",
+      "remove": "Hapus avatar",
+      "hint": "JPEG, PNG, atau WebP. Maksimal 2 MB.",
+      "success": "Avatar diperbarui.",
+      "currentAlt": "Avatar saat ini",
+      "invalidType": "Format avatar harus JPEG, PNG, atau WebP.",
+      "tooLarge": "Ukuran avatar maksimal 2 MB."
+    }
   }
 }

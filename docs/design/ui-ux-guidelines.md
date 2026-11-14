@@ -159,6 +159,8 @@ Rules:
 
 ### 4.4 Authentication
 
+- Layout desktop memakai split 1:1 antara panel editorial dan form.
+- Di bawah 1024 px, panel editorial menjadi strip merek ringkas dan form menjadi satu kolom.
 - Sediakan label dan instruksi yang jelas.
 - Bedakan login dan registrasi.
 - Berikan validasi inline.
@@ -498,7 +500,7 @@ State tidak boleh hanya dibedakan melalui warna. Gunakan teks, ikon, pola, atau 
 - [ ] Status tidak hanya menggunakan warna.
 - [ ] Zoom/reflow tidak menghilangkan fungsi.
 - [ ] Target sentuh cukup besar.
-- [ ] Konten tetap terbaca di Light dan Dark Mode.
+- [ ] Konten tetap terbaca pada Light Mode.
 
 ### Forms and feedback
 
@@ -580,7 +582,6 @@ Usability test minimum:
 ### Visual and interaction
 
 - [ ] Light Mode diperiksa.
-- [ ] Dark Mode diperiksa.
 - [ ] Mobile, tablet, desktop diperiksa.
 - [ ] Loading/empty/error/success/disabled diperiksa.
 - [ ] Focus-visible dan keyboard diperiksa.

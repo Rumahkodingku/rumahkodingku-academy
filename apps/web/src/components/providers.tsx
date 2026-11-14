@@ -8,8 +8,7 @@ import { I18nProvider } from "@/lib/i18n/provider";
 import type { Locale } from "@/lib/i18n/routing";
 import { PostHogProvider } from "@/lib/posthog";
 
-import { ThemeProvider } from "./theme-provider";
-import { Toaster } from "./ui/sonner";
+import { MotionProvider } from "./motion/motion-provider";
 
 export default function Providers({
   children,
@@ -21,13 +20,12 @@ export default function Providers({
   const [queryClient] = useState(() => createQueryClient());
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-      <QueryClientProvider client={queryClient}>
-        <I18nProvider locale={locale}>
+    <QueryClientProvider client={queryClient}>
+      <I18nProvider locale={locale}>
+        <MotionProvider>
           <PostHogProvider>{children}</PostHogProvider>
-          <Toaster richColors />
-        </I18nProvider>
-      </QueryClientProvider>
-    </ThemeProvider>
+        </MotionProvider>
+      </I18nProvider>
+    </QueryClientProvider>
   );
 }

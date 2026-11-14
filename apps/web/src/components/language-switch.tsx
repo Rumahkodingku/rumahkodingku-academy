@@ -6,13 +6,7 @@ import { Languages } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Menu, MenuContent, MenuItem, MenuTrigger } from "@/components/ui/menu";
 import { LOCALES, localizedPath, stripLocale, type Locale } from "@/lib/i18n/routing";
 
 export function LanguageSwitch() {
@@ -25,19 +19,17 @@ export function LanguageSwitch() {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={<Button variant="ghost" size="icon" aria-label={t("language.label")} />}
-      >
+    <Menu>
+      <MenuTrigger variant="ghost" size="icon" aria-label={t("language.label")}>
         <Languages aria-hidden="true" className="size-4" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      </MenuTrigger>
+      <MenuContent align="end">
         {LOCALES.map((locale) => (
-          <DropdownMenuItem key={locale} onClick={() => changeLocale(locale)}>
+          <MenuItem key={locale} onSelect={() => changeLocale(locale)}>
             {t(`language.${locale}`)}
-          </DropdownMenuItem>
+          </MenuItem>
         ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </MenuContent>
+    </Menu>
   );
 }

@@ -37,7 +37,7 @@ export const Orders: Story = {
           <TableCell className="font-medium">RK-001</TableCell>
           <TableCell>Ayu</TableCell>
           <TableCell>
-            <Badge variant="success">Paid</Badge>
+            <Badge tone="success">Paid</Badge>
           </TableCell>
           <TableCell className="text-right">Rp299.000</TableCell>
         </TableRow>
@@ -45,7 +45,7 @@ export const Orders: Story = {
           <TableCell className="font-medium">RK-002</TableCell>
           <TableCell>Bima</TableCell>
           <TableCell>
-            <Badge variant="warning">Pending</Badge>
+            <Badge tone="warning">Pending</Badge>
           </TableCell>
           <TableCell className="text-right">Rp199.000</TableCell>
         </TableRow>

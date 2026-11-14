@@ -1,61 +1,155 @@
 "use client";
 
-import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { useControllableState } from "@/lib/ui/use-controllable-state";
 
-function Tabs({ className, ...props }: TabsPrimitive.Root.Props) {
-  return <TabsPrimitive.Root data-slot="tabs" className={cn("w-full", className)} {...props} />;
+type TabsContextValue = {
+  value: string;
+  setValue: (value: string) => void;
+  baseId: string;
+};
+
+const TabsContext = React.createContext<TabsContextValue | null>(null);
+
+function useTabs() {
+  const context = React.useContext(TabsContext);
+
+  if (!context) {
+    throw new Error("Tabs parts must be used inside <Tabs>.");
+  }
+
+  return context;
 }
 
-function TabsList({ className, activateOnFocus = true, ...props }: TabsPrimitive.List.Props) {
+function Tabs({
+  className,
+  value,
+  defaultValue = "",
+  onValueChange,
+  children,
+  ...props
+}: React.ComponentProps<"div"> & {
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+}) {
+  const baseId = React.useId();
+  const [current, setCurrent] = useControllableState({
+    value,
+    defaultValue,
+    onChange: onValueChange,
+  });
+
   return (
-    <TabsPrimitive.List
+    <TabsContext.Provider value={{ value: current, setValue: setCurrent, baseId }}>
+      <div data-slot="tabs" className={cn("w-full", className)} {...props}>
+        {children}
+      </div>
+    </TabsContext.Provider>
+  );
+}
+
+function TabsList({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      role="tablist"
       data-slot="tabs-list"
-      activateOnFocus={activateOnFocus}
-      className={cn(
-        "relative flex w-full items-center gap-1 border-b border-border text-muted-foreground",
-        className,
-      )}
+      className={cn("flex w-full items-center gap-6 border-b border-line", className)}
       {...props}
     />
   );
 }
 
-function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
+function TabsTrigger({
+  className,
+  value,
+  children,
+  ...props
+}: React.ComponentProps<"button"> & { value: string }) {
+  const { value: current, setValue, baseId } = useTabs();
+  const active = current === value;
+  const triggerId = `${baseId}-tab-${value}`;
+
+  function onKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
+    const list = event.currentTarget.parentElement;
+
+    if (!list) return;
+
+    const tabs = Array.from(list.querySelectorAll<HTMLElement>('[role="tab"]:not([disabled])'));
+    const index = tabs.indexOf(event.currentTarget);
+
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      const direction = event.key === "ArrowRight" ? 1 : -1;
+      const next = tabs[(index + direction + tabs.length) % tabs.length];
+      next?.focus();
+      next?.click();
+      return;
+    }
+
+    if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      const next = event.key === "Home" ? tabs[0] : tabs.at(-1);
+      next?.focus();
+      next?.click();
+    }
+  }
+
   return (
-    <TabsPrimitive.Tab
-      data-slot="tabs-trigger"
+    <button
+      id={triggerId}
+      type="button"
+      role="tab"
+      aria-selected={active}
+      aria-controls={`${baseId}-panel-${value}`}
+      tabIndex={active ? 0 : -1}
+      data-active={active || undefined}
+      onClick={() => setValue(value)}
+      onKeyDown={onKeyDown}
       className={cn(
-        "inline-flex h-11 items-center justify-center whitespace-nowrap rounded-t-md px-3 text-body-sm font-medium outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[active]:text-foreground",
+        "relative -mb-px h-11 whitespace-nowrap border-b-2 border-transparent text-body-sm font-medium text-ink-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-accent aria-selected:border-accent aria-selected:text-ink",
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </button>
   );
 }
 
-function TabsIndicator({ className, ...props }: TabsPrimitive.Indicator.Props) {
-  return (
-    <TabsPrimitive.Indicator
-      data-slot="tabs-indicator"
-      className={cn(
-        "absolute bottom-0 left-(--active-tab-left) h-0.5 w-(--active-tab-width) rounded-full bg-primary transition-all",
-        className,
-      )}
-      {...props}
-    />
-  );
-}
+function TabsContent({
+  className,
+  value,
+  children,
+  ...props
+}: React.ComponentProps<"div"> & { value: string }) {
+  const { value: current, baseId } = useTabs();
+  const active = current === value;
 
-function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
+  if (!active) {
+    return null;
+  }
+
   return (
-    <TabsPrimitive.Panel
+    <div
+      role="tabpanel"
+      id={`${baseId}-panel-${value}`}
+      aria-labelledby={`${baseId}-tab-${value}`}
+      tabIndex={0}
       data-slot="tabs-content"
-      className={cn("mt-4 outline-none", className)}
+      className={cn("mt-6 outline-none focus-visible:ring-2 focus-visible:ring-accent", className)}
       {...props}
-    />
+    >
+      {children}
+    </div>
   );
+}
+
+/** @deprecated Use the active underline on TabsTrigger instead. */
+function TabsIndicator() {
+  return null;
 }
 
 export { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger };

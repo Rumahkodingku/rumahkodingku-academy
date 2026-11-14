@@ -7,21 +7,18 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
-  "relative flex w-full gap-3 rounded-lg border p-4 text-body-sm [&>svg]:mt-0.5 [&>svg]:size-4 [&>svg]:shrink-0",
+  "relative flex w-full gap-3 border border-line bg-surface/70 p-4 text-body-sm [&>svg]:mt-0.5 [&>svg]:size-4 [&>svg]:shrink-0",
   {
     variants: {
-      variant: {
-        info: "border-status-info/30 bg-status-info/10 text-foreground [&>svg]:text-status-info",
-        success:
-          "border-status-success/30 bg-status-success/10 text-foreground [&>svg]:text-status-success",
-        warning:
-          "border-status-warning/30 bg-status-warning/10 text-foreground [&>svg]:text-status-warning",
-        danger:
-          "border-status-danger/30 bg-status-danger/10 text-foreground [&>svg]:text-status-danger",
+      tone: {
+        info: "text-ink [&>svg]:text-info",
+        success: "text-ink [&>svg]:text-success",
+        warning: "text-ink [&>svg]:text-warning",
+        danger: "text-ink [&>svg]:text-danger",
       },
     },
     defaultVariants: {
-      variant: "info",
+      tone: "info",
     },
   },
 );
@@ -38,14 +35,14 @@ type AlertProps = React.ComponentProps<"div"> &
     title?: React.ReactNode;
   };
 
-function Alert({ className, variant = "info", title, children, ...props }: AlertProps) {
-  const Icon = alertIcons[variant ?? "info"];
+function Alert({ className, tone = "info", title, children, ...props }: AlertProps) {
+  const Icon = alertIcons[tone ?? "info"];
 
   return (
     <div
       data-slot="alert"
-      role={variant === "danger" || variant === "warning" ? "alert" : "status"}
-      className={cn(alertVariants({ variant, className }))}
+      role={tone === "danger" || tone === "warning" ? "alert" : "status"}
+      className={cn(alertVariants({ tone, className }))}
       {...props}
     >
       <Icon aria-hidden="true" />
@@ -61,7 +58,7 @@ function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="alert-title"
-      className={cn("font-medium leading-none text-foreground", className)}
+      className={cn("font-medium leading-none text-ink", className)}
       {...props}
     />
   );
@@ -71,7 +68,7 @@ function AlertDescription({ className, ...props }: React.ComponentProps<"div">) 
   return (
     <div
       data-slot="alert-description"
-      className={cn("text-body-sm text-muted-foreground", className)}
+      className={cn("text-body-sm text-ink-muted", className)}
       {...props}
     />
   );

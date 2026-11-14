@@ -1,14 +1,18 @@
-import { randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 
 import { doubleCsrf } from "csrf-csrf";
 import type { NextFunction, Request, Response } from "express";
 
 import { env } from "@rumahkodingku-academy/env/server";
 
+const CSRF_SESSION_COOKIE = "csrf-session";
+
 const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
   getSecret: () => env.CSRF_SECRET,
-  // shortcut: bind CSRF to IP until Auth sessions exist; replace with session id after Auth domain lands.
-  getSessionIdentifier: (req: Request) => req.ip ?? "anonymous",
+  getSessionIdentifier: (req: Request) => {
+    const value: unknown = req.cookies?.[CSRF_SESSION_COOKIE];
+    return typeof value === "string" ? value : "";
+  },
   cookieName: "csrf-token",
   cookieOptions: {
     sameSite: "lax",
@@ -21,6 +25,28 @@ const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
   getCsrfTokenFromRequest: (req) => req.headers["x-csrf-token"],
   skipCsrfProtection: (req) => req.path.startsWith("/api/v1/payments/webhooks"),
 });
+
+export function ensureCsrfSession(request: Request, response: Response, next: NextFunction): void {
+  const existing: unknown = request.cookies?.[CSRF_SESSION_COOKIE];
+
+  if (typeof existing === "string" && existing.length >= 32) {
+    next();
+    return;
+  }
+
+  const value = randomBytes(32).toString("hex");
+
+  request.cookies = { ...request.cookies, [CSRF_SESSION_COOKIE]: value };
+  response.cookie(CSRF_SESSION_COOKIE, value, {
+    httpOnly: true,
+    secure: env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  next();
+}
 
 export function csrfProtection(request: Request, response: Response, next: NextFunction): void {
   doubleCsrfProtection(request, response, (error?: unknown) => {

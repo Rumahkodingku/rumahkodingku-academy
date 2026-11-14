@@ -17,7 +17,7 @@ API responses use:
 - Success: `{ data, meta }`.
 - Error: RFC 9457 Problem Details with `Content-Type: application/problem+json` and `type`, `title`, `status`, `detail`, `instance`, `code`, `requestId`, and optional `errors`.
 
-Use `/api/v1` as the global prefix. Never return raw TypeORM entities. API docs are served at `/swagger` and `/reference`; the OpenAPI JSON is at `/swagger-json`.
+Use `/api/v1` as the global prefix. Never return raw TypeORM entities. API docs are served at `/swagger` and `/reference`; the OpenAPI JSON is at `/swagger-json`. Document controllers with the composite `ApiDocs` decorator from `apps/api/src/common/swagger/api-docs.decorator.ts`; use `success`/`responses` for explicit response DTOs and `errorResponses` for standard Problem Details responses.
 
 Cookie-authenticated mutations require the CSRF token from `GET /api/v1/csrf/token` in the `x-csrf-token` header.
 

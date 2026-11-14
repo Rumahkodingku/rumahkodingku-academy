@@ -8,17 +8,17 @@ const meta = {
   tags: ["autodocs"],
   args: {
     children: "Mulai belajar",
-    variant: "default",
-    size: "default",
+    variant: "primary",
+    size: "md",
   },
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "secondary", "outline", "ghost", "destructive", "link"],
+      options: ["primary", "secondary", "ghost", "link", "danger"],
     },
     size: {
       control: "select",
-      options: ["sm", "default", "lg", "icon"],
+      options: ["sm", "md", "lg", "icon", "icon-sm"],
     },
   },
 } satisfies Meta<typeof Button>;
@@ -33,9 +33,9 @@ export const Variants: Story = {
     <div className="flex flex-wrap items-center gap-3">
       <Button>Mulai belajar</Button>
       <Button variant="secondary">Simpan</Button>
-      <Button variant="outline">Lihat detail</Button>
+      <Button variant="ghost">Lihat detail</Button>
       <Button variant="ghost">Batal</Button>
-      <Button variant="destructive">Hapus</Button>
+      <Button variant="danger">Hapus</Button>
       <Button variant="link">Pelajari</Button>
     </div>
   ),
@@ -45,7 +45,7 @@ export const Sizes: Story = {
   render: () => (
     <div className="flex flex-wrap items-center gap-3">
       <Button size="sm">Small</Button>
-      <Button size="default">Default</Button>
+      <Button size="md">Default</Button>
       <Button size="lg">Large</Button>
     </div>
   ),

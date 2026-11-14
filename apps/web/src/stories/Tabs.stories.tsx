@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const meta = {
   title: "Primitives/Tabs",
@@ -18,18 +18,17 @@ export const Default: Story = {
         <TabsTrigger value="ringkasan">Ringkasan</TabsTrigger>
         <TabsTrigger value="kurikulum">Kurikulum</TabsTrigger>
         <TabsTrigger value="proyek">Proyek</TabsTrigger>
-        <TabsIndicator />
       </TabsList>
       <TabsContent value="ringkasan">
-        <p className="text-body-sm text-muted-foreground">
+        <p className="text-body-sm text-ink-muted">
           Ringkasan materi, prasyarat, dan hasil belajar.
         </p>
       </TabsContent>
       <TabsContent value="kurikulum">
-        <p className="text-body-sm text-muted-foreground">Daftar section dan lesson.</p>
+        <p className="text-body-sm text-ink-muted">Daftar section dan lesson.</p>
       </TabsContent>
       <TabsContent value="proyek">
-        <p className="text-body-sm text-muted-foreground">Ketentuan proyek akhir.</p>
+        <p className="text-body-sm text-ink-muted">Ketentuan proyek akhir.</p>
       </TabsContent>
     </Tabs>
   ),

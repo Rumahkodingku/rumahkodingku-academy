@@ -8,9 +8,16 @@ Relational integrity; normalized transactional/learning data; explicit foreign k
 
 ### Identity
 
-- `users`: email, password hash, role (`USER`/`ADMIN`), status, name, avatar file reference, email verified timestamp, profile fields, timestamps.
-- `refresh_sessions`: hashed token/session, expiry, revoked time, device metadata, user.
-- `email_verification_tokens`, `password_reset_tokens`: hashed token, expiry, consumed time, user.
+- `users`: account only — email, password hash, status (`ACTIVE`/`SUSPENDED`/`DELETED`), email verified timestamp, timestamps. No role or profile columns.
+- `users_profile`: one-to-one user profile — display name, full name, username, bio, headline, avatar storage key, phone, country code, city, timezone, locale, website/GitHub/LinkedIn/X/Instagram URLs, email/in-app notification preferences, timestamps.
+- `roles`: RBAC role name, guard name (`api`), description, default-role flag, timestamps.
+- `permissions`: RBAC permission name, guard name, description, timestamps.
+- `role_has_permissions`: role/permission pivot.
+- `model_has_roles`: polymorphic user-role pivot (`model_type='user'`, `model_id` UUID).
+- `model_has_permissions`: polymorphic direct user-permission pivot.
+- `refresh_token_families`: user, absolute expiry, revoked timestamp.
+- `refresh_sessions`: hashed token, family, expiry, family expiry, used timestamp, claims, revoked time, device metadata, user.
+- `email_verification_tokens`, `password_reset_tokens`: hashed token, email, optional fingerprint, expiry, consumed time, user.
 
 ### Catalog
 
@@ -74,15 +81,15 @@ Roadmaps are always sequential. No optional-prerequisite column is required in t
 
 ## Relationships
 
-User 1:N orders, sessions, enrollments, progress, attempts, submissions, reviews, wishlists, notifications. Order 1:N items/payments/refunds. Course 1:N sections, enrollments, quizzes, final project, certificates, reviews. Section 1:N lessons. Quiz 1:N questions/attempts; question 1:N options. Roadmap 1:N ordered roadmap-course entries. Project 1:N submissions; submission 1:N files/scores. Enrollment 1:N certificates over time (one active).
+User 1:1 profile, 1:N refresh families/sessions, orders, enrollments, progress, attempts, submissions, reviews, wishlists, notifications. User N:M roles and permissions through polymorphic RBAC pivots. Order 1:N items/payments/refunds. Course 1:N sections, enrollments, quizzes, final project, certificates, reviews. Section 1:N lessons. Quiz 1:N questions/attempts; question 1:N options. Roadmap 1:N ordered roadmap-course entries. Project 1:N submissions; submission 1:N files/scores. Enrollment 1:N certificates over time (one active).
 
 ## Constraints and indexes
 
-Unique: normalized `users.email`, course slug, category slug, order number, provider+provider reference, provider+webhook event ID, user+course enrollment, user+lesson progress, certificate number, certificate verification code, roadmap+position, roadmap+course, coupon code, project+user+version, wishlist user+course, review enrollment. `coupon_redemptions.order_id` is unique to enforce one coupon per order; coupon+user limits are enforced transactionally.
+Unique: normalized `users.email`, `users_profile.user_id`, `users_profile.username`, role+guard, permission+guard, course slug, category slug, order number, provider+provider reference, provider+webhook event ID, user+course enrollment, user+lesson progress, certificate number, certificate verification code, roadmap+position, roadmap+course, coupon code, project+user+version, wishlist user+course, review enrollment. `coupon_redemptions.order_id` is unique to enforce one coupon per order; coupon+user limits are enforced transactionally.
 
 Active certificate uniqueness: enforce one `ISSUED` certificate per enrollment. MySQL has no partial unique index, so use a generated nullable `active_enrollment_id` unique column or an equivalent transaction-safe constraint. Never rely on client checks.
 
-Indexes: orders by user/status/date; payments by order/status/reference; refunds by order/status; lessons by section/position; submissions by project/user/status/date; notifications by user/read/date; `outbox_events` by status/available timestamp and aggregate; `notification_outbox` by status/next attempt; reviews by course/status/date; audit by actor/action/date.
+Indexes: RBAC by model type/id and guard; refresh sessions by family; email tokens by token hash/user; orders by user/status/date; payments by order/status/reference; refunds by order/status; lessons by section/position; submissions by project/user/status/date; notifications by user/read/date; `outbox_events` by status/available timestamp and aggregate; `notification_outbox` by status/next attempt; reviews by course/status/date; audit by actor/action/date.
 
 ## Data and deletion rules
 

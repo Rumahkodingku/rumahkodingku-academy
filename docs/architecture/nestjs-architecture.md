@@ -870,6 +870,18 @@ Payment webhooks are not browser-cookie-authenticated requests; they must use pr
 
 Authenticated identity must be derived from verified credentials or a validated session. Never trust a user ID, role, or permission supplied by the frontend as proof of identity or authority. The same rule applies to WebSocket connection payloads.
 
+### 11.5 RBAC and User Profiles (Phase 3)
+
+- RBAC uses five tables: `roles`, `permissions`, `role_has_permissions`, `model_has_roles`, `model_has_permissions`.
+- `model_type = "user"`, `model_id` is the user UUID, and `guard_name = "api"`.
+- Application code checks permissions, never role names.
+- `roles.is_default = true` identifies the registration role; exactly one default role per guard is required.
+- Seed data provides the `user` and `admin` roles and the `admin.access` permission.
+- The first admin is created with `pnpm --filter api auth:create-admin`.
+- `users` stores account data only. `users_profile` stores display name, full name, username, bio, headline, private avatar key, contact/location, timezone, locale, social URLs, and notification preferences.
+- Auth refresh tokens are stored hashed in `refresh_sessions`; families are tracked in `refresh_token_families`.
+- Password reset and email verification tokens are stored hashed with email and optional fingerprint metadata.
+
 ---
 
 ## 12. Authorization Architecture

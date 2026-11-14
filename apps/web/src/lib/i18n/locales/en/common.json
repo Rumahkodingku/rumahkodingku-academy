@@ -33,6 +33,161 @@
   "footer": {
     "description": "Learn, build, and grow your technology skills through structured courses and real projects.",
     "navLabel": "Footer navigation",
-    "rights": "© {{year}} RumahKodingku Academy."
+    "rights": "© {{year}} RumahKodingku Academy.",
+    "statement": "Learn, build, and prove what you can do.",
+    "note": "Courses, projects, and certificates for skills you can prove.",
+    "navigation": "Navigation",
+    "academy": "Academy"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in to your account",
+      "description": "Continue learning and access the courses you already own."
+    },
+    "register": {
+      "title": "Create a learning account",
+      "description": "Start with one small step. Courses, projects, and certificates are waiting.",
+      "successTitle": "Account created",
+      "successDescription": "We sent a verification link to {{email}}. Open your email to activate the account.",
+      "checkEmailTitle": "Check your inbox",
+      "checkEmailDescription": "The verification link is valid for 24 hours. If you cannot find the email, check your spam folder.",
+      "resendSuccess": "A new verification link has been sent."
+    },
+    "forgot": {
+      "title": "Forgot your password?",
+      "titleDescription": "Enter your account email. We will send a link to create a new password.",
+      "description": "If the email is registered, a reset link will be sent.",
+      "successTitle": "Request received",
+      "successDescription": "If the email is registered, a password reset link will arrive shortly."
+    },
+    "reset": {
+      "title": "Create a new password",
+      "description": "Use a strong password you have not used on another service.",
+      "missingTokenTitle": "Invalid link",
+      "missingTokenDescription": "The reset link has no token. Request a new link to continue.",
+      "successTitle": "Password updated",
+      "successDescription": "Your new password is saved. Please sign in again."
+    },
+    "verify": {
+      "title": "Verify your email",
+      "description": "One more step to activate your account and unlock learning access.",
+      "successTitle": "Email verified",
+      "successDescription": "{{email}} was verified successfully. Please sign in.",
+      "missingTokenTitle": "Verification token missing",
+      "missingTokenDescription": "Open the verification link from your email, or request a new one below.",
+      "readyTitle": "Ready to verify",
+      "readyDescription": "Click the button below to verify your email address.",
+      "resendPrompt": "Link expired or invalid? Request a new one.",
+      "resendSuccess": "A new verification link has been sent."
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "name": "Full name",
+      "confirmPassword": "Confirm password",
+      "newPassword": "New password",
+      "passwordHint": "At least 12 characters. Use a combination that is hard to guess."
+    },
+    "actions": {
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "signingIn": "Signing in...",
+      "signIn": "Sign in",
+      "creatingAccount": "Creating account...",
+      "createAccount": "Create account",
+      "resending": "Resending...",
+      "resendVerification": "Resend verification",
+      "sending": "Sending...",
+      "sendResetLink": "Send reset link",
+      "saving": "Saving...",
+      "saveNewPassword": "Save new password",
+      "verifying": "Verifying...",
+      "verifyEmail": "Verify email"
+    },
+    "links": {
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "register": "Register",
+      "backToLogin": "Back to sign in",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "requestNewLink": "Request a new link"
+    },
+    "errors": {
+      "title": "Could not process",
+      "generic": "Something went wrong. Try again shortly.",
+      "email": "Enter a valid email address.",
+      "passwordRequired": "Enter your password.",
+      "nameRequired": "Enter your full name.",
+      "passwordLength": "Password must be 12–128 characters.",
+      "passwordMismatch": "Password confirmation does not match.",
+      "url": "Use a valid http or https URL.",
+      "timezone": "Use a valid IANA timezone.",
+      "countryCode": "Use a two-letter country code.",
+      "username": "Username must be 3–30 characters: lowercase letters, numbers, or underscores."
+    },
+    "verificationBanner": {
+      "title": "Email not verified",
+      "description": "Verify your email to unlock learning, profile, and avatar access.",
+      "sent": "Verification link sent."
+    },
+    "silentRefresh": {
+      "loading": "Restoring session..."
+    }
+  },
+  "account": {
+    "menuLabel": "Account menu for {{name}}",
+    "profile": "Profile",
+    "admin": "Admin",
+    "signOut": "Sign out",
+    "signingOut": "Signing out..."
+  },
+  "profile": {
+    "saved": "Profile saved.",
+    "save": "Save changes",
+    "saving": "Saving...",
+    "readOnlyHint": "Email, status, and permissions are read-only.",
+    "sections": {
+      "identity": "Identity",
+      "about": "About you",
+      "contact": "Contact and location",
+      "links": "Links",
+      "preferences": "Preferences"
+    },
+    "fields": {
+      "displayName": "Display name",
+      "fullName": "Full name",
+      "username": "Username",
+      "headline": "Headline",
+      "bio": "Bio",
+      "phone": "Phone number",
+      "countryCode": "Country code",
+      "city": "City",
+      "timezone": "Timezone",
+      "locale": "Language",
+      "websiteUrl": "Website",
+      "githubUrl": "GitHub",
+      "linkedinUrl": "LinkedIn",
+      "xUrl": "X",
+      "instagramUrl": "Instagram",
+      "emailNotifications": "Email notifications",
+      "emailNotificationsDescription": "Receive important updates by email.",
+      "inAppNotifications": "In-app notifications",
+      "inAppNotificationsDescription": "Show updates inside Academy."
+    },
+    "placeholders": {
+      "bio": "Tell us about your interests and learning goals."
+    },
+    "avatar": {
+      "title": "Avatar",
+      "upload": "Upload avatar",
+      "uploading": "Uploading...",
+      "remove": "Remove avatar",
+      "hint": "JPEG, PNG, or WebP. Maximum 2 MB.",
+      "success": "Avatar updated.",
+      "currentAlt": "Current avatar",
+      "invalidType": "Avatar must be JPEG, PNG, or WebP.",
+      "tooLarge": "Avatar must be 2 MB or smaller."
+    }
   }
 }

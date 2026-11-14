@@ -12,9 +12,15 @@ export type BrandLogoProps = {
   className?: string;
   size?: keyof typeof markSizes;
   showProductName?: boolean;
+  tone?: "default" | "inverse";
 };
 
-export function BrandLogo({ className, size = "md", showProductName = true }: BrandLogoProps) {
+export function BrandLogo({
+  className,
+  size = "md",
+  showProductName = true,
+  tone = "default",
+}: BrandLogoProps) {
   return (
     <span
       className={cn("inline-flex items-center gap-2.5", className)}
@@ -22,7 +28,7 @@ export function BrandLogo({ className, size = "md", showProductName = true }: Br
       aria-label={showProductName ? undefined : "RumahKodingku"}
     >
       {/* The official mark is blue on transparency; keep it on a white surface in both themes. */}
-      <span className="inline-flex shrink-0 items-center justify-center rounded-lg bg-white p-1 shadow-1 ring-1 ring-border-default">
+      <span className="inline-flex shrink-0 items-center justify-center rounded-md bg-white p-1">
         <Image
           src="/brand/rumahkodingku-mark.png"
           alt=""
@@ -33,8 +39,20 @@ export function BrandLogo({ className, size = "md", showProductName = true }: Br
       </span>
       {showProductName ? (
         <span className="flex flex-col leading-none">
-          <span className="text-title tracking-tight text-foreground">RumahKodingku</span>
-          <span className="mt-1 text-caption uppercase tracking-[0.18em] text-muted-foreground">
+          <span
+            className={cn(
+              "text-title tracking-tight",
+              tone === "inverse" ? "text-deep-foreground" : "text-ink",
+            )}
+          >
+            RumahKodingku
+          </span>{" "}
+          <span
+            className={cn(
+              "mt-1 text-caption uppercase tracking-[0.18em]",
+              tone === "inverse" ? "text-deep-muted" : "text-ink-muted",
+            )}
+          >
             Academy
           </span>
         </span>

@@ -7,7 +7,7 @@
 **Audience:** Frontend developers, technical leads, reviewers, and AI coding agents  
 **Framework:** Next.js 16 (App Router)  
 **UI runtime:** React 19  
-**Styling:** Tailwind CSS 4 + Base UI  
+**Styling:** Tailwind CSS 4 + custom native-first primitives + Motion  
 **API:** NestJS REST under `/api/v1`  
 **Marketing content:** Strapi (marketing only)  
 **Monorepo:** pnpm Workspaces + Turborepo
@@ -83,23 +83,23 @@ When this document conflicts with the current implementation, follow the approve
 
 ## 2. Approved Architecture Decisions
 
-| ID      | Area                 | Decision                                                                                     | Status   |
-| ------- | -------------------- | -------------------------------------------------------------------------------------------- | -------- |
-| WEB-001 | Routing              | Next.js App Router under `src/app`                                                           | Accepted |
-| WEB-002 | Rendering            | Server Components by default; Client Components only at interactive leaves                   | Accepted |
-| WEB-003 | Organization         | Feature-based modules under `src/features`                                                   | Accepted |
-| WEB-004 | API access           | RSC calls NestJS directly; browser calls NestJS directly with credentials                    | Accepted |
-| WEB-005 | API types            | Generate TypeScript types from the NestJS OpenAPI document                                   | Accepted |
-| WEB-006 | Client server-state  | TanStack Query                                                                               | Accepted |
-| WEB-007 | Client UI-state      | Zustand only for ephemeral, cross-component UI state                                         | Accepted |
-| WEB-008 | Caching              | Explicit ISR, fetch cache, and tags; no `cacheComponents` in the baseline                    | Accepted |
-| WEB-009 | Internationalization | Keep i18next; locale routing as-needed with `[locale]`                                       | Accepted |
-| WEB-010 | Authentication       | HttpOnly cookies owned by NestJS; `proxy.ts` only performs optimistic checks                 | Accepted |
-| WEB-011 | Mutations            | TanStack Query mutations from the browser; Server Actions only for Next-local concerns       | Accepted |
-| WEB-012 | Deployment           | `output: "standalone"` on Node.js 24 LTS behind HTTPS                                        | Accepted |
-| WEB-013 | Marketing content    | Strapi is accessed through a server-only adapter                                             | Accepted |
-| WEB-014 | BFF                  | No catch-all BFF proxy; direct API is the default                                            | Accepted |
-| WEB-015 | Testing              | Vitest for synchronous units; Playwright for async RSC and journeys; Storybook for UI states | Accepted |
+| ID      | Area                 | Decision                                                                                          | Status   |
+| ------- | -------------------- | ------------------------------------------------------------------------------------------------- | -------- |
+| WEB-001 | Routing              | Next.js App Router under `src/app`                                                                | Accepted |
+| WEB-002 | Rendering            | Server Components by default; Client Components only at interactive leaves                        | Accepted |
+| WEB-003 | Organization         | Feature-based modules under `src/features`                                                        | Accepted |
+| WEB-004 | API access           | RSC calls NestJS directly; browser calls the same-origin `/api/v1` reverse proxy with credentials | Accepted |
+| WEB-005 | API types            | Generate TypeScript types from the NestJS OpenAPI document                                        | Accepted |
+| WEB-006 | Client server-state  | TanStack Query                                                                                    | Accepted |
+| WEB-007 | Client UI-state      | Zustand only for ephemeral, cross-component UI state                                              | Accepted |
+| WEB-008 | Caching              | Explicit ISR, fetch cache, and tags; no `cacheComponents` in the baseline                         | Accepted |
+| WEB-009 | Internationalization | Keep i18next; locale routing as-needed with `[locale]`                                            | Accepted |
+| WEB-010 | Authentication       | HttpOnly cookies owned by NestJS; `proxy.ts` only performs optimistic checks                      | Accepted |
+| WEB-011 | Mutations            | TanStack Query mutations from the browser; Server Actions only for Next-local concerns            | Accepted |
+| WEB-012 | Deployment           | `output: "standalone"` on Node.js 24 LTS behind HTTPS                                             | Accepted |
+| WEB-013 | Marketing content    | Strapi is accessed through a server-only adapter                                                  | Accepted |
+| WEB-014 | BFF                  | No catch-all BFF proxy; direct API is the default                                                 | Accepted |
+| WEB-015 | Testing              | Vitest for synchronous units; Playwright for async RSC and journeys; Storybook for UI states      | Accepted |
 
 Any change to an accepted decision MUST be recorded as an Architecture Decision Record with context, alternatives, consequences, migration impact, and approval.
 
@@ -107,38 +107,38 @@ Any change to an accepted decision MUST be recorded as an Architecture Decision 
 
 `apps/web` was a starter at the start of the migration. The table below records that baseline; the status table in Section 3.1 records what has been implemented. It MUST be updated when a gap is closed.
 
-| Area              | Current baseline                                                 | Target                                                         | Migration phase |
-| ----------------- | ---------------------------------------------------------------- | -------------------------------------------------------------- | --------------- |
-| Home route        | `app/page.tsx` is entirely `"use client"`                        | Server Component page; client islands only                     | Foundation      |
-| Routing           | Flat `app/`; no route groups or locale segment                   | Grouped routes under `app/[locale]/`                           | Foundation      |
-| Locale            | i18next client-only; no locale URL; unsupported `fr` file exists | `id` at root, `en` under `/en`; only supported locales shipped | Foundation      |
-| Middleware        | No `proxy.ts`                                                    | Locale rewrite and optimistic auth redirect                    | Foundation      |
-| Feature structure | Components and utilities mixed in `src/components`, `src/lib`    | `src/features/<domain>` with server/client boundaries          | Foundation      |
-| API access        | Browser-only Axios client                                        | Browser client plus server-only fetch with cookie forwarding   | Data layer      |
-| API types         | Hand-written types                                               | Generated OpenAPI schema plus thin typed wrappers              | Data layer      |
-| Auth              | No session DAL or route guard                                    | Session DAL, protected layouts, optimistic `proxy.ts`          | Auth shell      |
-| Marketing         | Strapi helpers are generic                                       | Server-only Strapi adapter with cache tags and SEO mapping     | Marketing       |
-| Caching           | No explicit strategy                                             | Cache matrix in Section 12                                     | Marketing       |
-| UI system         | Base UI primitives and Tailwind exist                            | Tokenized UI primitives and feature-level composition          | Hardening       |
-| Security          | No CSP/security headers                                          | CSP, `server-only`, sanitized rich text, image allowlist       | Hardening       |
-| Testing           | Vitest configured; no web tests                                  | Unit, component, E2E, accessibility coverage                   | Per phase       |
-| Storybook         | Storybook 10 and addons 8 are inconsistent                       | One aligned major version before UI expansion                  | Hardening       |
+| Area              | Current baseline                                                 | Target                                                          | Migration phase |
+| ----------------- | ---------------------------------------------------------------- | --------------------------------------------------------------- | --------------- |
+| Home route        | `app/page.tsx` is entirely `"use client"`                        | Server Component page; client islands only                      | Foundation      |
+| Routing           | Flat `app/`; no route groups or locale segment                   | Grouped routes under `app/[locale]/`                            | Foundation      |
+| Locale            | i18next client-only; no locale URL; unsupported `fr` file exists | `id` at root, `en` under `/en`; only supported locales shipped  | Foundation      |
+| Middleware        | No `proxy.ts`                                                    | Locale rewrite and optimistic auth redirect                     | Foundation      |
+| Feature structure | Components and utilities mixed in `src/components`, `src/lib`    | `src/features/<domain>` with server/client boundaries           | Foundation      |
+| API access        | Browser-only Axios client                                        | Browser client plus server-only fetch with cookie forwarding    | Data layer      |
+| API types         | Hand-written types                                               | Generated OpenAPI schema plus thin typed wrappers               | Data layer      |
+| Auth              | No session DAL or route guard                                    | Session DAL, protected layouts, optimistic `proxy.ts`           | Auth shell      |
+| Marketing         | Strapi helpers are generic                                       | Server-only Strapi adapter with cache tags and SEO mapping      | Marketing       |
+| Caching           | No explicit strategy                                             | Cache matrix in Section 12                                      | Marketing       |
+| UI system         | Custom native-first primitives and Tailwind exist                | Editorial tokenized UI primitives and feature-level composition | Hardening       |
+| Security          | No CSP/security headers                                          | CSP, `server-only`, sanitized rich text, image allowlist        | Hardening       |
+| Testing           | Vitest configured; no web tests                                  | Unit, component, E2E, accessibility coverage                    | Per phase       |
+| Storybook         | Storybook 10 and addons 8 are inconsistent                       | One aligned major version before UI expansion                   | Hardening       |
 
 The current state is recorded for planning. It MUST NOT be treated as an approved exception to the target.
 
 ### 3.1 Implementation Status
 
-| Phase                            | Status              | Notes                                                                                                                                                                      |
-| -------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Phase 0 — approval and inventory | Done                | Document reviewed and accepted.                                                                                                                                            |
-| Phase 1 — foundation             | Done                | Locale segment, as-needed proxy, marketing group, providers, metadata, sitemap/robots, image allowlist, starter home converted to a Server Component.                      |
-| Phase 2 — data layer             | Done                | Browser client, server-only fetch, generated OpenAPI schema from the current API, Problem Details mapping, query client, tests.                                            |
-| Phase 3 — auth shell             | Infrastructure only | Session DAL, route guards, protected route-group layouts, optimistic cookie check. Auth UI is intentionally deferred until the backend auth API and UI are built together. |
-| Phase 4 — marketing/catalog      | Pending             | Public pages and Strapi rendering.                                                                                                                                         |
-| Phase 5 — learning               | Pending             | Learner dashboard, player, quiz, project, certificate.                                                                                                                     |
-| Phase 6 — commerce               | Pending             | Checkout and payment status.                                                                                                                                               |
-| Phase 7 — admin                  | Pending             | Administration screens.                                                                                                                                                    |
-| Phase 8 — hardening              | Pending             | CSP enforcement, accessibility, performance, Storybook alignment, full E2E.                                                                                                |
+| Phase                            | Status  | Notes                                                                                                                                                                                                                                                   |
+| -------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Phase 0 — approval and inventory | Done    | Document reviewed and accepted.                                                                                                                                                                                                                         |
+| Phase 1 — foundation             | Done    | Locale segment, as-needed proxy, marketing group, providers, metadata, sitemap/robots, image allowlist, starter home converted to a Server Component.                                                                                                   |
+| Phase 2 — data layer             | Done    | Browser client, server-only fetch, generated OpenAPI schema from the current API, Problem Details mapping, query client, tests.                                                                                                                         |
+| Phase 3 — auth shell             | Done    | Server-side session reads via `GET /users/me`, permission-based guards, protected route groups, account menu, split auth UI, profile/avatar editing, silent refresh with one-shot retry, and Playwright auth coverage in Chromium, Firefox, and WebKit. |
+| Phase 4 — marketing/catalog      | Pending | Public pages and Strapi rendering.                                                                                                                                                                                                                      |
+| Phase 5 — learning               | Pending | Learner dashboard, player, quiz, project, certificate.                                                                                                                                                                                                  |
+| Phase 6 — commerce               | Pending | Checkout and payment status.                                                                                                                                                                                                                            |
+| Phase 7 — admin                  | Pending | Administration screens.                                                                                                                                                                                                                                 |
+| Phase 8 — hardening              | Pending | CSP enforcement, accessibility, performance, Storybook alignment, full E2E.                                                                                                                                                                             |
 
 The generated OpenAPI snapshot currently covers the implemented API surface only; it will grow as backend domains are added.
 
@@ -193,12 +193,13 @@ Strapi
 
 ### 5.2 Direct API Decision
 
-The browser and the Next.js server call NestJS directly.
+The browser and the Next.js server reach NestJS through a same-origin `/api/v1` reverse proxy.
 
-- Browser calls use `NEXT_PUBLIC_SERVER_URL` + `/api/v1`, `withCredentials: true`, the CSRF header, and RFC 9457 error handling.
-- Server calls use a server-only `API_URL` (internal Docker/Coolify hostname allowed) and forward the incoming session cookie.
-- A catch-all BFF proxy is NOT the default. It adds a second contract, latency, and a place for authorization drift.
-- A narrow Route Handler MAY be added later for a concrete reason: third-party webhook verification, an endpoint that must hide a server-only token, or a same-origin upload bridge. It MUST use a fixed endpoint allowlist and MUST NOT become a general proxy.
+- Browser calls use the web origin (`NEXT_PUBLIC_SERVER_URL` + `/api/v1`), `withCredentials: true`, the CSRF header, and RFC 9457 error handling.
+- Local development uses a Next.js rewrite from `/api/v1/:path*` to `${API_URL}/api/v1/:path*`. Production routes `/api/v1/*` at the edge (Coolify/Traefik) to the API service.
+- Server calls use the server-only `API_URL` and forward the incoming session cookie.
+- This is a transparent network reverse proxy, not an application BFF. It preserves the single API contract and host-only cookies.
+- A catch-all Next Route Handler BFF is prohibited. A narrow Route Handler MAY be added later for a concrete reason: third-party webhook verification, an endpoint that must hide a server-only token, or a same-origin upload bridge. It MUST use a fixed endpoint allowlist.
 
 ### 5.3 Cookie and Origin Topology
 
@@ -206,7 +207,8 @@ The browser and the Next.js server call NestJS directly.
 - Staging uses isolated hosts: `staging-academy.rumahkodingku.com` and `staging-api.rumahkodingku.com`.
 - Auth cookies are host-only (no `Domain` attribute), `HttpOnly`, `Secure` in production, and `SameSite=Lax`. Staging and production cookies MUST NOT be shared.
 - CORS MUST allow only the configured web origin and MUST allow credentials.
-- The web app MUST NOT set or read authentication cookies directly; the API owns them.
+- The web app MUST NOT set or read authentication cookies in JavaScript; the API owns them. Server-side session reads forward the incoming cookie.
+- `NEXT_PUBLIC_SERVER_URL` is the web origin; `API_URL` is the internal API origin.
 - CSRF tokens are fetched from `GET /api/v1/csrf/token` and sent as `x-csrf-token` on cookie-authenticated mutations.
 
 ## 6. Rendering Model
@@ -955,36 +957,38 @@ The web app owns the presentation and session _reads_:
 
 ### 13.4 Session DAL
 
-`src/lib/auth/session.ts` is server-only.
+`src/lib/auth/session.ts` is server-only and maps the API `AuthUser` shape.
 
 ```ts
 import "server-only";
 
-export type SessionUser = {
-  id: string;
-  name: string;
-  email: string;
-  role: "USER" | "ADMIN";
-};
+import type { AuthUser } from "@/features/auth/types";
 
-export async function getSession(): Promise<SessionUser | null>;
-export async function requireUser(): Promise<SessionUser>;
-export async function requireAdmin(): Promise<SessionUser>;
+export async function getSession(): Promise<AuthUser | null>;
+export async function requireUser(locale: Locale, nextPath?: string): Promise<AuthUser>;
+export async function requireVerified(locale: Locale, nextPath?: string): Promise<AuthUser>;
+export async function requirePermission(
+  locale: Locale,
+  permission: string,
+  nextPath?: string,
+): Promise<AuthUser>;
+export async function requireAdmin(locale: Locale, nextPath?: string): Promise<AuthUser>;
 ```
 
 Behavior:
 
-- `getSession()` calls `GET /auth/me` with the incoming cookie and caches the result per request with React `cache()`.
+- `getSession()` calls `GET /users/me` with the incoming cookie and caches the result per request with React `cache()`.
 - `requireUser()` redirects to login with a safe `next` path when unauthenticated.
-- `requireAdmin()` requires an authenticated `ADMIN`; otherwise render the forbidden state or redirect.
+- `requireVerified()` sends unverified users to `/verify-email?next=<safe-path>`.
+- `requireAdmin()` requires `PERMISSIONS.ADMIN_ACCESS`; role names are never compared.
 - A network failure is not the same as unauthenticated. Render a dependency-error state; do not silently log the user out.
-- The DAL MUST NOT accept a user ID or role from the client as proof of identity.
+- The DAL MUST NOT accept a user ID, role, or permission from the client as proof of identity.
 
 ### 13.5 Protected Layouts
 
-- `(learn)/layout.tsx` calls `requireUser()`.
-- `(account)/layout.tsx` calls `requireUser()`.
-- `(admin)/layout.tsx` calls `requireAdmin()`.
+- `(learn)/layout.tsx` calls `requireVerified()`.
+- `(account)/layout.tsx` and `(commerce)/layout.tsx` call `requireUser()`.
+- `(admin)/layout.tsx` calls `requirePermission(locale, PERMISSIONS.ADMIN_ACCESS)`.
 - The API still checks authorization on every request; layout guards are UX only.
 - Do not fetch sensitive data in a layout before the guard resolves.
 
@@ -1319,8 +1323,7 @@ Do not add a second UI kit or CSS-in-JS runtime without an ADR.
 - Persist an explicit user choice.
 - Prevent theme flash during initial render.
 - Use semantic tokens in both themes.
-- Test dialogs, popovers, tables, code blocks, charts, and third-party embeds in dark mode.
-- Do not implement dark mode as a global color inversion.
+- Test dialogs, popovers, tables, code blocks, charts, and third-party embeds in the supported light theme.
 
 ### 17.6 Responsive Layout
 

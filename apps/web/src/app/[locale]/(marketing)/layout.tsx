@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
-import { PublicFooter } from "@/components/layout/public-footer";
-import { PublicHeader } from "@/components/layout/public-header";
+import { AppShell } from "@/components/layout/app-shell";
+import { getSession } from "@/lib/auth/session";
 import { isLocale } from "@/lib/i18n/routing";
 
 export default async function MarketingLayout({
@@ -17,13 +17,11 @@ export default async function MarketingLayout({
     notFound();
   }
 
+  const user = await getSession();
+
   return (
-    <div className="flex min-h-svh flex-col">
-      <PublicHeader locale={locale} />
-      <main id="main" className="flex-1">
-        {children}
-      </main>
-      <PublicFooter locale={locale} />
-    </div>
+    <AppShell locale={locale} user={user}>
+      {children}
+    </AppShell>
   );
 }

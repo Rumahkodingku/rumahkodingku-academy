@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { AuthenticationModule } from "@nestjs/authentication";
+import { AuthenticationModule, type Duration } from "@nestjs/authentication";
 import { AuthorizationModule } from "@nestjs/authorization";
 import { env } from "@rumahkodingku-academy/env/server";
 
@@ -16,11 +16,25 @@ assertProductionSecrets(env);
         audience: env.JWT_AUDIENCE,
         ttl: env.JWT_TTL,
       },
+      refreshToken: {
+        ttl: env.JWT_REFRESH_TTL as Duration,
+        absoluteTtl: env.JWT_REFRESH_ABSOLUTE_TTL as Duration,
+      },
+      emailVerification: {
+        url: `${env.WEB_APP_URL}/verify-email`,
+        ttl: "24h",
+      },
+      password:
+        env.NODE_ENV === "test"
+          ? {
+              logN: 10,
+            }
+          : {},
+      globalGuard: true,
       allowInMemoryStorage: env.NODE_ENV !== "production",
-      globalGuard: false,
     }),
     AuthorizationModule.forRoot({
-      globalGuard: false,
+      globalGuard: true,
     }),
   ],
 })
